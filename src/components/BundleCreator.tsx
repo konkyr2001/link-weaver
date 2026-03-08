@@ -7,6 +7,7 @@ import { LinkItem } from "@/components/LinkItem";
 import { BundleLink, generateId, encodeBundleToUrl, normalizeUrl } from "@/lib/bundle";
 import { toast } from "sonner";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
+import { createPortal } from "react-dom";
 
 export function BundleCreator() {
   const [links, setLinks] = useState<BundleLink[]>([]);
