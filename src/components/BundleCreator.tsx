@@ -91,16 +91,19 @@ export function BundleCreator() {
                 <div ref={provided.innerRef} {...provided.droppableProps} className="space-y-2">
                   {links.map((link, i) => (
                     <Draggable key={link.id} draggableId={link.id} index={i}>
-                      {(provided) => (
-                        <div ref={provided.innerRef} {...provided.draggableProps}>
-                          <LinkItem
-                            link={link}
-                            index={i}
-                            onRemove={removeLink}
-                            dragHandleProps={provided.dragHandleProps ?? undefined}
-                          />
-                        </div>
-                      )}
+                      {(provided, snapshot) => {
+                        const child = (
+                          <div ref={provided.innerRef} {...provided.draggableProps} style={provided.draggableProps.style}>
+                            <LinkItem
+                              link={link}
+                              index={i}
+                              onRemove={removeLink}
+                              dragHandleProps={provided.dragHandleProps ?? undefined}
+                            />
+                          </div>
+                        );
+                        return snapshot.isDragging ? createPortal(child, document.body) : child;
+                      }}
                     </Draggable>
                   ))}
                   {provided.placeholder}
