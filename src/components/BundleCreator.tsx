@@ -7,6 +7,7 @@ import { LinkItem } from "@/components/LinkItem";
 import { BundleLink, generateId, encodeBundleToUrl, normalizeUrl } from "@/lib/bundle";
 import { toast } from "sonner";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
+import { createPortal } from "react-dom";
 
 export function BundleCreator() {
   const [links, setLinks] = useState<BundleLink[]>([]);
@@ -90,16 +91,19 @@ export function BundleCreator() {
                 <div ref={provided.innerRef} {...provided.droppableProps} className="space-y-2">
                   {links.map((link, i) => (
                     <Draggable key={link.id} draggableId={link.id} index={i}>
-                      {(provided) => (
-                        <div ref={provided.innerRef} {...provided.draggableProps}>
-                          <LinkItem
-                            link={link}
-                            index={i}
-                            onRemove={removeLink}
-                            dragHandleProps={provided.dragHandleProps ?? undefined}
-                          />
-                        </div>
-                      )}
+                      {(provided, snapshot) => {
+                        const child = (
+                          <div ref={provided.innerRef} {...provided.draggableProps} style={provided.draggableProps.style}>
+                            <LinkItem
+                              link={link}
+                              index={i}
+                              onRemove={removeLink}
+                              dragHandleProps={provided.dragHandleProps ?? undefined}
+                            />
+                          </div>
+                        );
+                        return snapshot.isDragging ? createPortal(child, document.body) : child;
+                      }}
                     </Draggable>
                   ))}
                   {provided.placeholder}
