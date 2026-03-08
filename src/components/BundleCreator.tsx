@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link2, Copy, Check, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LinkInput } from "@/components/LinkInput";
 import { LinkItem } from "@/components/LinkItem";
 import { BundleLink, generateId, encodeBundleToUrl, normalizeUrl } from "@/lib/bundle";
 import { toast } from "sonner";
+import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 
 export function BundleCreator() {
   const [links, setLinks] = useState<BundleLink[]>([]);
@@ -27,23 +28,15 @@ export function BundleCreator() {
     setGeneratedUrl(null);
   };
 
-  const moveUp = (id: string) => {
+  const onDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+    const from = result.source.index;
+    const to = result.destination.index;
+    if (from === to) return;
     setLinks((prev) => {
-      const idx = prev.findIndex((l) => l.id === id);
-      if (idx <= 0) return prev;
       const next = [...prev];
-      [next[idx - 1], next[idx]] = [next[idx], next[idx - 1]];
-      return next;
-    });
-    setGeneratedUrl(null);
-  };
-
-  const moveDown = (id: string) => {
-    setLinks((prev) => {
-      const idx = prev.findIndex((l) => l.id === id);
-      if (idx < 0 || idx >= prev.length - 1) return prev;
-      const next = [...prev];
-      [next[idx], next[idx + 1]] = [next[idx + 1], next[idx]];
+      const [moved] = next.splice(from, 1);
+      next.splice(to, 0, moved);
       return next;
     });
     setGeneratedUrl(null);
@@ -91,20 +84,29 @@ export function BundleCreator() {
 
         {/* Links list */}
         <div className="space-y-2 min-h-[60px]">
-          <AnimatePresence mode="popLayout">
-            {links.map((link, i) => (
-              <LinkItem
-                key={link.id}
-                link={link}
-                index={i}
-                onRemove={removeLink}
-                onMoveUp={moveUp}
-                onMoveDown={moveDown}
-                isFirst={i === 0}
-                isLast={i === links.length - 1}
-              />
-            ))}
-          </AnimatePresence>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="links">
+              {(provided) => (
+                <div ref={provided.innerRef} {...provided.droppableProps} className="space-y-2">
+                  {links.map((link, i) => (
+                    <Draggable key={link.id} draggableId={link.id} index={i}>
+                      {(provided) => (
+                        <div ref={provided.innerRef} {...provided.draggableProps}>
+                          <LinkItem
+                            link={link}
+                            index={i}
+                            onRemove={removeLink}
+                            dragHandleProps={provided.dragHandleProps ?? undefined}
+                          />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
 
           {links.length === 0 && (
             <motion.div

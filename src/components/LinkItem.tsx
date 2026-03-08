@@ -1,58 +1,56 @@
 import { GripVertical, X, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { BundleLink, extractDomain, getFaviconUrl } from "@/lib/bundle";
-import { motion } from "framer-motion";
+import { BundleLink, extractDomain, getFaviconUrl, normalizeUrl } from "@/lib/bundle";
+import { useState } from "react";
 
 interface LinkItemProps {
   link: BundleLink;
   index: number;
   onRemove: (id: string) => void;
-  onMoveUp: (id: string) => void;
-  onMoveDown: (id: string) => void;
-  isFirst: boolean;
-  isLast: boolean;
+  dragHandleProps?: Record<string, any>;
 }
 
-export function LinkItem({ link, index, onRemove, onMoveUp, onMoveDown, isFirst, isLast }: LinkItemProps) {
+export function LinkItem({ link, index, onRemove, dragHandleProps }: LinkItemProps) {
   const domain = extractDomain(link.url);
   const favicon = getFaviconUrl(link.url);
+  const normalizedUrl = normalizeUrl(link.url);
+  const screenshotUrl = `https://api.microlink.io/?url=${encodeURIComponent(normalizedUrl)}&screenshot=true&meta=false&embed=screenshot.url`;
+  const [imgError, setImgError] = useState(false);
 
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 20, scale: 0.95 }}
-      transition={{ duration: 0.2 }}
-      className="glass-card rounded-lg p-4 flex items-center gap-4 group"
-    >
-      <div className="flex flex-col gap-1">
-        <button
-          onClick={() => onMoveUp(link.id)}
-          disabled={isFirst}
-          className="text-muted-foreground hover:text-foreground disabled:opacity-20 transition-colors p-0.5"
-          aria-label="Move up"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 15l-6-6-6 6"/></svg>
-        </button>
-        <button
-          onClick={() => onMoveDown(link.id)}
-          disabled={isLast}
-          className="text-muted-foreground hover:text-foreground disabled:opacity-20 transition-colors p-0.5"
-          aria-label="Move down"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
-        </button>
+    <div className="glass-card rounded-lg p-4 flex items-center gap-4 group">
+      {/* Drag handle */}
+      <div
+        {...dragHandleProps}
+        className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground transition-colors p-1"
+        aria-label="Drag to reorder"
+      >
+        <GripVertical className="w-5 h-5" />
       </div>
 
       <span className="text-muted-foreground font-display text-sm w-6 text-center">{index + 1}</span>
 
-      <img
-        src={favicon}
-        alt=""
-        className="w-6 h-6 rounded-sm flex-shrink-0"
-        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-      />
+      {/* Website screenshot thumbnail */}
+      <div className="w-16 h-10 rounded-md overflow-hidden bg-secondary/30 flex-shrink-0">
+        {!imgError ? (
+          <img
+            src={screenshotUrl}
+            alt={`Preview of ${domain}`}
+            className="w-full h-full object-cover object-top"
+            onError={() => setImgError(true)}
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <img
+              src={favicon}
+              alt=""
+              className="w-5 h-5"
+              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+            />
+          </div>
+        )}
+      </div>
 
       <div className="flex-1 min-w-0">
         <p className="text-foreground text-sm font-medium truncate">{link.title || domain}</p>
@@ -60,7 +58,7 @@ export function LinkItem({ link, index, onRemove, onMoveUp, onMoveDown, isFirst,
       </div>
 
       <a
-        href={link.url.startsWith('http') ? link.url : `https://${link.url}`}
+        href={normalizedUrl}
         target="_blank"
         rel="noopener noreferrer"
         className="text-muted-foreground hover:text-primary transition-colors opacity-0 group-hover:opacity-100"
@@ -76,6 +74,6 @@ export function LinkItem({ link, index, onRemove, onMoveUp, onMoveDown, isFirst,
       >
         <X className="w-4 h-4" />
       </Button>
-    </motion.div>
+    </div>
   );
 }
