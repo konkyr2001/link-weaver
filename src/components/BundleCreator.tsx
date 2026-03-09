@@ -10,6 +10,7 @@ import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea
 import { createPortal } from "react-dom";
 
 export function BundleCreator() {
+  const [title, setTitle] = useState("");
   const [links, setLinks] = useState<BundleLink[]>([]);
   const [generatedUrl, setGeneratedUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -48,7 +49,7 @@ export function BundleCreator() {
       toast.error("Add at least one link first");
       return;
     }
-    const bundle = { links, createdAt: Date.now() };
+    const bundle = { title: title.trim() || undefined, links, createdAt: Date.now() };
     const url = encodeBundleToUrl(bundle);
     setGeneratedUrl(url);
   };
@@ -74,8 +75,13 @@ export function BundleCreator() {
           <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
             <Link2 className="w-5 h-5 text-primary" />
           </div>
-          <div>
-            <h2 className="font-display text-lg font-semibold text-foreground">Create Bundle</h2>
+          <div className="flex-1">
+            <input
+              value={title}
+              onChange={(e) => { setTitle(e.target.value); setGeneratedUrl(null); }}
+              placeholder="Create Bundle"
+              className="font-display text-lg font-semibold text-foreground bg-transparent border-none outline-none placeholder:text-foreground w-full"
+            />
             <p className="text-muted-foreground text-sm">Add your links and share them in one URL</p>
           </div>
         </div>
