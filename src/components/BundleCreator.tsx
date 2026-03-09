@@ -45,6 +45,10 @@ export function BundleCreator() {
   };
 
   const generateLink = () => {
+    if (!title.trim()) {
+      toast.error("Give your bundle a title first");
+      return;
+    }
     if (links.length === 0) {
       toast.error("Add at least one link first");
       return;
@@ -80,7 +84,7 @@ export function BundleCreator() {
               value={title}
               onChange={(e) => { setTitle(e.target.value); setGeneratedUrl(null); }}
               placeholder="Create Bundle"
-              className="font-display text-lg font-semibold text-foreground bg-transparent border-none outline-none placeholder:text-foreground w-full"
+              className="font-display text-lg font-semibold text-foreground bg-transparent border-none outline-none placeholder:text-muted-foreground w-full"
             />
             <p className="text-muted-foreground text-sm">Add your links and share them in one URL</p>
           </div>
