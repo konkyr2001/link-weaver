@@ -52,7 +52,7 @@ export default function BundleView() {
           className="mb-10"
         >
           <h1 className="font-display text-3xl font-bold text-foreground mb-2">
-            Link Bundle
+            {bundle.title || "Link Bundle"}
           </h1>
           <p className="text-muted-foreground">
             {bundle.links.length} link{bundle.links.length !== 1 ? 's' : ''} shared

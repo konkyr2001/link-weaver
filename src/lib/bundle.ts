@@ -7,6 +7,7 @@ export interface BundleLink {
 }
 
 export interface Bundle {
+  title?: string;
   links: BundleLink[];
   createdAt: number;
 }
