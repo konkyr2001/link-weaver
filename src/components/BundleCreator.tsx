@@ -49,7 +49,7 @@ export function BundleCreator() {
       toast.error("Add at least one link first");
       return;
     }
-    const bundle = { links, createdAt: Date.now() };
+    const bundle = { title: title.trim() || undefined, links, createdAt: Date.now() };
     const url = encodeBundleToUrl(bundle);
     setGeneratedUrl(url);
   };
