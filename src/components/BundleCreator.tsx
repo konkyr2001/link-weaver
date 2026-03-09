@@ -10,6 +10,7 @@ import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea
 import { createPortal } from "react-dom";
 
 export function BundleCreator() {
+  const [title, setTitle] = useState("");
   const [links, setLinks] = useState<BundleLink[]>([]);
   const [generatedUrl, setGeneratedUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
