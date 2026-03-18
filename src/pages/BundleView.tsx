@@ -1,11 +1,14 @@
 import { useParams, Link } from "react-router-dom";
 import { decodeBundleFromParam } from "@/lib/bundle";
 import { BundleLinkCard } from "@/components/BundleLinkCard";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { useTheme } from "@/hooks/use-theme";
 import { motion } from "framer-motion";
 import { Link2, ArrowLeft, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function BundleView() {
+  const { theme, toggleTheme } = useTheme();
   const { data } = useParams<{ data: string }>();
   const bundle = data ? decodeBundleFromParam(data) : null;
 
