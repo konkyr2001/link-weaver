@@ -1,15 +1,22 @@
 import { BundleCreator } from "@/components/BundleCreator";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { useTheme } from "@/hooks/use-theme";
 import { Link2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 const Index = () => {
+  const { theme, toggleTheme } = useTheme();
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Nav */}
       <header className="border-b border-border">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center gap-2">
-          <Link2 className="w-5 h-5 text-primary" />
-          <span className="font-display font-bold text-lg text-foreground">bundl</span>
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Link2 className="w-5 h-5 text-primary" />
+            <span className="font-display font-bold text-lg text-foreground">bundl</span>
+          </div>
+          <ThemeToggle theme={theme} onToggle={toggleTheme} />
         </div>
       </header>
 

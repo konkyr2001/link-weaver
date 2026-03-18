@@ -38,12 +38,15 @@ export default function BundleView() {
               <span className="font-display font-bold text-lg">bundl</span>
             </div>
           </Link>
-          <Link to="/">
-            <Button variant="hero" size="sm">
-              <Plus className="w-4 h-4 mr-1" />
-              Create Bundle
-            </Button>
-          </Link>
+          <div className="flex items-center gap-2">
+            <ThemeToggle theme={theme} onToggle={toggleTheme} />
+            <Link to="/">
+              <Button variant="hero" size="sm">
+                <Plus className="w-4 h-4 mr-1" />
+                Create Bundle
+              </Button>
+            </Link>
+          </div>
         </div>
       </header>
 
