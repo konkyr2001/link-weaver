@@ -15,7 +15,22 @@ export function BundleCreator() {
   const [generatedUrl, setGeneratedUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
+  const isValidUrl = (url: string): boolean => {
+    const normalized = normalizeUrl(url);
+    try {
+      const parsed = new URL(normalized);
+      // Must have a dot in the hostname (e.g. example.com)
+      return /\.[a-z]{2,}$/i.test(parsed.hostname);
+    } catch {
+      return false;
+    }
+  };
+
   const addLink = (url: string) => {
+    if (!isValidUrl(url)) {
+      toast.error("Please enter a valid URL");
+      return;
+    }
     const normalized = normalizeUrl(url);
     const newLink: BundleLink = {
       id: generateId(),
