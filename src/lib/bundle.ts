@@ -7,25 +7,48 @@ export interface BundleLink {
 }
 
 export interface Bundle {
-  title?: string;
+  title: string;
   links: BundleLink[];
-  createdAt: number;
 }
 
 export function generateId(): string {
   return Math.random().toString(36).substring(2, 9);
 }
 
-export function encodeBundleToUrl(bundle: Bundle): string {
-  const data = JSON.stringify(bundle);
-  const encoded = btoa(encodeURIComponent(data));
-  return `${window.location.origin}/b/${encoded}`;
+export async function createBundle(bundle: Bundle): Promise<string | null> {
+  try {
+    const res = await fetch (`http://localhost:3000/api/shared`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        projectName: bundle.title,
+        urls: bundle.links,
+        userid: null,
+      })
+    });
+    if (res.ok) {
+      const result = await res.json();
+      return `${window.location.origin}/b/${result.slug}`;
+    }
+    return null;
+  } catch {
+    return null;
+  }
 }
 
-export function decodeBundleFromParam(param: string): Bundle | null {
+export async function fetchBundleBySlug(param: string): Promise<Bundle | null> {
   try {
-    const decoded = decodeURIComponent(atob(param));
-    return JSON.parse(decoded) as Bundle;
+    const res = await fetch (`http://localhost:3000/api/shared/${param}`);
+    if (res.ok) {
+      const result = await res.json();
+      return {
+        title: result.projectName,
+        links: result.urls
+      };
+    }
+    return null;
   } catch {
     return null;
   }

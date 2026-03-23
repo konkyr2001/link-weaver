@@ -17,7 +17,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/b/:data" element={<BundleView />} />
+          <Route path="/b/:slug" element={<BundleView />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

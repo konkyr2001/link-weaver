@@ -4,7 +4,7 @@ import { Link2, Copy, Check, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LinkInput } from "@/components/LinkInput";
 import { LinkItem } from "@/components/LinkItem";
-import { BundleLink, generateId, encodeBundleToUrl, normalizeUrl } from "@/lib/bundle";
+import { BundleLink, generateId, createBundle, normalizeUrl } from "@/lib/bundle";
 import { toast } from "sonner";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { createPortal } from "react-dom";
@@ -59,7 +59,7 @@ export function BundleCreator() {
     setGeneratedUrl(null);
   };
 
-  const generateLink = () => {
+  const generateLink = async () => {
     if (!title.trim()) {
       toast.error("Give your bundle a title first");
       return;
@@ -69,7 +69,7 @@ export function BundleCreator() {
       return;
     }
     const bundle = { title: title.trim() || undefined, links, createdAt: Date.now() };
-    const url = encodeBundleToUrl(bundle);
+    const url = await createBundle(bundle);
     setGeneratedUrl(url);
   };
 

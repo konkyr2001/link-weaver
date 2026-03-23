@@ -1,16 +1,36 @@
 import { useParams, Link } from "react-router-dom";
-import { decodeBundleFromParam } from "@/lib/bundle";
+import { Bundle, fetchBundleBySlug } from "@/lib/bundle";
 import { BundleLinkCard } from "@/components/BundleLinkCard";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { useTheme } from "@/hooks/use-theme";
 import { motion } from "framer-motion";
 import { Link2, ArrowLeft, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { useTheme } from "@/hooks/use-theme";
 
 export default function BundleView() {
   const { theme, toggleTheme } = useTheme();
-  const { data } = useParams<{ data: string }>();
-  const bundle = data ? decodeBundleFromParam(data) : null;
+  const { slug } = useParams<{ slug: string }>();
+  const [bundle, setBundle] = useState<Bundle | null>(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    async function loadBundle() {
+      if (!slug) {
+        setBundle(null);
+        setLoading(false);
+        return;
+      }
+      const result = await fetchBundleBySlug(slug);
+      setLoading(false);
+      setBundle(result);
+    }
+
+    loadBundle();
+  }, [slug]);
+
+  if (loading) {
+    return;
+  }
 
   if (!bundle) {
     return (
