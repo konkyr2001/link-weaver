@@ -1,3 +1,5 @@
+const URL = import.meta.env.VITE_BACKEND_URL;
+
 export interface BundleLink {
   id: string;
   url: string;
@@ -17,7 +19,7 @@ export function generateId(): string {
 
 export async function createBundle(bundle: Bundle): Promise<string | null> {
   try {
-    const res = await fetch (`http://localhost:3000/api/shared`, {
+    const res = await fetch (`${URL}/api/shared`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -40,7 +42,7 @@ export async function createBundle(bundle: Bundle): Promise<string | null> {
 
 export async function fetchBundleBySlug(param: string): Promise<Bundle | null> {
   try {
-    const res = await fetch (`http://localhost:3000/api/shared/${param}`);
+    const res = await fetch (`${URL}/api/shared/${param}`);
     if (res.ok) {
       const result = await res.json();
       return {
