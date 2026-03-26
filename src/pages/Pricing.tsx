@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useTheme } from "@/hooks/use-theme";
 import { Link } from "react-router-dom";
+import Header from "@/components/Header";
 
 const tiers = [
   {
@@ -33,7 +34,7 @@ const tiers = [
       "Access from any device",
     ],
     cta: "Create Account",
-    ctaLink: "/register",
+    ctaLink: "/signup",
     highlighted: false,
   },
   {
@@ -48,7 +49,7 @@ const tiers = [
       "Early access to new features",
     ],
     cta: "Subscribe",
-    ctaLink: "/register",
+    ctaLink: "/signup",
     highlighted: true,
   },
 ];
@@ -59,23 +60,7 @@ const Pricing = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Nav */}
-      <header className="border-b border-border">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <Link2 className="w-5 h-5 text-primary" />
-            <span className="font-display font-bold text-lg text-foreground">bundl</span>
-          </Link>
-          <div className="flex items-center gap-6">
-            <Link to="/pricing" className="text-sm font-medium text-primary">
-              Pricing
-            </Link>
-            <Link to="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Login
-            </Link>
-            <ThemeToggle theme={theme} onToggle={toggleTheme} />
-          </div>
-        </div>
-      </header>
+      <Header active="pricing" />
 
       <main className="flex-1 px-6 py-16">
         <div className="max-w-5xl mx-auto">

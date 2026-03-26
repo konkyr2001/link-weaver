@@ -6,31 +6,63 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useTheme } from "@/hooks/use-theme";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { signup } from "../services/user";
+import ReCAPTCHA from "react-google-recaptcha";
+import Header from "@/components/Header";
 
-const Register = () => {
+const SignUp = () => {
   const { theme, toggleTheme } = useTheme();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [recaptcha, setRecaptcha] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [errorFirstName, setErrorFirstName] = useState(false);
+  const [errorLastName, setErrorLastName] = useState(false);
+  const [errorEmail, setErrorEmail] = useState(false);
+  const [errorPassword, setErrorPassword] = useState(false);
+  const [errorRecaptcha, setErrorRecaptcha] = useState(false);
+  const navigate = useNavigate();
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!firstName.trim() || !lastName.trim() || !email.trim() || !password.trim()) {
+  const checkErrors = () => {
+    if (!firstName.trim() || !lastName.trim() || !email.trim() || !password.trim() || !recaptcha) {
+      setErrorFirstName(!firstName.trim());
+      setErrorLastName(!lastName.trim());
+      setErrorEmail(!email.trim());
+      setErrorPassword(!password.trim());
+      setErrorRecaptcha(!recaptcha);
       toast.error("Please fill in all fields");
-      return;
+      return true;
     }
     if (password.length < 8) {
       toast.error("Password must be at least 8 characters");
-      return;
+      return true;
     }
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      toast.error("Password must include a lowercase, an uppercase and a number");
+      return true;
+    }
+    return false;
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (checkErrors()) return;
+    
     setLoading(true);
     // TODO: Connect to your backend API
-    toast.info("Register API not connected yet");
+    const data = await signup(firstName, lastName, email, password, recaptcha);
+    if (data.error) {
+      toast.error(data.error);
+    } else {
+      alert("SIGNUP!")
+      navigate("/");
+    }
     setLoading(false);
   };
 
@@ -41,20 +73,7 @@ const Register = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <header className="border-b border-border">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <Link2 className="w-5 h-5 text-primary" />
-            <span className="font-display font-bold text-lg text-foreground">bundl</span>
-          </Link>
-          <div className="flex items-center gap-6">
-            <Link to="/pricing" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Pricing
-            </Link>
-            <ThemeToggle theme={theme} onToggle={toggleTheme} />
-          </div>
-        </div>
-      </header>
+      <Header active="signup"/>
 
       <main className="flex-1 flex items-center justify-center px-6 py-16">
         <motion.div
@@ -109,8 +128,8 @@ const Register = () => {
                       id="firstName"
                       placeholder="John"
                       value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      className="pl-10"
+                      onChange={(e) => setFirstName(e.target.value.trim())}
+                      className={`pl-10 ${errorFirstName ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                     />
                   </div>
                 </div>
@@ -120,7 +139,8 @@ const Register = () => {
                     id="lastName"
                     placeholder="Doe"
                     value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
+                    onChange={(e) => setLastName(e.target.value.trim())}
+                    className={`${errorLastName ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                   />
                 </div>
               </div>
@@ -134,8 +154,8 @@ const Register = () => {
                     type="email"
                     placeholder="you@example.com"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10"
+                    onChange={(e) => setEmail(e.target.value.trim())}
+                    className={`pl-10 ${errorEmail ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                   />
                 </div>
               </div>
@@ -149,8 +169,8 @@ const Register = () => {
                     type={showPassword ? "text" : "password"}
                     placeholder="Min. 8 characters"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 pr-10"
+                    onChange={(e) => setPassword(e.target.value.trim())}
+                    className={`pl-10 pr-10 ${errorPassword ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                   />
                   <button
                     type="button"
@@ -160,6 +180,17 @@ const Register = () => {
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
+              </div>
+
+              <div className="space-y-2 flex justify-center">
+                <ReCAPTCHA
+                  key={theme}
+                  theme={theme}
+                  className={`${errorRecaptcha ? "border border-red-500" : ""}`}
+                  value={recaptcha}
+                  onChange={(token) => setRecaptcha(token)}
+                  sitekey={import.meta.env.VITE_SIGNUP_RECAPTCHA_SITE_KEY}
+                />
               </div>
 
               <Button
@@ -176,7 +207,7 @@ const Register = () => {
             <p className="text-center text-sm text-muted-foreground">
               Already have an account?{" "}
               <Link to="/login" className="text-primary hover:underline font-medium">
-                Sign in
+                Login
               </Link>
             </p>
           </div>
@@ -186,4 +217,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default SignUp;

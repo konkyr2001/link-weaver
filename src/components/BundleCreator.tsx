@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link2, Copy, Check, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,12 +8,15 @@ import { BundleLink, generateId, createBundle, normalizeUrl } from "@/lib/bundle
 import { toast } from "sonner";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { createPortal } from "react-dom";
+import Captcha from "react-google-recaptcha";
 
 export function BundleCreator() {
+  const token = localStorage.getItem("token");
   const [title, setTitle] = useState("");
   const [links, setLinks] = useState<BundleLink[]>([]);
   const [generatedUrl, setGeneratedUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const captchaRef = useRef<Captcha>(null);
 
   const isValidUrl = (url: string): boolean => {
     const normalized = normalizeUrl(url);
@@ -69,7 +72,9 @@ export function BundleCreator() {
       return;
     }
     const bundle = { title: title.trim() || undefined, links, createdAt: Date.now() };
-    const url = await createBundle(bundle);
+    const captcha = await captchaRef.current?.executeAsync();
+    captchaRef.current.reset();
+    const url = await createBundle(bundle, captcha);
     setGeneratedUrl(url);
   };
 
@@ -83,6 +88,13 @@ export function BundleCreator() {
 
   return (
     <div className="w-full max-w-2xl mx-auto">
+      {!token && (
+        <Captcha
+          ref={captchaRef}
+          size="invisible"
+          sitekey={import.meta.env.VITE_GENERATE_URL_RECAPTCHA_SITE_KEY}
+        />
+      )}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}

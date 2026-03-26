@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Link2, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,23 +9,41 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { useTheme } from "@/hooks/use-theme";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { login } from "../services/user";
+import Header from "@/components/Header";
 
 const Login = () => {
+  const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorEmail, setErrorEmail] = useState(false);
+  const [errorPassword, setErrorPassword] = useState(false);
+
+function checkErrors() {
+  if (!email.trim() || !password.trim()) {
+    setErrorEmail(!email.trim());
+    setErrorPassword(!password.trim());
+    toast.error("Please fill in all fields");
+    return true;
+  }
+
+  return false;
+}
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !password.trim()) {
-      toast.error("Please fill in all fields");
-      return;
-    }
+    if (checkErrors()) return;
     setLoading(true);
     // TODO: Connect to your backend API
-    toast.info("Login API not connected yet");
+    const data = await login(email, password);
+    if (data.error) {
+      toast.error(data.error);
+    } else {
+      navigate("/");
+    }
     setLoading(false);
   };
 
@@ -35,20 +54,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <header className="border-b border-border">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <Link2 className="w-5 h-5 text-primary" />
-            <span className="font-display font-bold text-lg text-foreground">bundl</span>
-          </Link>
-          <div className="flex items-center gap-6">
-            <Link to="/pricing" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Pricing
-            </Link>
-            <ThemeToggle theme={theme} onToggle={toggleTheme} />
-          </div>
-        </div>
-      </header>
+      <Header active="login" />
 
       <main className="flex-1 flex items-center justify-center px-6 py-16">
         <motion.div
@@ -62,7 +68,7 @@ const Login = () => {
               Welcome back
             </h1>
             <p className="text-muted-foreground text-sm">
-              Sign in to manage your bundles
+              Login to manage your bundles
             </p>
           </div>
 
@@ -115,8 +121,8 @@ const Login = () => {
                     type="email"
                     placeholder="you@example.com"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10"
+                    onChange={(e) => setEmail(e.target.value.trim())}
+                    className={`pl-10 ${errorEmail ? "border-red-500" : ""}`}
                   />
                 </div>
               </div>
@@ -130,8 +136,8 @@ const Login = () => {
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 pr-10"
+                    onChange={(e) => setPassword(e.target.value.trim())}
+                    className={`pl-10 pr-10 ${errorPassword ? "border-red-500" : ""}`}
                   />
                   <button
                     type="button"
@@ -150,13 +156,13 @@ const Login = () => {
                 className="w-full h-12"
                 disabled={loading}
               >
-                {loading ? "Signing in…" : "Sign In"}
+                {loading ? "Logging in…" : "Login"}
               </Button>
             </form>
 
             <p className="text-center text-sm text-muted-foreground">
               Don't have an account?{" "}
-              <Link to="/register" className="text-primary hover:underline font-medium">
+              <Link to="/signup" className="text-primary hover:underline font-medium">
                 Sign up
               </Link>
             </p>

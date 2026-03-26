@@ -7,8 +7,9 @@ import Index from "./pages/Index";
 import BundleView from "./pages/BundleView";
 import Pricing from "./pages/Pricing";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
+import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
+import GuestRoute from "./components/GuestRoute";
 
 const queryClient = new QueryClient();
 
@@ -22,8 +23,10 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/b/:slug" element={<BundleView />} />
           <Route path="/pricing" element={<Pricing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={
+            <GuestRoute> <Login /> </GuestRoute>} />
+          <Route path="/signup" element={
+            <GuestRoute> <SignUp /> </GuestRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

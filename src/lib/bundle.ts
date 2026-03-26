@@ -17,7 +17,7 @@ export function generateId(): string {
   return Math.random().toString(36).substring(2, 9);
 }
 
-export async function createBundle(bundle: Bundle): Promise<string | null> {
+export async function createBundle(bundle: Bundle, captcha: string): Promise<string | null> {
   try {
     const res = await fetch (`${URL}/api/shared`, {
       method: "POST",
@@ -27,7 +27,8 @@ export async function createBundle(bundle: Bundle): Promise<string | null> {
       body: JSON.stringify({
         projectName: bundle.title,
         urls: bundle.links,
-        userid: null,
+        userId: null,
+        captcha
       })
     });
     if (res.ok) {
