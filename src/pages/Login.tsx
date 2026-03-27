@@ -88,8 +88,8 @@ const Login = () => {
               text={"continue_with"}
               logo_alignment={"center"}
               shape={"circle"}
-              key={`${localStorage.getItem("theme") === "dark" ? "filled_black" : "outline"}`}
-              theme={`${localStorage.getItem("theme") === "dark" ? "filled_black" : "outline"}`} 
+              key={`${theme === "dark" ? "filled_black" : "outline"}`}
+              theme={`${theme === "dark" ? "filled_black" : "outline"}`}
               onSuccess={(credentialResponse ) => handleGoogleLogin(credentialResponse )} 
               onError={() => console.log("login failed")} 
               auto_select
