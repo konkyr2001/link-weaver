@@ -1,8 +1,8 @@
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const URL = import.meta.env.VITE_BACKEND_URL;
 
 const login = async (email, password) => {
   try {
-    const response = await fetch(`${BACKEND_URL}/api/user/login`, {
+    const response = await fetch(`${URL}/api/user/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -28,7 +28,7 @@ const login = async (email, password) => {
 
 const signup = async (firstName, lastName, email, password, recaptcha) => {
   try {
-    const response = await fetch(`${BACKEND_URL}/api/user`, {
+    const response = await fetch(`${URL}/api/user/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -59,4 +59,27 @@ const signup = async (firstName, lastName, email, password, recaptcha) => {
   }
 };
 
-export { login, signup };
+const authorizeGoogleUser = async (token) => {
+  try {
+    const response = await fetch(`${URL}/api/user/google`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token
+      }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      return { error: data.error || "Something went wrong" };
+    }
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.userObj));
+    return data;
+  } catch (error) {
+    console.log(error.message);
+    return { error: error.message || "Something went wrong" };
+  }
+};
+export { login, signup, authorizeGoogleUser };

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useTheme } from "@/hooks/use-theme";
 import { Link2 } from "lucide-react";
+import { googleLogout } from "@react-oauth/google";
 
 type HeaderProps = {
   active?: "home" | "pricing" | "login" | "signup";
@@ -13,6 +14,7 @@ const Header = ({ active }: HeaderProps) => {
   const user = JSON.parse(localStorage.getItem("user"));
 
   const handleLogout = () => {
+    googleLogout();
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     window.location.href = "/";

@@ -9,9 +9,11 @@ import { toast } from "sonner";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { createPortal } from "react-dom";
 import Captcha from "react-google-recaptcha";
+import { useTheme } from "@/hooks/use-theme";
 
 export function BundleCreator() {
   const token = localStorage.getItem("token");
+  const { theme, toggleTheme } = useTheme();
   const [title, setTitle] = useState("");
   const [links, setLinks] = useState<BundleLink[]>([]);
   const [generatedUrl, setGeneratedUrl] = useState<string | null>(null);
@@ -90,6 +92,8 @@ export function BundleCreator() {
     <div className="w-full max-w-2xl mx-auto">
       {!token && (
         <Captcha
+          key={theme}
+          theme={theme}
           ref={captchaRef}
           size="invisible"
           sitekey={import.meta.env.VITE_GENERATE_URL_RECAPTCHA_SITE_KEY}
