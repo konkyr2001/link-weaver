@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { login, authorizeGoogleUser } from "../services/user";
 import Header from "@/components/Header";
-import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLoginButton } from "@/components/GoogleLoginButton";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -84,19 +84,10 @@ const Login = () => {
           </div>
 
           <div className="glass-card rounded-2xl p-8 space-y-6">
-            <div className="w-full flex justify-center">
-              <div style={{ colorScheme: theme}} className="google-login w-full">
-                <GoogleLogin 
-                  text={"continue_with"}
-                  size={"large"}
-                  type={"standard"}
-                  logo_alignment={"left"}
-                  theme={`${theme === "dark" ? "filled_black" : "outline"}`}
-                  onSuccess={(credentialResponse ) => handleGoogleLogin(credentialResponse )} 
-                  onError={() => console.log("login failed")} 
-                />
-              </div>
-            </div>
+            <GoogleLoginButton
+              text="continue_with"
+              onSuccess={handleGoogleLogin}
+            />
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-border" />

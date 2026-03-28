@@ -9,6 +9,7 @@ import Pricing from "./pages/Pricing";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
+import History from "./pages/History";
 import GuestRoute from "./components/GuestRoute";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/b/:slug" element={<BundleView />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/history" element={<History />} />
           <Route path="/login" element={
             <GuestRoute> <Login /> </GuestRoute>} />
           <Route path="/signup" element={

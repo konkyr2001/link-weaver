@@ -6,7 +6,7 @@ import { Link2 } from "lucide-react";
 import { googleLogout } from "@react-oauth/google";
 
 type HeaderProps = {
-  active?: "home" | "pricing" | "login" | "signup";
+  active?: "home" | "pricing" | "login" | "signup" | "history";
 };
 
 const Header = ({ active }: HeaderProps) => {
@@ -52,6 +52,19 @@ const Header = ({ active }: HeaderProps) => {
           >
             Pricing
           </Link>
+
+          {user && (
+            <Link
+              to="/history"
+              className={`text-sm font-medium ${
+                active === "history"
+                  ? "text-primary"
+                  : "text-muted-foreground hover:text-foreground transition-colors"
+              }`}
+            >
+              History
+            </Link>
+          )}
 
           {user ? (
             <>

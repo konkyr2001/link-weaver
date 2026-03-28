@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { signup, authorizeGoogleUser } from "../services/user";
 import ReCAPTCHA from "react-google-recaptcha";
 import Header from "@/components/Header";
-import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLoginButton } from "@/components/GoogleLoginButton";
 
 const SignUp = () => {
   const { theme, toggleTheme } = useTheme();
@@ -100,19 +100,10 @@ const SignUp = () => {
           </div>
 
           <div className="glass-card rounded-2xl p-8 space-y-6">
-            <div className="w-full flex justify-center">
-              <div style={{ colorScheme: theme}} className="google-login w-full">
-                <GoogleLogin
-                  text={"signup_with"}
-                  size={"large"}
-                  type={"standard"}
-                  logo_alignment={"left"}
-                  theme={`${theme === "dark" ? "filled_black" : "outline"}`} 
-                  onSuccess={(credentialResponse ) => handleGoogleRegister(credentialResponse )} 
-                  onError={() => console.log("login failed")} 
-                />
-              </div>
-            </div>
+            <GoogleLoginButton
+              text="signup_with"
+              onSuccess={handleGoogleRegister}
+            />
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-border" />
