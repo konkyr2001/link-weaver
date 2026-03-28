@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Check, Link2 } from "lucide-react";
+import { Check, Link2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useTheme } from "@/hooks/use-theme";
@@ -9,46 +9,53 @@ import Header from "@/components/Header";
 const tiers = [
   {
     name: "Free",
-    price: "$0",
-    period: "",
+    price: "Free",
     description: "No account needed",
     features: [
       "Unlimited bundles",
       "Unlimited links per bundle",
-      "Shareable URLs",
-      "Bundles expire in 3 days",
+      "Bundles expire after 5 days",
+    ],
+    negatives: [
+      "No bundle deletion",
+      "No editing after creation",
     ],
     cta: "Get Started",
     ctaLink: "/",
     highlighted: false,
   },
   {
-    name: "Free+",
-    price: "$0",
-    period: "",
-    description: "Account required",
+    name: "Plus",
+    price: "17.99€",
+    period: "/year",
+    description: "Save and access your bundles anytime",
     features: [
-      "Everything in Free",
-      "Bundles expire in 7 days",
-      "Manage your bundles",
-      "Access from any device",
+      "Unlimited bundles",
+      "Unlimited links per bundle",
+      "Bundles expire after 1 year",
+      "Delete bundles anytime",
     ],
-    cta: "Create Account",
+    negatives: [
+      "No editing after creation",
+    ],
+    cta: "Upgrade to Plus",
     ctaLink: "/signup",
     highlighted: false,
   },
   {
     name: "Pro",
-    price: "$10",
+    price: "23.99€",
     period: "/year",
-    description: "For power users",
+    description: "Full control with no limits",
     features: [
-      "Everything in Free+",
+      "Unlimited bundles",
+      "Unlimited links per bundle",
       "Bundles never expire",
-      "Priority support",
-      "Early access to new features",
+      "Delete bundles anytime",
+      "Edit bundles anytime",
+      "30-day backup period after your plan ends",
     ],
-    cta: "Subscribe",
+    cta: "Go Pro",
     ctaLink: "/signup",
     highlighted: true,
   },
@@ -92,11 +99,11 @@ const Pricing = () => {
                     : "glass-card"
                 }`}
               >
+                  <span className="text-xs min-h-[16px] font-semibold text-primary uppercase tracking-wider mb-2">
                 {tier.highlighted && (
-                  <span className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
-                    Most Popular
-                  </span>
+                    "Most Popular"
                 )}
+                  </span>
                 <h2 className="font-display text-2xl font-bold text-foreground">
                   {tier.name}
                 </h2>
@@ -116,6 +123,12 @@ const Pricing = () => {
                     <li key={feature} className="flex items-start gap-2 text-sm text-foreground">
                       <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                       {feature}
+                    </li>
+                  ))}
+                  {tier.negatives?.map((negative) => (
+                    <li key={negative} className="flex items-start gap-2 text-sm text-foreground">
+                      <X className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                      {negative}
                     </li>
                   ))}
                 </ul>

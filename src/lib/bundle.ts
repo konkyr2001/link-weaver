@@ -17,9 +17,9 @@ export function generateId(): string {
   return Math.random().toString(36).substring(2, 9);
 }
 
-export async function createBundle(bundle: Bundle, captcha: string): Promise<string | null> {
+export async function createBundle(bundle: Bundle, userToken: string, captcha: string): Promise<string | null> {
   try {
-    const res = await fetch (`${URL}/api/shared`, {
+    const res = await fetch (`${URL}/api/project`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -27,7 +27,7 @@ export async function createBundle(bundle: Bundle, captcha: string): Promise<str
       body: JSON.stringify({
         projectName: bundle.title,
         urls: bundle.links,
-        userId: null,
+        userToken,
         captcha
       })
     });
@@ -43,7 +43,7 @@ export async function createBundle(bundle: Bundle, captcha: string): Promise<str
 
 export async function fetchBundleBySlug(param: string): Promise<Bundle | null> {
   try {
-    const res = await fetch (`${URL}/api/shared/${param}`);
+    const res = await fetch (`${URL}/api/project/${param}`);
     if (res.ok) {
       const result = await res.json();
       return {

@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { ExternalLink, Clock, FolderOpen } from "lucide-react";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
+import { getUserHistory } from "@/services/user";
+import { toast } from "sonner";
 
 interface HistoryItem {
   _id: string;
@@ -14,25 +16,14 @@ interface HistoryItem {
   urlCount: number;
 }
 
-const URL = import.meta.env.VITE_BACKEND_URL;
-
-async function fetchHistory(): Promise<HistoryItem[]> {
-  const token = localStorage.getItem("token");
-  if (!token) return [];
-  try {
-    const res = await fetch(`${URL}/api/shared/history`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (res.ok) return res.json();
-    return [];
-  } catch {
-    return [];
-  }
-}
-
 function daysRemaining(expiresAt: string): number {
   const diff = new Date(expiresAt).getTime() - Date.now();
   return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+}
+
+function hoursRemaining(expiresAt: string): number {
+  const diff = new Date(expiresAt).getTime() - Date.now();
+  return Math.max(0, Math.ceil(diff / (1000 * 60 * 60)));
 }
 
 export default function History() {
@@ -40,10 +31,23 @@ export default function History() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchHistory().then((data) => {
-      setItems(data);
+    async function getHistory() {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      const data = await getUserHistory(token);
+      if (data.error) {
+        setLoading(false);
+        return toast.error(data.error);
+      }
+      if (data.projects.length == 0) {
+        setLoading(false);
+        return;
+      }
       setLoading(false);
-    });
+      setItems(data.projects);
+    }
+
+    getHistory();
   }, []);
 
   return (
@@ -86,6 +90,7 @@ export default function History() {
             <div className="space-y-4">
               {items.map((item, i) => {
                 const days = item.expiresAt ? daysRemaining(item.expiresAt) : null;
+                // const days = 2;
                 const bundleUrl = `${window.location.origin}/b/${item.slug}`;
 
                 return (
@@ -108,13 +113,13 @@ export default function History() {
                           <Clock className="w-3.5 h-3.5 text-muted-foreground" />
                           <span
                             className={`text-xs font-medium ${
-                              days <= 3
+                              days < 3
                                 ? "text-destructive"
                                 : "text-muted-foreground"
                             }`}
                           >
                             {days === 0
-                              ? "Expires today"
+                              ? `Expires in ${hoursRemaining(item.expiresAt)} hour${hoursRemaining(item.expiresAt) !== 1 ? "s" : ""}`
                               : `${days} day${days !== 1 ? "s" : ""} remaining`}
                           </span>
                         </div>

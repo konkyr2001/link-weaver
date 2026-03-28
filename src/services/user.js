@@ -82,4 +82,22 @@ const authorizeGoogleUser = async (token) => {
     return { error: error.message || "Something went wrong" };
   }
 };
-export { login, signup, authorizeGoogleUser };
+
+const getUserHistory = async (token) => {
+  try {
+    const response = await fetch(`${URL}/api/user/history`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      return { error: data.error || "Something went wrong" };
+    }
+    return data;
+  } catch (error) {
+    console.log(error.message);
+    return { error: error.message || "Something went wrong" };
+  }
+};
+export { login, signup, authorizeGoogleUser, getUserHistory };

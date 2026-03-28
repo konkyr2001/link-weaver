@@ -61,7 +61,6 @@ const SignUp = () => {
     if (error) {
       return toast.error(error);
     }
-    alert("SIGNUP!");
     navigate("/");
     setLoading(false);
   };
@@ -69,12 +68,10 @@ const SignUp = () => {
   const handleGoogleRegister = async (credentialResponse ) => {
     setLoading(true);
     const googleUser = await authorizeGoogleUser(credentialResponse );
-    const error = googleUser.error;
-    if (error) {
-      // toast.info("Google registration not connected yet");
-      return toast.error(error);
+    if (googleUser.error) {
+      setLoading(false);
+      return toast.error(googleUser.error);
     }
-    alert("SIGNUP!");
     navigate("/");
     setLoading(false);
   };

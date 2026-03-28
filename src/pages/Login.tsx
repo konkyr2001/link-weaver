@@ -52,13 +52,10 @@ const Login = () => {
   const handleGoogleLogin = async (credentialResponse ) => {
     setLoading(true);
     const googleUser = await authorizeGoogleUser(credentialResponse );
-    const error = googleUser.error;
-    if (error) {
-      // toast.info("Google login not connected yet");
+    if (googleUser.error) {
       setLoading(false);
-      return toast.error(error);
+      return toast.error(googleUser.error);
     }
-    alert("SIGNUP");
     navigate("/");
     setLoading(false);
   };

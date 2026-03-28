@@ -73,10 +73,17 @@ export function BundleCreator() {
       toast.error("Add at least one link first");
       return;
     }
-    const bundle = { title: title.trim() || undefined, links, createdAt: Date.now() };
-    const captcha = await captchaRef.current?.executeAsync();
-    captchaRef.current.reset();
-    const url = await createBundle(bundle, captcha);
+    const bundle = { 
+      title: title.trim() || undefined, 
+      links, createdAt: Date.now(),
+    };
+    let captcha = null;
+    if (!token) {
+      captcha = await captchaRef.current?.executeAsync();
+      captchaRef.current.reset();
+    }
+    const userToken = token || null;
+    const url = await createBundle(bundle, userToken, captcha);
     setGeneratedUrl(url);
   };
 
@@ -89,7 +96,7 @@ export function BundleCreator() {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <>
       {!token && (
         <Captcha
           key={theme}
@@ -99,121 +106,123 @@ export function BundleCreator() {
           sitekey={import.meta.env.VITE_GENERATE_URL_RECAPTCHA_SITE_KEY}
         />
       )}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="glass-card rounded-2xl p-8 space-y-6"
-      >
-        {/* Header */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-            <Link2 className="w-5 h-5 text-primary" />
+      <div className="w-full max-w-2xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="glass-card rounded-2xl p-8 space-y-6"
+        >
+          {/* Header */}
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+              <Link2 className="w-5 h-5 text-primary" />
+            </div>
+            <div className="flex-1">
+              <input
+                value={title}
+                onChange={(e) => { setTitle(e.target.value); setGeneratedUrl(null); }}
+                placeholder="Bundle title here..."
+                className="font-display text-lg font-semibold text-foreground bg-transparent border-none outline-none placeholder:text-muted-foreground w-full"
+              />
+              <p className="text-muted-foreground text-sm">Add your links and share them in one URL</p>
+            </div>
           </div>
-          <div className="flex-1">
-            <input
-              value={title}
-              onChange={(e) => { setTitle(e.target.value); setGeneratedUrl(null); }}
-              placeholder="Create Bundle"
-              className="font-display text-lg font-semibold text-foreground bg-transparent border-none outline-none placeholder:text-muted-foreground w-full"
-            />
-            <p className="text-muted-foreground text-sm">Add your links and share them in one URL</p>
+
+          {/* Input */}
+          <LinkInput onAdd={addLink} />
+
+          {/* Links list */}
+          <div className="space-y-2 min-h-[60px]">
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="links">
+                {(provided) => (
+                  <div ref={provided.innerRef} {...provided.droppableProps} className="space-y-2">
+                    {links.map((link, i) => (
+                      <Draggable key={link.id} draggableId={link.id} index={i}>
+                        {(provided, snapshot) => {
+                          const child = (
+                            <div ref={provided.innerRef} {...provided.draggableProps} style={provided.draggableProps.style}>
+                              <LinkItem
+                                link={link}
+                                index={i}
+                                onRemove={removeLink}
+                                dragHandleProps={provided.dragHandleProps ?? undefined}
+                              />
+                            </div>
+                          );
+                          return snapshot.isDragging ? createPortal(child, document.body) : child;
+                        }}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+
+            {links.length === 0 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center py-10 text-muted-foreground text-sm"
+              >
+                Paste URLs above to start building your bundle
+              </motion.div>
+            )}
           </div>
-        </div>
 
-        {/* Input */}
-        <LinkInput onAdd={addLink} />
-
-        {/* Links list */}
-        <div className="space-y-2 min-h-[60px]">
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="links">
-              {(provided) => (
-                <div ref={provided.innerRef} {...provided.droppableProps} className="space-y-2">
-                  {links.map((link, i) => (
-                    <Draggable key={link.id} draggableId={link.id} index={i}>
-                      {(provided, snapshot) => {
-                        const child = (
-                          <div ref={provided.innerRef} {...provided.draggableProps} style={provided.draggableProps.style}>
-                            <LinkItem
-                              link={link}
-                              index={i}
-                              onRemove={removeLink}
-                              dragHandleProps={provided.dragHandleProps ?? undefined}
-                            />
-                          </div>
-                        );
-                        return snapshot.isDragging ? createPortal(child, document.body) : child;
-                      }}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
-
-          {links.length === 0 && (
+          {/* Generate button */}
+          {links.length > 0 && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center py-10 text-muted-foreground text-sm"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-4"
             >
-              Paste URLs above to start building your bundle
+              <Button
+                onClick={generateLink}
+                variant="hero"
+                size="lg"
+                className="w-full h-12 text-base"
+              >
+                <Share2 className="w-5 h-5 mr-2" />
+                Generate Share Link
+              </Button>
+
+              {/* Generated URL */}
+              <AnimatePresence>
+                {generatedUrl && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="bg-secondary/50 rounded-lg p-4 flex items-center gap-3">
+                      <p className="text-sm text-foreground truncate flex-1 font-mono">
+                        {generatedUrl}
+                      </p>
+                      <Button
+                        onClick={copyToClipboard}
+                        variant="glass"
+                        size="sm"
+                        className="flex-shrink-0"
+                      >
+                        {copied ? (
+                          <Check className="w-4 h-4 mr-1" />
+                        ) : (
+                          <Copy className="w-4 h-4 mr-1" />
+                        )}
+                        {copied ? "Copied" : "Copy"}
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           )}
-        </div>
-
-        {/* Generate button */}
-        {links.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-4"
-          >
-            <Button
-              onClick={generateLink}
-              variant="hero"
-              size="lg"
-              className="w-full h-12 text-base"
-            >
-              <Share2 className="w-5 h-5 mr-2" />
-              Generate Share Link
-            </Button>
-
-            {/* Generated URL */}
-            <AnimatePresence>
-              {generatedUrl && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="bg-secondary/50 rounded-lg p-4 flex items-center gap-3">
-                    <p className="text-sm text-foreground truncate flex-1 font-mono">
-                      {generatedUrl}
-                    </p>
-                    <Button
-                      onClick={copyToClipboard}
-                      variant="glass"
-                      size="sm"
-                      className="flex-shrink-0"
-                    >
-                      {copied ? (
-                        <Check className="w-4 h-4 mr-1" />
-                      ) : (
-                        <Copy className="w-4 h-4 mr-1" />
-                      )}
-                      {copied ? "Copied" : "Copy"}
-                    </Button>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        )}
-      </motion.div>
-    </div>
+        </motion.div>
+      </div>
+    </>
   );
 }
