@@ -40,3 +40,8 @@
 .read-the-docs {
   color: #888;
 }
+
+.google-login > div > div {
+  display: flex;
+  justify-content: center;
+}

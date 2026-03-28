@@ -85,7 +85,7 @@ const Login = () => {
 
           <div className="glass-card rounded-2xl p-8 space-y-6">
             <div className="w-full flex justify-center">
-              <div style={{ colorScheme: theme}} className="w-full">
+              <div style={{ colorScheme: theme}} className="google-login w-full">
                 <GoogleLogin 
                   text={"continue_with"}
                   size={"large"}
