@@ -9,6 +9,7 @@ import Pricing from "./pages/Pricing";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
+import History from "./pages/History";
 import GuestRoute from "./components/GuestRoute";
 
 const queryClient = new QueryClient();
