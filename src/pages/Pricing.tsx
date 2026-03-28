@@ -28,7 +28,7 @@ const tiers = [
     name: "Plus",
     price: "17.99€",
     period: "/year",
-    description: "Save and access your bundles anytime",
+    description: "Unlimited bundles",
     features: [
       "Unlimited bundles",
       "Unlimited links per bundle",

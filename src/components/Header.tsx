@@ -71,11 +71,6 @@ const Header = ({ active }: HeaderProps) => {
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-6">
           {navLinks}
-          {user && (
-            <span className="text-sm text-foreground">
-              Hi, {user.firstName}
-            </span>
-          )}
           {actionButton}
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
         </div>
@@ -93,11 +88,6 @@ const Header = ({ active }: HeaderProps) => {
               <SheetTitle className="sr-only">Navigation</SheetTitle>
               <nav className="flex flex-col gap-6 mt-8">
                 {navLinks}
-                {user && (
-                  <span className="text-sm text-foreground">
-                    Hi, {user.firstName}
-                  </span>
-                )}
                 {actionButton}
               </nav>
             </SheetContent>
