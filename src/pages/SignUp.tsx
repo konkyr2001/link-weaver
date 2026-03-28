@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { signup, authorizeGoogleUser } from "../services/user";
 import ReCAPTCHA from "react-google-recaptcha";
 import Header from "@/components/Header";
-import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLoginButton } from "@/components/GoogleLoginButton";
 
 const SignUp = () => {
   const { theme, toggleTheme } = useTheme();
