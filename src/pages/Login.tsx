@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { login, authorizeGoogleUser } from "../services/user";
 import Header from "@/components/Header";
-import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLoginButton } from "@/components/GoogleLoginButton";
 
 const Login = () => {
   const navigate = useNavigate();
