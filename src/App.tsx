@@ -24,6 +24,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/b/:slug" element={<BundleView />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/history" element={<History />} />
           <Route path="/login" element={
             <GuestRoute> <Login /> </GuestRoute>} />
           <Route path="/signup" element={

@@ -53,6 +53,19 @@ const Header = ({ active }: HeaderProps) => {
             Pricing
           </Link>
 
+          {user && (
+            <Link
+              to="/history"
+              className={`text-sm font-medium ${
+                active === "history"
+                  ? "text-primary"
+                  : "text-muted-foreground hover:text-foreground transition-colors"
+              }`}
+            >
+              History
+            </Link>
+          )}
+
           {user ? (
             <>
               <span className="text-sm text-foreground">
