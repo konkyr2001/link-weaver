@@ -106,7 +106,6 @@ const SignUp = () => {
                   text={"signup_with"}
                   size={"large"}
                   type={"standard"}
-                  useOneTap={true}
                   logo_alignment={"left"}
                   theme={`${theme === "dark" ? "filled_black" : "outline"}`} 
                   onSuccess={(credentialResponse ) => handleGoogleRegister(credentialResponse )} 
