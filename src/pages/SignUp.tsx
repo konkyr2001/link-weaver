@@ -100,18 +100,28 @@ const SignUp = () => {
           </div>
 
           <div className="glass-card rounded-2xl p-8 space-y-6">
-            <GoogleLogin
-              text={"signup_with"}
-              logo_alignment={"center"}
-              shape={"circle"}
-              key={`${theme === "dark" ? "filled_black" : "outline"}`}
-              theme={`${theme === "dark" ? "filled_black" : "outline"}`} 
-              onSuccess={(credentialResponse ) => handleGoogleRegister(credentialResponse )} 
-              onError={() => console.log("login failed")} 
-              auto_select
-            />
-            
-
+            <div className="w-full flex justify-center">
+              <div style={{ colorScheme: theme}} className="w-full">
+                <GoogleLogin
+                  text={"signup_with"}
+                  size={"large"}
+                  type={"standard"}
+                  useOneTap={true}
+                  logo_alignment={"left"}
+                  theme={`${theme === "dark" ? "filled_black" : "outline"}`} 
+                  onSuccess={(credentialResponse ) => handleGoogleRegister(credentialResponse )} 
+                  onError={() => console.log("login failed")} 
+                />
+              </div>
+            </div>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-border" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">or</span>
+              </div>
+            </div>
             {/* Registration form */}
             <form onSubmit={handleRegister} className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
