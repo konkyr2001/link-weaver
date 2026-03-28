@@ -6,7 +6,7 @@ import { Link2 } from "lucide-react";
 import { googleLogout } from "@react-oauth/google";
 
 type HeaderProps = {
-  active?: "home" | "pricing" | "login" | "signup";
+  active?: "home" | "pricing" | "login" | "signup" | "history";
 };
 
 const Header = ({ active }: HeaderProps) => {
