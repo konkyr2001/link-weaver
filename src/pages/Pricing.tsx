@@ -75,8 +75,8 @@ const Pricing = () => {
   const [searchParams] = useSearchParams();
   const [user, setUser] = useState(localStorage.getItem("user"));
   const userObject = user ? JSON.parse(user) : null;
-  console.log(userObject)
-  const tierState = getTierState(userObject?.plan);
+  const daysRemaining = getDaysRemaining(userObject?.currentPeriodEnd ?? null);
+  const tierState = getTierState(userObject?.plan, daysRemaining);
   const tiers = [
     {
       name: "Free",
