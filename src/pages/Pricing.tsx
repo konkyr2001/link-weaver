@@ -286,6 +286,16 @@ const Pricing = () => {
                   ))}
                 </ul>
 
+                {userObject?.plan === tier.plan && daysRemaining !== null && (
+                  <p className={`text-xs text-center mb-3 font-medium ${
+                    daysRemaining <= 0 ? "text-destructive" : daysRemaining <= RENEWAL_WINDOW_DAYS ? "text-yellow-500" : "text-muted-foreground"
+                  }`}>
+                    {daysRemaining <= 0
+                      ? "Your plan has expired"
+                      : `${daysRemaining} day${daysRemaining !== 1 ? "s" : ""} remaining`}
+                  </p>
+                )}
+
                 <Button
                   variant={tier.highlighted ? "hero" : "glass"}
                   size="lg"
