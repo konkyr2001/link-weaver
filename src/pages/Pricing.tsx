@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Check, Link2, ReceiptRussianRuble, X } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useTheme } from "@/hooks/use-theme";
@@ -10,7 +10,18 @@ import { getUser } from "@/services/user";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 
-const getTierState = (userPlan: string | null) => {
+const RENEWAL_WINDOW_DAYS = 10;
+
+const getDaysRemaining = (currentPeriodEnd: string | null): number | null => {
+  if (!currentPeriodEnd) return null;
+  const end = new Date(currentPeriodEnd);
+  const now = new Date();
+  return Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+};
+
+const getTierState = (userPlan: string | null, daysRemaining: number | null) => {
+  const canRenew = daysRemaining !== null && daysRemaining <= RENEWAL_WINDOW_DAYS;
+
   if (!userPlan) {
     return {
       free: { text: "Get Started", link: "/", disabled: false },
@@ -30,7 +41,11 @@ const getTierState = (userPlan: string | null) => {
   if (userPlan === "plus") {
     return {
       free: { text: "Included", link: "", disabled: true },
-      plus: { text: "Current Plan", link: "", disabled: true },
+      plus: {
+        text: canRenew ? "Renew Plus" : "Current Plan",
+        link: "",
+        disabled: !canRenew,
+      },
       pro: { text: "Upgrade to Pro", link: "", disabled: false },
     };
   }
@@ -39,9 +54,19 @@ const getTierState = (userPlan: string | null) => {
     return {
       free: { text: "Included", link: "", disabled: true },
       plus: { text: "Included", link: "", disabled: true },
-      pro: { text: "Current Plan", link: "", disabled: true },
+      pro: {
+        text: canRenew ? "Renew Pro" : "Current Plan",
+        link: "",
+        disabled: !canRenew,
+      },
     };
   }
+
+  return {
+    free: { text: "Get Started", link: "/", disabled: false },
+    plus: { text: "Upgrade to Plus", link: "/login", disabled: false },
+    pro: { text: "Go Pro", link: "/login", disabled: false },
+  };
 };
 
 const Pricing = () => {
@@ -50,8 +75,8 @@ const Pricing = () => {
   const [searchParams] = useSearchParams();
   const [user, setUser] = useState(localStorage.getItem("user"));
   const userObject = user ? JSON.parse(user) : null;
-  console.log(userObject)
-  const tierState = getTierState(userObject?.plan);
+  const daysRemaining = getDaysRemaining(userObject?.currentPeriodEnd ?? null);
+  const tierState = getTierState(userObject?.plan, daysRemaining);
   const tiers = [
     {
       name: "Free",
@@ -81,6 +106,7 @@ const Pricing = () => {
       period: "/year",
       description: "Unlimited bundles",
       features: [
+        "10-day free trial",
         "Unlimited bundles",
         "Unlimited links per bundle",
         "Bundles expire after 1 year",
@@ -104,6 +130,7 @@ const Pricing = () => {
       period: "/year",
       description: "Full control with no limits",
       features: [
+        "10-day free trial",
         "Unlimited bundles",
         "Unlimited links per bundle",
         "Bundles never expire",
@@ -258,6 +285,16 @@ const Pricing = () => {
                     </li>
                   ))}
                 </ul>
+
+                {userObject?.plan === tier.plan && daysRemaining !== null && (
+                  <p className={`text-xs text-center mb-3 font-medium ${
+                    daysRemaining <= 0 ? "text-destructive" : daysRemaining <= RENEWAL_WINDOW_DAYS ? "text-yellow-500" : "text-muted-foreground"
+                  }`}>
+                    {daysRemaining <= 0
+                      ? "Your plan has expired"
+                      : `${daysRemaining} day${daysRemaining !== 1 ? "s" : ""} remaining`}
+                  </p>
+                )}
 
                 <Button
                   variant={tier.highlighted ? "hero" : "glass"}
