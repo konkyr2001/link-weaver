@@ -73,10 +73,12 @@ const Pricing = () => {
   
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [user, setUser] = useState(localStorage.getItem("user"));
-  const userObject = user ? JSON.parse(user) : null;
-  const daysRemaining = getDaysRemaining(userObject?.currentPeriodEnd ?? null);
-  const tierState = getTierState(userObject?.plan, daysRemaining);
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+  const daysRemaining = getDaysRemaining(user?.currentPeriodEnd ?? null);
+  const tierState = getTierState(user?.plan, daysRemaining);
   const tiers = [
     {
       name: "Free",
@@ -88,9 +90,9 @@ const Pricing = () => {
         "Bundles expire after 5 days",
       ],
       negatives: [
-        "Expired links are deleted from the history",
-        "No bundle deletion",
-        "No editing after creation",
+        "Expired links are stored in history",
+        "Delete bundles",
+        "Edit bundles",
       ],
       cta: {
         text: tierState.free.text,
@@ -106,15 +108,14 @@ const Pricing = () => {
       period: "/year",
       description: "Unlimited bundles",
       features: [
-        "10-day free trial",
         "Unlimited bundles",
         "Unlimited links per bundle",
         "Bundles expire after 1 year",
-        "Delete bundles anytime",
-        "Expired links are stored in the history",
+        "Expired links are stored in history",
+        "Delete bundles",
       ],
       negatives: [
-        "No editing after creation",
+        "Edit bundles",
       ],
       cta: {
         text: tierState.plus.text,
@@ -130,13 +131,13 @@ const Pricing = () => {
       period: "/year",
       description: "Full control with no limits",
       features: [
-        "10-day free trial",
         "Unlimited bundles",
         "Unlimited links per bundle",
-        "Bundles never expire",
-        "Delete bundles anytime",
-        "Edit bundles anytime",
-        "Expired links are stored in the history",
+        "Bundles expire after 1 year",
+        "Expired links are stored in history",
+        "Delete bundles",
+        "Edit bundles",
+        "10-day free trial",
       ],
       cta: {
         text: tierState.pro.text,
@@ -149,6 +150,28 @@ const Pricing = () => {
   ];
 
   useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const freshUser = await getUser(token);
+
+        if (freshUser?.error) {
+          toast.error(freshUser.error);
+          return; 
+        }
+        localStorage.setItem("user", JSON.stringify(freshUser));
+        setUser(freshUser);
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
     const syncUserAfterPayment = async () => {
       const success = searchParams.get("success");
       const canceled = searchParams.get("canceled");
@@ -159,20 +182,19 @@ const Pricing = () => {
         return;
       }
       if (success === "true") {
-        if (!userObject) {
+        if (!user) {
           navigate("/login", { replace: true });
           return;
         }
         try {
           const token = localStorage.getItem("token");
           const fetchUser = await getUser(token);
-          console.log(fetchUser)
           if (fetchUser?.error) {
-            toast.success(fetchUser.error);
+            toast.error(fetchUser.error);
             return;
           }
           localStorage.setItem("user", JSON.stringify(fetchUser));
-          setUser(JSON.stringify(fetchUser));
+          setUser(fetchUser);
           toast.success("Payment completed. Updating your plan...");
           navigate("/pricing", { replace: true });
         } catch (error) {
@@ -186,13 +208,13 @@ const Pricing = () => {
   
   const handleCheckout = async (cta, plan) => {
     if (cta.disabled) return;
-    if (!cta.disabled && !userObject) {
+    if (!user) {
       navigate(cta.link);
       return;
     }
 
-    if (userObject?.plan === "plus" && plan === "pro") {
-      const res = await upgradeToPro(userObject._id);
+    if (user?.plan === "plus" && plan === "pro") {
+      const res = await upgradeToPro(user._id);
 
       if (res?.error) {
         toast.error(res?.error);
@@ -203,12 +225,12 @@ const Pricing = () => {
       const freshUser = await getUser(token);
 
       localStorage.setItem("user", JSON.stringify(freshUser));
-      setUser(JSON.stringify(freshUser));
+      setUser(freshUser);
 
       toast.success("You have been upgraded to Pro");
       return;
     }
-    const data = await createCheckoutSession(plan, userObject._id, userObject.email);
+    const data = await createCheckoutSession(plan, user._id, user.email);
     if (data.error) {
       return toast.error(data.error);
     }
@@ -286,7 +308,7 @@ const Pricing = () => {
                   ))}
                 </ul>
 
-                {userObject?.plan === tier.plan && daysRemaining !== null && (
+                {user?.plan === tier.plan && daysRemaining !== null && (
                   <p className={`text-xs text-center mb-3 font-medium ${
                     daysRemaining <= 0 ? "text-destructive" : daysRemaining <= RENEWAL_WINDOW_DAYS ? "text-yellow-500" : "text-muted-foreground"
                   }`}>
