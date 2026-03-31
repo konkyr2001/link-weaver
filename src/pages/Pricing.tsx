@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useTheme } from "@/hooks/use-theme";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
@@ -79,6 +80,7 @@ const Pricing = () => {
   });
   const daysRemaining = getDaysRemaining(user?.currentPeriodEnd ?? null);
   const tierState = getTierState(user?.plan, daysRemaining);
+  const [freeTrial, setFreeTrial] = useState<Record<string, boolean>>({ pro: user?.hasUsedProTrial });
   const tiers = [
     {
       name: "Free",
@@ -163,6 +165,7 @@ const Pricing = () => {
         }
         localStorage.setItem("user", JSON.stringify(freshUser));
         setUser(freshUser);
+        setFreeTrial({ pro: freshUser.hasUsedProTrial });
       } catch (error) {
         toast.error(error.message);
       }
@@ -230,7 +233,8 @@ const Pricing = () => {
       toast.success("You have been upgraded to Pro");
       return;
     }
-    const data = await createCheckoutSession(plan, user._id, user.email);
+    const trial = freeTrial[plan] ?? false;
+    const data = await createCheckoutSession(plan, user._id, user.email, trial);
     if (data.error) {
       return toast.error(data.error);
     }
@@ -318,6 +322,25 @@ const Pricing = () => {
                   </p>
                 )}
 
+                {tier.plan === "pro" && user && (
+                  <div className="mb-4 flex flex-col gap-1.5">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <Switch
+                        checked={freeTrial[tier.plan]}
+                        onCheckedChange={(checked) =>
+                          setFreeTrial((prev) => ({ ...prev, [tier.plan]: checked }))
+                        }
+                      />
+                      <span className="text-sm font-medium text-foreground">10-day free trial</span>
+                    </label>
+                    {freeTrial[tier.plan] && (
+                      <p className="text-xs text-muted-foreground ml-9">
+                        Cancel anytime. Billing starts after 10 days.
+                      </p>
+                    )}
+                  </div>
+                )}
+
                 <Button
                   variant={tier.highlighted ? "hero" : "glass"}
                   size="lg"
@@ -325,7 +348,7 @@ const Pricing = () => {
                   onClick={() => handleCheckout(tier.cta, tier.plan)}
                   disabled={tier.cta.disabled}
                 >
-                  {tier.cta.text}
+                  {freeTrial[tier.plan] && !tier.cta.disabled ? "Start Free Trial" : tier.cta.text}
                 </Button>
               </motion.div>
             ))}
