@@ -74,6 +74,7 @@ const Pricing = () => {
   
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const [user, setUser] = useState(localStorage.getItem("user"));
   const [freeTrial, setFreeTrial] = useState<Record<string, boolean>>({ plus: false, pro: false });
   const userObject = user ? JSON.parse(user) : null;
   const daysRemaining = getDaysRemaining(userObject?.currentPeriodEnd ?? null);
