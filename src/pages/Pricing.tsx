@@ -209,7 +209,8 @@ const Pricing = () => {
       toast.success("You have been upgraded to Pro");
       return;
     }
-    const data = await createCheckoutSession(plan, userObject._id, userObject.email);
+    const trial = freeTrial[plan] ?? false;
+    const data = await createCheckoutSession(plan, userObject._id, userObject.email, trial);
     if (data.error) {
       return toast.error(data.error);
     }
