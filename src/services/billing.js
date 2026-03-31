@@ -1,6 +1,6 @@
 const URL = import.meta.env.VITE_BACKEND_URL;
 
-const createCheckoutSession = async (plan, userId, email) => {
+const createCheckoutSession = async (plan, userId, email, trial = false) => {
   try {
     const response = await fetch(`${URL}/api/billing/create-checkout-session`, {
       method: "POST",
@@ -11,6 +11,7 @@ const createCheckoutSession = async (plan, userId, email) => {
         plan,
         userId,
         email,
+        trial,
       }),
     });
 
