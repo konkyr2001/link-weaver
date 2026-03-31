@@ -298,6 +298,25 @@ const Pricing = () => {
                   </p>
                 )}
 
+                {tier.plan !== "free" && !userObject && (
+                  <div className="mb-4 flex flex-col gap-1.5">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <Switch
+                        checked={freeTrial[tier.plan]}
+                        onCheckedChange={(checked) =>
+                          setFreeTrial((prev) => ({ ...prev, [tier.plan]: checked }))
+                        }
+                      />
+                      <span className="text-sm font-medium text-foreground">10-day free trial</span>
+                    </label>
+                    {freeTrial[tier.plan] && (
+                      <p className="text-xs text-muted-foreground ml-9">
+                        Cancel anytime. Billing starts after 10 days.
+                      </p>
+                    )}
+                  </div>
+                )}
+
                 <Button
                   variant={tier.highlighted ? "hero" : "glass"}
                   size="lg"
@@ -305,7 +324,7 @@ const Pricing = () => {
                   onClick={() => handleCheckout(tier.cta, tier.plan)}
                   disabled={tier.cta.disabled}
                 >
-                  {tier.cta.text}
+                  {freeTrial[tier.plan] && !tier.cta.disabled ? "Start Free Trial" : tier.cta.text}
                 </Button>
               </motion.div>
             ))}
