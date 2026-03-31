@@ -106,6 +106,7 @@ const Pricing = () => {
       period: "/year",
       description: "Unlimited bundles",
       features: [
+        "10-day free trial",
         "Unlimited bundles",
         "Unlimited links per bundle",
         "Bundles expire after 1 year",
@@ -129,6 +130,7 @@ const Pricing = () => {
       period: "/year",
       description: "Full control with no limits",
       features: [
+        "10-day free trial",
         "Unlimited bundles",
         "Unlimited links per bundle",
         "Bundles never expire",
