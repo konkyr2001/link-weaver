@@ -40,11 +40,13 @@ const SignUp = () => {
       return true;
     }
     if (password.length < 8) {
+      setErrorPassword(true);
       toast.error("Password must be at least 8 characters");
       return true;
     }
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
     if (!passwordRegex.test(password)) {
+      setErrorPassword(true);
       toast.error("Password must include a lowercase, an uppercase and a number");
       return true;
     }
@@ -59,6 +61,7 @@ const SignUp = () => {
     const data = await signup(firstName, lastName, email, password, recaptcha);
     const error = data.error;
     if (error) {
+      setLoading(false);
       return toast.error(error);
     }
     navigate("/");

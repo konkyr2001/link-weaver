@@ -100,4 +100,17 @@ const getUserHistory = async (token) => {
     return { error: error.message || "Something went wrong" };
   }
 };
-export { login, signup, authorizeGoogleUser, getUserHistory };
+
+const getUser = async (token) => {
+  try {
+    const response = await fetch(`${URL}/api/user/${token}`);
+    const data = await response.json();
+    if (!response.ok) {
+      return { error: data.error || "Something went wrong" };
+    }
+    return data;
+  } catch (error) {
+    return { error: error.message || "Something went wrong" };
+  }
+};
+export { login, signup, authorizeGoogleUser, getUserHistory, getUser };

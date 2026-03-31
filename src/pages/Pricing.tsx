@@ -1,68 +1,194 @@
 import { motion } from "framer-motion";
-import { Check, Link2, X } from "lucide-react";
+import { Check, Link2, ReceiptRussianRuble, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useTheme } from "@/hooks/use-theme";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
+import { createCheckoutSession, upgradeToPro } from "@/services/billing";
+import { getUser } from "@/services/user";
+import { toast } from "sonner";
+import { useEffect, useState } from "react";
 
-const tiers = [
-  {
-    name: "Free",
-    price: "Free",
-    description: "No account needed",
-    features: [
-      "Unlimited bundles",
-      "Unlimited links per bundle",
-      "Bundles expire after 5 days",
-    ],
-    negatives: [
-      "No bundle deletion",
-      "No editing after creation",
-    ],
-    cta: "Get Started",
-    ctaLink: "/",
-    highlighted: false,
-  },
-  {
-    name: "Plus",
-    price: "17.99€",
-    period: "/year",
-    description: "Unlimited bundles",
-    features: [
-      "Unlimited bundles",
-      "Unlimited links per bundle",
-      "Bundles expire after 1 year",
-      "Delete bundles anytime",
-    ],
-    negatives: [
-      "No editing after creation",
-    ],
-    cta: "Upgrade to Plus",
-    ctaLink: "/signup",
-    highlighted: false,
-  },
-  {
-    name: "Pro",
-    price: "23.99€",
-    period: "/year",
-    description: "Full control with no limits",
-    features: [
-      "Unlimited bundles",
-      "Unlimited links per bundle",
-      "Bundles never expire",
-      "Delete bundles anytime",
-      "Edit bundles anytime",
-      "30-day backup period after your plan ends",
-    ],
-    cta: "Go Pro",
-    ctaLink: "/signup",
-    highlighted: true,
-  },
-];
+const getTierState = (userPlan: string | null) => {
+  if (!userPlan) {
+    return {
+      free: { text: "Get Started", link: "/", disabled: false },
+      plus: { text: "Upgrade to Plus", link: "/login", disabled: false },
+      pro: { text: "Go Pro", link: "/login", disabled: false },
+    };
+  }
+
+  if (userPlan === "free") {
+    return {
+      free: { text: "Current Plan", link: "", disabled: true },
+      plus: { text: "Upgrade to Plus", link: "", disabled: false },
+      pro: { text: "Go Pro", link: "", disabled: false },
+    };
+  }
+
+  if (userPlan === "plus") {
+    return {
+      free: { text: "Included", link: "", disabled: true },
+      plus: { text: "Current Plan", link: "", disabled: true },
+      pro: { text: "Upgrade to Pro", link: "", disabled: false },
+    };
+  }
+
+  if (userPlan === "pro") {
+    return {
+      free: { text: "Included", link: "", disabled: true },
+      plus: { text: "Included", link: "", disabled: true },
+      pro: { text: "Current Plan", link: "", disabled: true },
+    };
+  }
+};
 
 const Pricing = () => {
-  const { theme, toggleTheme } = useTheme();
+  
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [user, setUser] = useState(localStorage.getItem("user"));
+  const userObject = user ? JSON.parse(user) : null;
+  console.log(userObject)
+  const tierState = getTierState(userObject?.plan);
+  const tiers = [
+    {
+      name: "Free",
+      price: "Free",
+      description: "No account needed",
+      features: [
+        "Unlimited bundles",
+        "Unlimited links per bundle",
+        "Bundles expire after 5 days",
+      ],
+      negatives: [
+        "Expired links are deleted from the history",
+        "No bundle deletion",
+        "No editing after creation",
+      ],
+      cta: {
+        text: tierState.free.text,
+        link: tierState.free.link,
+        disabled: tierState.free.disabled,
+      },
+      plan: "free",
+      highlighted: false,
+    },
+    {
+      name: "Plus",
+      price: "39€",
+      period: "/year",
+      description: "Unlimited bundles",
+      features: [
+        "Unlimited bundles",
+        "Unlimited links per bundle",
+        "Bundles expire after 1 year",
+        "Delete bundles anytime",
+        "Expired links are stored in the history",
+      ],
+      negatives: [
+        "No editing after creation",
+      ],
+      cta: {
+        text: tierState.plus.text,
+        link: tierState.plus.link,
+        disabled: tierState.plus.disabled,
+      },
+      plan: "plus",
+      highlighted: false,
+    },
+    {
+      name: "Pro",
+      price: "59€",
+      period: "/year",
+      description: "Full control with no limits",
+      features: [
+        "Unlimited bundles",
+        "Unlimited links per bundle",
+        "Bundles never expire",
+        "Delete bundles anytime",
+        "Edit bundles anytime",
+        "Expired links are stored in the history",
+      ],
+      cta: {
+        text: tierState.pro.text,
+        link: tierState.pro.link,
+        disabled: tierState.pro.disabled,
+      },
+      plan: "pro",
+      highlighted: true,
+    },
+  ];
+
+  useEffect(() => {
+    const syncUserAfterPayment = async () => {
+      const success = searchParams.get("success");
+      const canceled = searchParams.get("canceled");
+
+      if (canceled === "true") {
+        toast.error("Payment was canceled");
+        navigate("/pricing", { replace: true });
+        return;
+      }
+      if (success === "true") {
+        if (!userObject) {
+          navigate("/login", { replace: true });
+          return;
+        }
+        try {
+          const token = localStorage.getItem("token");
+          const fetchUser = await getUser(token);
+          console.log(fetchUser)
+          if (fetchUser?.error) {
+            toast.success(fetchUser.error);
+            return;
+          }
+          localStorage.setItem("user", JSON.stringify(fetchUser));
+          setUser(JSON.stringify(fetchUser));
+          toast.success("Payment completed. Updating your plan...");
+          navigate("/pricing", { replace: true });
+        } catch (error) {
+          toast.error("Failed to refresh user");
+        }
+      }
+    }
+
+    syncUserAfterPayment();
+  }, [searchParams, navigate]);
+  
+  const handleCheckout = async (cta, plan) => {
+    if (cta.disabled) return;
+    if (!cta.disabled && !userObject) {
+      navigate(cta.link);
+      return;
+    }
+
+    if (userObject?.plan === "plus" && plan === "pro") {
+      const res = await upgradeToPro(userObject._id);
+
+      if (res?.error) {
+        toast.error(res?.error);
+        return;
+      }
+
+      const token = localStorage.getItem("token");
+      const freshUser = await getUser(token);
+
+      localStorage.setItem("user", JSON.stringify(freshUser));
+      setUser(JSON.stringify(freshUser));
+
+      toast.success("You have been upgraded to Pro");
+      return;
+    }
+    const data = await createCheckoutSession(plan, userObject._id, userObject.email);
+    if (data.error) {
+      return toast.error(data.error);
+    }
+    console.log(data);
+    window.location.href = data.url;
+
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -81,7 +207,7 @@ const Pricing = () => {
               Simple, transparent{" "}
               <span className="text-gradient">pricing</span>
             </h1>
-            <p className="text-muted-foreground text-lg max-w-md mx-auto">
+            <p className="text-muted-foreground text-lg max-w-md md:max-w-[unset] mx-auto">
               Start for free. Upgrade when you need bundles that last forever.
             </p>
           </motion.div>
@@ -134,12 +260,13 @@ const Pricing = () => {
                 </ul>
 
                 <Button
-                  asChild
                   variant={tier.highlighted ? "hero" : "glass"}
                   size="lg"
                   className="w-full"
+                  onClick={() => handleCheckout(tier.cta, tier.plan)}
+                  disabled={tier.cta.disabled}
                 >
-                  <Link to={tier.ctaLink}>{tier.cta}</Link>
+                  {tier.cta.text}
                 </Button>
               </motion.div>
             ))}
