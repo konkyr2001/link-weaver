@@ -19,7 +19,9 @@ const SignUp = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [recaptcha, setRecaptcha] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errorFirstName, setErrorFirstName] = useState(false);
