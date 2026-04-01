@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useTheme } from "@/hooks/use-theme";
-import { Link2, Menu, X } from "lucide-react";
+import { Link2, Menu, X, Plus, Crown } from "lucide-react";
 import { googleLogout } from "@react-oauth/google";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 type HeaderProps = {
   active?: "home" | "pricing" | "login" | "signup" | "history";
