@@ -44,6 +44,11 @@ const Header = ({ active }: HeaderProps) => {
           History
         </Link>
       )}
+      {user && (
+        <Link to="/account" className={linkClass("account")} onClick={() => setOpen(false)}>
+          Account
+        </Link>
+      )}
     </>
   );
 

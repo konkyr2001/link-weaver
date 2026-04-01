@@ -27,6 +27,9 @@ const App = () => (
           <Route path="/b/:slug" element={<BundleView />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/history" element={<History />} />
+          <Route path="/account" element={
+            <ProtectedRoute><Account /></ProtectedRoute>
+          } />
           <Route path="/login" element={
             <GuestRoute> <Login /> </GuestRoute>} />
           <Route path="/signup" element={
