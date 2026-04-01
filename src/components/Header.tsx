@@ -9,7 +9,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/s
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 type HeaderProps = {
-  active?: "home" | "pricing" | "login" | "signup" | "history";
+  active?: "home" | "pricing" | "login" | "signup" | "history" | "account";
 };
 
 const Header = ({ active }: HeaderProps) => {
