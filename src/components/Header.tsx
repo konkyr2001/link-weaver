@@ -59,6 +59,26 @@ const Header = ({ active }: HeaderProps) => {
     </Button>
   );
 
+  const planBadge = user?.plan === "pro" ? (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 cursor-default">
+          <Crown className="w-4 h-4 text-primary" />
+        </div>
+      </TooltipTrigger>
+      <TooltipContent>Pro user</TooltipContent>
+    </Tooltip>
+  ) : user?.plan === "plus" ? (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 cursor-default">
+          <Plus className="w-4 h-4 text-primary" />
+        </div>
+      </TooltipTrigger>
+      <TooltipContent>Plus user</TooltipContent>
+    </Tooltip>
+  ) : null;
+
   return (
     <header className="border-b border-border">
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
