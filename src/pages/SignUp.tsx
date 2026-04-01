@@ -52,6 +52,11 @@ const SignUp = () => {
       toast.error("Password must include a lowercase, an uppercase and a number");
       return true;
     }
+    if (password !== confirmPassword) {
+      setErrorPassword(true);
+      toast.error("Passwords do not match");
+      return true;
+    }
     return false;
   };
 
