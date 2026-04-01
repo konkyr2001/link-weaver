@@ -93,6 +93,7 @@ const Header = ({ active }: HeaderProps) => {
         <div className="hidden md:flex items-center gap-6">
           {navLinks}
           {actionButton}
+          {planBadge}
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
         </div>
 
