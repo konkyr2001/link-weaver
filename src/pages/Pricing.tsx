@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Check, X } from "lucide-react";
+import { Check, X, Plus, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { ThemeToggle } from "@/components/ThemeToggle";
