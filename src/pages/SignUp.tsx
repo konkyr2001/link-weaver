@@ -19,7 +19,9 @@ const SignUp = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [recaptcha, setRecaptcha] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errorFirstName, setErrorFirstName] = useState(false);
@@ -48,6 +50,11 @@ const SignUp = () => {
     if (!passwordRegex.test(password)) {
       setErrorPassword(true);
       toast.error("Password must include a lowercase, an uppercase and a number");
+      return true;
+    }
+    if (password !== confirmPassword) {
+      setErrorPassword(true);
+      toast.error("Passwords do not match");
       return true;
     }
     return false;
@@ -173,6 +180,28 @@ const SignUp = () => {
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm password</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Repeat password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value.trim())}
+                    className={`pl-10 pr-10 ${errorPassword ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>

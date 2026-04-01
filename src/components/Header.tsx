@@ -9,7 +9,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/s
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 type HeaderProps = {
-  active?: "home" | "pricing" | "login" | "signup" | "history";
+  active?: "home" | "pricing" | "login" | "signup" | "history" | "account";
 };
 
 const Header = ({ active }: HeaderProps) => {
@@ -42,6 +42,11 @@ const Header = ({ active }: HeaderProps) => {
       {user && (
         <Link to="/history" className={linkClass("history")} onClick={() => setOpen(false)}>
           History
+        </Link>
+      )}
+      {user && (
+        <Link to="/account" className={linkClass("account")} onClick={() => setOpen(false)}>
+          Account
         </Link>
       )}
     </>
