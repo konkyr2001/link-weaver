@@ -99,6 +99,7 @@ const Header = ({ active }: HeaderProps) => {
 
         {/* Mobile nav */}
         <div className="flex md:hidden items-center gap-3">
+          {planBadge}
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>

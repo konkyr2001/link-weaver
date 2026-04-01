@@ -288,10 +288,12 @@ const Pricing = () => {
                 <Button
                   variant={tier.highlighted ? "hero" : "glass"}
                   size="lg"
-                  className="w-full"
+                  className="w-full gap-2"
                   onClick={() => handleCheckout(tier.cta, tier.plan, false)}
                   disabled={tier.cta.disabled}
                 >
+                  {tier.plan === "plus" && <Plus className="w-4 h-4" />}
+                  {tier.plan === "pro" && <Crown className="w-4 h-4" />}
                   {tier.cta.text}
                 </Button>
               </motion.div>
