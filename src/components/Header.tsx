@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useTheme } from "@/hooks/use-theme";
-import { Link2, Menu, X } from "lucide-react";
+import { Link2, Menu, X, Plus, Crown } from "lucide-react";
 import { googleLogout } from "@react-oauth/google";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 type HeaderProps = {
   active?: "home" | "pricing" | "login" | "signup" | "history";
@@ -58,6 +59,26 @@ const Header = ({ active }: HeaderProps) => {
     </Button>
   );
 
+  const planBadge = user?.plan === "pro" ? (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 cursor-default">
+          <Crown className="w-4 h-4 text-primary" />
+        </div>
+      </TooltipTrigger>
+      <TooltipContent>Pro user</TooltipContent>
+    </Tooltip>
+  ) : user?.plan === "plus" ? (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 cursor-default">
+          <Plus className="w-4 h-4 text-primary" />
+        </div>
+      </TooltipTrigger>
+      <TooltipContent>Plus user</TooltipContent>
+    </Tooltip>
+  ) : null;
+
   return (
     <header className="border-b border-border">
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -72,11 +93,13 @@ const Header = ({ active }: HeaderProps) => {
         <div className="hidden md:flex items-center gap-6">
           {navLinks}
           {actionButton}
+          {planBadge}
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
         </div>
 
         {/* Mobile nav */}
         <div className="flex md:hidden items-center gap-3">
+          {planBadge}
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
