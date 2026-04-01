@@ -3,11 +3,48 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { useTheme } from "@/hooks/use-theme";
 import { Link2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
+import { useEffect, useState } from "react";
+import { getUser } from "@/services/user";
+import { toast } from "sonner";
 
 const Index = () => {
   const { theme, toggleTheme } = useTheme();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+  useEffect(() => {
+    const syncUserAfterPayment = async () => {
+      const success = searchParams.get("success");
+
+      if (success === "true") {
+        if (!user) {
+          navigate("/login", { replace: true });
+          return;
+        }
+        try {
+          const token = localStorage.getItem("token");
+          const fetchUser = await getUser(token);
+          if (fetchUser?.error) {
+            toast.error(fetchUser.error);
+            return;
+          }
+          localStorage.setItem("user", JSON.stringify(fetchUser));
+          setUser(fetchUser);
+          toast.success("Payment successful! Your account has been updated.");
+          navigate("/", { replace: true });
+        } catch (error) {
+          toast.error("Failed to refresh user");
+        }
+      }
+    }
+
+    syncUserAfterPayment();
+  }, [searchParams, navigate]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">

@@ -80,7 +80,6 @@ const Pricing = () => {
   });
   const daysRemaining = getDaysRemaining(user?.currentPeriodEnd ?? null);
   const tierState = getTierState(user?.plan, daysRemaining);
-  const [freeTrial, setFreeTrial] = useState<Record<string, boolean>>({ pro: user?.hasUsedProTrial });
   const tiers = [
     {
       name: "Free",
@@ -139,7 +138,7 @@ const Pricing = () => {
         "Expired links are stored in history",
         "Delete bundles",
         "Edit bundles",
-        "10-day free trial",
+        "7-day free trial",
       ],
       cta: {
         text: tierState.pro.text,
@@ -152,31 +151,7 @@ const Pricing = () => {
   ];
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        const freshUser = await getUser(token);
-
-        if (freshUser?.error) {
-          toast.error(freshUser.error);
-          return; 
-        }
-        localStorage.setItem("user", JSON.stringify(freshUser));
-        setUser(freshUser);
-        setFreeTrial({ pro: freshUser.hasUsedProTrial });
-      } catch (error) {
-        toast.error(error.message);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
-  useEffect(() => {
     const syncUserAfterPayment = async () => {
-      const success = searchParams.get("success");
       const canceled = searchParams.get("canceled");
 
       if (canceled === "true") {
@@ -184,32 +159,12 @@ const Pricing = () => {
         navigate("/pricing", { replace: true });
         return;
       }
-      if (success === "true") {
-        if (!user) {
-          navigate("/login", { replace: true });
-          return;
-        }
-        try {
-          const token = localStorage.getItem("token");
-          const fetchUser = await getUser(token);
-          if (fetchUser?.error) {
-            toast.error(fetchUser.error);
-            return;
-          }
-          localStorage.setItem("user", JSON.stringify(fetchUser));
-          setUser(fetchUser);
-          toast.success("Payment completed. Updating your plan...");
-          navigate("/pricing", { replace: true });
-        } catch (error) {
-          toast.error("Failed to refresh user");
-        }
-      }
     }
 
     syncUserAfterPayment();
   }, [searchParams, navigate]);
   
-  const handleCheckout = async (cta, plan) => {
+  const handleCheckout = async (cta, plan, trial: boolean) => {
     if (cta.disabled) return;
     if (!user) {
       navigate(cta.link);
@@ -229,18 +184,15 @@ const Pricing = () => {
 
       localStorage.setItem("user", JSON.stringify(freshUser));
       setUser(freshUser);
-
       toast.success("You have been upgraded to Pro");
       return;
     }
-    const trial = freeTrial[plan] ?? false;
     const data = await createCheckoutSession(plan, user._id, user.email, trial);
     if (data.error) {
       return toast.error(data.error);
     }
-    console.log(data);
-    window.location.href = data.url;
 
+    window.location.href = data.url;
   }
 
   return (
@@ -322,33 +274,25 @@ const Pricing = () => {
                   </p>
                 )}
 
-                {tier.plan === "pro" && user && (
-                  <div className="mb-4 flex flex-col gap-1.5">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <Switch
-                        checked={freeTrial[tier.plan]}
-                        onCheckedChange={(checked) =>
-                          setFreeTrial((prev) => ({ ...prev, [tier.plan]: checked }))
-                        }
-                      />
-                      <span className="text-sm font-medium text-foreground">10-day free trial</span>
-                    </label>
-                    {freeTrial[tier.plan] && (
-                      <p className="text-xs text-muted-foreground ml-9">
-                        Cancel anytime. Billing starts after 10 days.
-                      </p>
-                    )}
-                  </div>
+                {tier.plan === "pro" && user && !user.hasUsedProTrial && (
+                <Button
+                  variant={"link"}
+                  size="sm"
+                  className="w-fit mx-auto mb-2 flex flex-col gap-1.5"
+                  onClick={() => handleCheckout(tier.cta, tier.plan, true)}
+                >
+                  7-day free trial
+                </Button>
                 )}
 
                 <Button
                   variant={tier.highlighted ? "hero" : "glass"}
                   size="lg"
                   className="w-full"
-                  onClick={() => handleCheckout(tier.cta, tier.plan)}
+                  onClick={() => handleCheckout(tier.cta, tier.plan, false)}
                   disabled={tier.cta.disabled}
                 >
-                  {freeTrial[tier.plan] && !tier.cta.disabled ? "Start Free Trial" : tier.cta.text}
+                  {tier.cta.text}
                 </Button>
               </motion.div>
             ))}
