@@ -125,10 +125,17 @@ const Account = () => {
   };
 
   const handleDeleteAccount = async () => {
-    if (!deletePassword.trim()) {
-      return toast.error("Please enter your password to confirm");
+    if (isGoogleUser) {
+      if (deleteConfirmText !== "DELETE") {
+        return toast.error("Please type DELETE to confirm");
+      }
+    } else {
+      if (!deletePassword.trim()) {
+        return toast.error("Please enter your password to confirm");
+      }
     }
     setDeleting(true);
+    // TODO: Call delete account API with password or confirmation
     toast.success("Account deleted");
     localStorage.removeItem("token");
     localStorage.removeItem("user");
