@@ -399,35 +399,54 @@ const Account = () => {
                   <AlertDialogHeader>
                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      This will permanently delete your account, all your bundles, and subscription data. Enter your password to confirm.
+                      This will permanently delete your account, all your bundles, and subscription data.
+                      {isGoogleUser
+                        ? ' Type "DELETE" below to confirm.'
+                        : " Enter your password to confirm."}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <div className="space-y-2 py-2">
-                    <Label htmlFor="deletePassword">Password</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        id="deletePassword"
-                        type={showDeletePassword ? "text" : "password"}
-                        placeholder="Enter your password"
-                        value={deletePassword}
-                        onChange={(e) => setDeletePassword(e.target.value)}
-                        className="pl-10 pr-10"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowDeletePassword(!showDeletePassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                      >
-                        {showDeletePassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
-                    </div>
+                    {isGoogleUser ? (
+                      <>
+                        <Label htmlFor="deleteConfirm">Type DELETE to confirm</Label>
+                        <Input
+                          id="deleteConfirm"
+                          type="text"
+                          placeholder='Type "DELETE"'
+                          value={deleteConfirmText}
+                          onChange={(e) => setDeleteConfirmText(e.target.value)}
+                          autoComplete="off"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <Label htmlFor="deletePassword">Password</Label>
+                        <div className="relative">
+                          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                          <Input
+                            id="deletePassword"
+                            type={showDeletePassword ? "text" : "password"}
+                            placeholder="Enter your password"
+                            value={deletePassword}
+                            onChange={(e) => setDeletePassword(e.target.value)}
+                            className="pl-10 pr-10"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowDeletePassword(!showDeletePassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          >
+                            {showDeletePassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
                   <AlertDialogFooter>
-                    <AlertDialogCancel onClick={() => setDeletePassword("")}>Cancel</AlertDialogCancel>
+                    <AlertDialogCancel onClick={() => { setDeletePassword(""); setDeleteConfirmText(""); }}>Cancel</AlertDialogCancel>
                     <AlertDialogAction
                       onClick={handleDeleteAccount}
-                      disabled={deleting || !deletePassword.trim()}
+                      disabled={deleting || (isGoogleUser ? deleteConfirmText !== "DELETE" : !deletePassword.trim())}
                       className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                     >
                       {deleting ? "Deleting…" : "Delete my account"}

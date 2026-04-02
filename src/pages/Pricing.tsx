@@ -78,9 +78,21 @@ const Pricing = () => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
   const daysRemaining = getDaysRemaining(user?.currentPeriodEnd ?? null);
-  console.log(user);
-  console.log(daysRemaining);
   const tierState = getTierState(user?.plan, daysRemaining);
+
+  // Fetch fresh user data from API on mount
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const freshUser = await getUser(token);
+      if (!freshUser?.error) {
+        localStorage.setItem("user", JSON.stringify(freshUser));
+        setUser(freshUser);
+      }
+    };
+    fetchUser();
+  }, []);
   const tiers = [
     {
       name: "Free",
