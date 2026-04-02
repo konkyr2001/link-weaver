@@ -11,7 +11,7 @@ import { getUser } from "@/services/user";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 
-const RENEWAL_WINDOW_DAYS = 10
+const RENEWAL_WINDOW_DAYS = 10;
 
 const getDaysRemaining = (currentPeriodEnd: string | null): number | null => {
   if (!currentPeriodEnd) return null;
