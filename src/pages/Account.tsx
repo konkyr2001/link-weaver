@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import Header from "@/components/Header";
-import { updateProfile, changePassword } from "@/services/user";
+import { updateProfile, changePassword, getUser } from "@/services/user";
 import { continueAutoSubscription, cancelAutoSubscription } from "@/services/billing";
 
 const Account = () => {
@@ -28,6 +28,20 @@ const Account = () => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : {};
   });
+
+  // Fetch fresh user data from API on mount
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const freshUser = await getUser(token);
+      if (!freshUser?.error) {
+        localStorage.setItem("user", JSON.stringify(freshUser));
+        setUser(freshUser);
+      }
+    };
+    fetchUser();
+  }, []);
   const [firstName, setFirstName] = useState(user.firstName || "");
   const [lastName, setLastName] = useState(user.lastName || "");
   const [savingProfile, setSavingProfile] = useState(false);
