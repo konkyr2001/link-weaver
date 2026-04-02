@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { User, Mail, Lock, Eye, EyeOff, Crown, Plus, Trash2, Calendar } from "lucide-react";
+import { User, Mail, Lock, Eye, EyeOff, Crown, Plus, Trash2, Calendar, Newspaper, ReceiptRussianRuble } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,10 +20,14 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import Header from "@/components/Header";
+import { updateProfile, changePassword } from "@/services/user";
+import { continueAutoSubscription, cancelAutoSubscription } from "@/services/billing";
 
 const Account = () => {
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : {};
+  });
   const [firstName, setFirstName] = useState(user.firstName || "");
   const [lastName, setLastName] = useState(user.lastName || "");
   const [savingProfile, setSavingProfile] = useState(false);
@@ -41,8 +45,8 @@ const Account = () => {
   const [deleting, setDeleting] = useState(false);
 
   const plan = user.plan || "free";
-  const isTrial = user.isTrial || false;
-  const currentPeriodEnd = user.currentPeriodEnd;
+  const isTrial = user.trialEnd && new Date(user.trialEnd) > new Date();
+  const currentPeriodEnd = isTrial ? user.trialEnd : user.currentPeriodEnd;
 
   const getDaysRemaining = () => {
     if (!currentPeriodEnd) return null;
@@ -60,10 +64,14 @@ const Account = () => {
       return toast.error("First name and last name are required");
     }
     setSavingProfile(true);
-    // TODO: Send HTTP request to backend
-    // await updateProfile(firstName, lastName);
-    const updatedUser = { ...user, firstName, lastName };
+    const updatedUser = await updateProfile(user._id, firstName, lastName);
+    if (updatedUser.error) {
+      toast.error(updatedUser.error);
+      setSavingProfile(false);
+      return;
+    }
     localStorage.setItem("user", JSON.stringify(updatedUser));
+    setUser(updatedUser);
     toast.success("Profile updated successfully");
     setSavingProfile(false);
   };
@@ -87,8 +95,11 @@ const Account = () => {
       return toast.error("New passwords do not match");
     }
     setSavingPassword(true);
-    // TODO: Send HTTP request to backend
-    // await changePassword(currentPassword, newPassword);
+    const updatedPassword = await changePassword(user._id, currentPassword, newPassword);
+    if (updatedPassword.error) {
+      toast.error(updatedPassword.error);
+      return;
+    }
     toast.success("Password changed successfully");
     setCurrentPassword("");
     setNewPassword("");
@@ -101,12 +112,30 @@ const Account = () => {
       return toast.error("Please enter your password to confirm");
     }
     setDeleting(true);
-    // TODO: Send HTTP request to backend
-    // await deleteAccount(deletePassword);
     toast.success("Account deleted");
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     window.location.href = "/";
+  };
+
+  const handleSubscription = async (subscription) => {
+    let autoSub;
+    if (subscription) {
+      autoSub = await continueAutoSubscription(user._id);
+    } else {
+      autoSub = await cancelAutoSubscription(user._id);
+    }
+    if (autoSub.error) {
+      toast.error(autoSub.error);
+      return;
+    }
+    const updatedUser = {
+      ...user,
+      autoRenewEnabled: subscription,
+    }
+    setUser(updatedUser);
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+    toast.success(subscription ? "Auto-renew enabled" : "Auto-renew disabled");
   };
 
   const planLabel = plan === "pro" ? "Pro" : plan === "plus" ? "Plus" : "Free";
@@ -148,23 +177,44 @@ const Account = () => {
                 )}
               </div>
               {currentPeriodEnd && daysRemaining !== null && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Calendar className="w-4 h-4" />
-                  {isTrial ? (
-                    <span>
-                      Trial {daysRemaining > 0 ? `expires in ${daysRemaining} day${daysRemaining !== 1 ? "s" : ""}` : "has expired"}
+                <>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Calendar className="w-4 h-4" />
+                    {isTrial ? (
+                      <span>
+                        Trial {daysRemaining > 0 ? `expires in ${daysRemaining} day${daysRemaining !== 1 ? "s" : ""}` : "has expired"}
+                      </span>
+                    ) : (
+                      <span>
+                        {daysRemaining > 0
+                          ? `${user.autoRenewEnabled ? "Renews" : "Expires" } in ${daysRemaining} day${daysRemaining !== 1 ? "s" : ""}`
+                          : "Subscription expired"}
+                      </span>
+                    )}
+                    <span className="text-muted-foreground/60">
+                      ({new Date(currentPeriodEnd).toLocaleDateString()})
                     </span>
+                  </div>
+                  {user.autoRenewEnabled ? (
+                    <Button 
+                      size="sm" 
+                      variant="link"
+                      className="h-7"
+                      onClick={() => handleSubscription(false)}
+                    >
+                      Cancel renew here
+                    </Button>
                   ) : (
-                    <span>
-                      {daysRemaining > 0
-                        ? `Renews in ${daysRemaining} day${daysRemaining !== 1 ? "s" : ""}`
-                        : "Subscription expired"}
-                    </span>
+                    <Button
+                      size="sm" 
+                      variant="link"
+                      className="h-7"
+                      onClick={() => handleSubscription(true)}
+                    >
+                      Enable renew here
+                    </Button>
                   )}
-                  <span className="text-muted-foreground/60">
-                    ({new Date(currentPeriodEnd).toLocaleDateString()})
-                  </span>
-                </div>
+                </>
               )}
             </CardContent>
           </Card>
@@ -223,85 +273,87 @@ const Account = () => {
           </Card>
 
           {/* Change Password */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Change Password</CardTitle>
-              <CardDescription>Update your password to keep your account secure</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleChangePassword} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="currentPassword">Current password</Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input
-                      id="currentPassword"
-                      type={showCurrentPassword ? "text" : "password"}
-                      placeholder="Enter current password"
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                      className="pl-10 pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    >
-                      {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
+          {user.authProvider === "local" && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Change Password</CardTitle>
+                <CardDescription>Update your password to keep your account secure</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleChangePassword} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="currentPassword">Current password</Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input
+                        id="currentPassword"
+                        type={showCurrentPassword ? "text" : "password"}
+                        placeholder="Enter current password"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        className="pl-10 pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      >
+                        {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
                   </div>
-                </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="newPassword">New password</Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input
-                      id="newPassword"
-                      type={showNewPassword ? "text" : "password"}
-                      placeholder="Min. 8 characters"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      className="pl-10 pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowNewPassword(!showNewPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    >
-                      {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
+                  <div className="space-y-2">
+                    <Label htmlFor="newPassword">New password</Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input
+                        id="newPassword"
+                        type={showNewPassword ? "text" : "password"}
+                        placeholder="Min. 8 characters"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        className="pl-10 pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      >
+                        {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
                   </div>
-                </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="confirmNewPassword">Confirm new password</Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input
-                      id="confirmNewPassword"
-                      type={showConfirmPassword ? "text" : "password"}
-                      placeholder="Repeat new password"
-                      value={confirmNewPassword}
-                      onChange={(e) => setConfirmNewPassword(e.target.value)}
-                      className="pl-10 pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    >
-                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmNewPassword">Confirm new password</Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input
+                        id="confirmNewPassword"
+                        type={showConfirmPassword ? "text" : "password"}
+                        placeholder="Repeat new password"
+                        value={confirmNewPassword}
+                        onChange={(e) => setConfirmNewPassword(e.target.value)}
+                        className="pl-10 pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      >
+                        {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
                   </div>
-                </div>
 
-                <Button type="submit" disabled={savingPassword}>
-                  {savingPassword ? "Updating…" : "Update Password"}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+                  <Button type="submit" disabled={savingPassword}>
+                    {savingPassword ? "Updating…" : "Update Password"}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Delete Account */}
           <Card className="border-destructive/30">

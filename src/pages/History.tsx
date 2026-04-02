@@ -37,7 +37,7 @@ export default function History() {
       const data = await getUserHistory(token);
       if (data.error) {
         setLoading(false);
-        return toast.error(data.error);
+        return;
       }
       if (data.projects.length == 0) {
         setLoading(false);

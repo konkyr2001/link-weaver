@@ -113,4 +113,51 @@ const getUser = async (token) => {
     return { error: error.message || "Something went wrong" };
   }
 };
-export { login, signup, authorizeGoogleUser, getUserHistory, getUser };
+
+const updateProfile = async (userId, firstName, lastName) => {
+  try {
+    const response = await fetch(`${URL}/api/user/updateProfile`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        userId,
+        firstName,
+        lastName,
+      })
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      return { error: data.error || "Something went wrong" };
+    }
+    return data;
+  } catch (error) {
+    return { error: error.message || "Something went wrong" };
+  }
+};
+
+const changePassword = async (userId, currentPassword, newPassword) => {
+  try {
+    const response = await fetch(`${URL}/api/user/changePassword`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        userId,
+        currentPassword,
+        newPassword
+      })
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      return { error: data.error || "Something went wrong" };
+    }
+    return data;
+  } catch (error) {
+    return { error: error.message || "Something went wrong" };
+  }
+};
+
+export { login, signup, authorizeGoogleUser, getUserHistory, getUser, updateProfile, changePassword };

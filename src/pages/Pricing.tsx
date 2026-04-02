@@ -11,7 +11,7 @@ import { getUser } from "@/services/user";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 
-const RENEWAL_WINDOW_DAYS = 10;
+const RENEWAL_WINDOW_DAYS = 10
 
 const getDaysRemaining = (currentPeriodEnd: string | null): number | null => {
   if (!currentPeriodEnd) return null;
@@ -21,8 +21,7 @@ const getDaysRemaining = (currentPeriodEnd: string | null): number | null => {
 };
 
 const getTierState = (userPlan: string | null, daysRemaining: number | null) => {
-  const canRenew = daysRemaining !== null && daysRemaining <= RENEWAL_WINDOW_DAYS;
-
+  const canPurchase = daysRemaining !== null && daysRemaining <= 0;
   if (!userPlan) {
     return {
       free: { text: "Get Started", link: "/", disabled: false },
@@ -43,9 +42,9 @@ const getTierState = (userPlan: string | null, daysRemaining: number | null) => 
     return {
       free: { text: "Included", link: "", disabled: true },
       plus: {
-        text: canRenew ? "Renew Plus" : "Current Plan",
+        text: canPurchase ? "Renew Plus" : "Current Plan",
         link: "",
-        disabled: !canRenew,
+        disabled: !canPurchase,
       },
       pro: { text: "Upgrade to Pro", link: "", disabled: false },
     };
@@ -56,9 +55,9 @@ const getTierState = (userPlan: string | null, daysRemaining: number | null) => 
       free: { text: "Included", link: "", disabled: true },
       plus: { text: "Included", link: "", disabled: true },
       pro: {
-        text: canRenew ? "Renew Pro" : "Current Plan",
+        text: canPurchase ? "Renew Pro" : "Current Plan",
         link: "",
-        disabled: !canRenew,
+        disabled: !canPurchase,
       },
     };
   }
@@ -79,6 +78,8 @@ const Pricing = () => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
   const daysRemaining = getDaysRemaining(user?.currentPeriodEnd ?? null);
+  console.log(user);
+  console.log(daysRemaining);
   const tierState = getTierState(user?.plan, daysRemaining);
   const tiers = [
     {

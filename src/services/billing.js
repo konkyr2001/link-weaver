@@ -46,4 +46,47 @@ const upgradeToPro = async (userId) => {
   }
 };
 
-export { createCheckoutSession, upgradeToPro };
+const continueAutoSubscription = async (userId) => {
+  try {
+    const response = await fetch(`${URL}/api/billing/resume-auto-subscription`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      return { error: data.error || "Something went wrong" };
+    }
+    return data;
+  } catch (error) {
+    return { error: error.message || "Something went wrong" };
+  }
+};
+
+const cancelAutoSubscription = async (userId) => {
+  try {
+    const response = await fetch(`${URL}/api/billing/cancel-auto-subscription`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      return { error: data.error || "Something went wrong" };
+    }
+    return data;
+  } catch (error) {
+    return { error: error.message || "Something went wrong" };
+  }
+};
+
+export {
+  createCheckoutSession,
+  upgradeToPro,
+  continueAutoSubscription,
+  cancelAutoSubscription,
+};
