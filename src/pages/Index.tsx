@@ -17,6 +17,20 @@ const Index = () => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
   });
+  // Fetch fresh user data on mount
+  useEffect(() => {
+    const fetchFreshUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const freshUser = await getUser(token);
+      if (!freshUser?.error) {
+        localStorage.setItem("user", JSON.stringify(freshUser));
+        setUser(freshUser);
+      }
+    };
+    fetchFreshUser();
+  }, []);
+
   useEffect(() => {
     const syncUserAfterPayment = async () => {
       const success = searchParams.get("success");
