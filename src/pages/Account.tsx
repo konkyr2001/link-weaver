@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { User, Mail, Lock, Eye, EyeOff, Crown, Plus, Trash2, Calendar, Newspaper, ReceiptRussianRuble } from "lucide-react";
+import { User, Mail, Lock, Eye, EyeOff, Crown, Plus, Trash2, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import Header from "@/components/Header";
-import { updateProfile, changePassword } from "@/services/user";
+import { updateProfile, changePassword, getUser } from "@/services/user";
 import { continueAutoSubscription, cancelAutoSubscription } from "@/services/billing";
 
 const Account = () => {
@@ -28,6 +28,20 @@ const Account = () => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : {};
   });
+
+  // Fetch fresh user data from API on mount
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const freshUser = await getUser(token);
+      if (!freshUser?.error) {
+        localStorage.setItem("user", JSON.stringify(freshUser));
+        setUser(freshUser);
+      }
+    };
+    fetchUser();
+  }, []);
   const [firstName, setFirstName] = useState(user.firstName || "");
   const [lastName, setLastName] = useState(user.lastName || "");
   const [savingProfile, setSavingProfile] = useState(false);
@@ -41,8 +55,11 @@ const Account = () => {
   const [savingPassword, setSavingPassword] = useState(false);
 
   const [deletePassword, setDeletePassword] = useState("");
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [showDeletePassword, setShowDeletePassword] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
+  const isGoogleUser = user.authProvider === "google";
 
   const plan = user.plan || "free";
   const isTrial = user.trialEnd && new Date(user.trialEnd) > new Date();
@@ -108,10 +125,17 @@ const Account = () => {
   };
 
   const handleDeleteAccount = async () => {
-    if (!deletePassword.trim()) {
-      return toast.error("Please enter your password to confirm");
+    if (isGoogleUser) {
+      if (deleteConfirmText !== "DELETE") {
+        return toast.error("Please type DELETE to confirm");
+      }
+    } else {
+      if (!deletePassword.trim()) {
+        return toast.error("Please enter your password to confirm");
+      }
     }
     setDeleting(true);
+    // TODO: Call delete account API with password or confirmation
     toast.success("Account deleted");
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -375,35 +399,54 @@ const Account = () => {
                   <AlertDialogHeader>
                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      This will permanently delete your account, all your bundles, and subscription data. Enter your password to confirm.
+                      This will permanently delete your account, all your bundles, and subscription data.
+                      {isGoogleUser
+                        ? ' Type "DELETE" below to confirm.'
+                        : " Enter your password to confirm."}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <div className="space-y-2 py-2">
-                    <Label htmlFor="deletePassword">Password</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        id="deletePassword"
-                        type={showDeletePassword ? "text" : "password"}
-                        placeholder="Enter your password"
-                        value={deletePassword}
-                        onChange={(e) => setDeletePassword(e.target.value)}
-                        className="pl-10 pr-10"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowDeletePassword(!showDeletePassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                      >
-                        {showDeletePassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
-                    </div>
+                    {isGoogleUser ? (
+                      <>
+                        <Label htmlFor="deleteConfirm">Type DELETE to confirm</Label>
+                        <Input
+                          id="deleteConfirm"
+                          type="text"
+                          placeholder='Type "DELETE"'
+                          value={deleteConfirmText}
+                          onChange={(e) => setDeleteConfirmText(e.target.value)}
+                          autoComplete="off"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <Label htmlFor="deletePassword">Password</Label>
+                        <div className="relative">
+                          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                          <Input
+                            id="deletePassword"
+                            type={showDeletePassword ? "text" : "password"}
+                            placeholder="Enter your password"
+                            value={deletePassword}
+                            onChange={(e) => setDeletePassword(e.target.value)}
+                            className="pl-10 pr-10"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowDeletePassword(!showDeletePassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          >
+                            {showDeletePassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
                   <AlertDialogFooter>
-                    <AlertDialogCancel onClick={() => setDeletePassword("")}>Cancel</AlertDialogCancel>
+                    <AlertDialogCancel onClick={() => { setDeletePassword(""); setDeleteConfirmText(""); }}>Cancel</AlertDialogCancel>
                     <AlertDialogAction
                       onClick={handleDeleteAccount}
-                      disabled={deleting || !deletePassword.trim()}
+                      disabled={deleting || (isGoogleUser ? deleteConfirmText !== "DELETE" : !deletePassword.trim())}
                       className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                     >
                       {deleting ? "Deleting…" : "Delete my account"}

@@ -11,7 +11,7 @@ import { getUser } from "@/services/user";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 
-const RENEWAL_WINDOW_DAYS = 10
+const RENEWAL_WINDOW_DAYS = 10;
 
 const getDaysRemaining = (currentPeriodEnd: string | null): number | null => {
   if (!currentPeriodEnd) return null;
@@ -78,9 +78,21 @@ const Pricing = () => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
   const daysRemaining = getDaysRemaining(user?.currentPeriodEnd ?? null);
-  console.log(user);
-  console.log(daysRemaining);
   const tierState = getTierState(user?.plan, daysRemaining);
+
+  // Fetch fresh user data from API on mount
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const freshUser = await getUser(token);
+      if (!freshUser?.error) {
+        localStorage.setItem("user", JSON.stringify(freshUser));
+        setUser(freshUser);
+      }
+    };
+    fetchUser();
+  }, []);
   const tiers = [
     {
       name: "Free",
