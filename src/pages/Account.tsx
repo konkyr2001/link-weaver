@@ -55,8 +55,11 @@ const Account = () => {
   const [savingPassword, setSavingPassword] = useState(false);
 
   const [deletePassword, setDeletePassword] = useState("");
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [showDeletePassword, setShowDeletePassword] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
+  const isGoogleUser = user.authProvider === "google";
 
   const plan = user.plan || "free";
   const isTrial = user.trialEnd && new Date(user.trialEnd) > new Date();
