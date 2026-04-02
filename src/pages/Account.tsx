@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { User, Mail, Lock, Eye, EyeOff, Crown, Plus, Trash2, Calendar, Newspaper, ReceiptRussianRuble } from "lucide-react";
+import { User, Mail, Lock, Eye, EyeOff, Crown, Plus, Trash2, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
