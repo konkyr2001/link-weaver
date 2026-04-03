@@ -196,17 +196,35 @@ const Pricing = () => {
       return;
     }
 
+    // Intercept Plus → Pro: show confirmation modal
+    if (user?.plan === "plus" && plan === "pro") {
+      setPendingUpgrade({ cta, plan, trial });
+      setUpgradeModalOpen(true);
+      return;
+    }
+
+    await proceedCheckout(plan, trial);
+  }
+
+  const proceedCheckout = async (plan: string, trial: boolean) => {
     let data = null;
     if (user?.plan === "plus" && plan === "pro") {
-      data = await upgradeToPro(token);
+      data = await upgradeToPro(token!);
     } else {
-      data = await createCheckoutSession(plan, token, trial);
+      data = await createCheckoutSession(plan, token!, trial);
     }
     if (data?.error) {
       toast.error(data?.error);
       return;
     }
     window.location.href = data.url;
+  }
+
+  const confirmUpgrade = async () => {
+    if (!pendingUpgrade) return;
+    setUpgradeModalOpen(false);
+    await proceedCheckout(pendingUpgrade.plan, pendingUpgrade.trial);
+    setPendingUpgrade(null);
   }
 
   return (
