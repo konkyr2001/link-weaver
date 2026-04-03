@@ -7,6 +7,14 @@ import { createCheckoutSession, upgradeToPro } from "@/services/billing";
 import { getUser } from "@/services/user";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const RENEWAL_WINDOW_DAYS = 10;
 
@@ -75,6 +83,8 @@ const Pricing = () => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
   });
+  const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
+  const [pendingUpgrade, setPendingUpgrade] = useState<{ cta: any; plan: string; trial: boolean } | null>(null);
   const daysRemaining = getDaysRemaining(user?.currentPeriodEnd ?? null);
   const tierState = getTierState(user?.plan, daysRemaining);
 
@@ -186,17 +196,35 @@ const Pricing = () => {
       return;
     }
 
+    // Intercept Plus → Pro: show confirmation modal
+    if (user?.plan === "plus" && plan === "pro") {
+      setPendingUpgrade({ cta, plan, trial });
+      setUpgradeModalOpen(true);
+      return;
+    }
+
+    await proceedCheckout(plan, trial);
+  }
+
+  const proceedCheckout = async (plan: string, trial: boolean) => {
     let data = null;
     if (user?.plan === "plus" && plan === "pro") {
-      data = await upgradeToPro(token);
+      data = await upgradeToPro(token!);
     } else {
-      data = await createCheckoutSession(plan, token, trial);
+      data = await createCheckoutSession(plan, token!, trial);
     }
     if (data?.error) {
       toast.error(data?.error);
       return;
     }
     window.location.href = data.url;
+  }
+
+  const confirmUpgrade = async () => {
+    if (!pendingUpgrade) return;
+    setUpgradeModalOpen(false);
+    await proceedCheckout(pendingUpgrade.plan, pendingUpgrade.trial);
+    setPendingUpgrade(null);
   }
 
   return (
@@ -310,6 +338,38 @@ const Pricing = () => {
           Paste. Bundle. Share.
         </div>
       </footer>
+
+      {/* Upgrade Confirmation Modal */}
+      <Dialog open={upgradeModalOpen} onOpenChange={(open) => {
+        if (!open) {
+          setUpgradeModalOpen(false);
+          setPendingUpgrade(null);
+        }
+      }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-display">Upgrade to Pro</DialogTitle>
+            <DialogDescription className="pt-2">
+              Are you sure you want to upgrade to the Pro plan?
+              {pendingUpgrade?.trial
+                ? " Your Plus subscription will be cancelled and a 7-day free Pro trial will begin. After the trial, Pro will renew for one year."
+                : " Your Plus subscription will be cancelled and your Pro subscription will start for one year."}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="mt-2">
+            <Button variant="outline" onClick={() => {
+              setUpgradeModalOpen(false);
+              setPendingUpgrade(null);
+            }}>
+              Cancel
+            </Button>
+            <Button variant="hero" onClick={confirmUpgrade} className="gap-2">
+              <Crown className="w-4 h-4" />
+              Yes, upgrade to Pro
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
