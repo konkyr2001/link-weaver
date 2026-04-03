@@ -236,25 +236,20 @@ const Account = () => {
                       ({new Date(currentPeriodEnd).toLocaleDateString()})
                     </span>
                   </div>
-                  {user.autoRenewEnabled ? (
-                    <Button 
-                      size="sm" 
-                      variant="link"
-                      className="h-7"
-                      onClick={() => handleSubscription(false)}
-                    >
-                      Cancel renew here
-                    </Button>
-                  ) : (
-                    <Button
-                      size="sm" 
-                      variant="link"
-                      className="h-7"
-                      onClick={() => handleSubscription(true)}
-                    >
-                      Enable renew here
-                    </Button>
-                  )}
+                  <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 px-4 py-3">
+                    <div className="space-y-0.5">
+                      <p className="text-sm font-medium text-foreground">Auto-renewal</p>
+                      <p className="text-xs text-muted-foreground">
+                        {user.autoRenewEnabled
+                          ? "Your plan will automatically renew"
+                          : "Your plan will expire at the end of the period"}
+                      </p>
+                    </div>
+                    <Switch
+                      checked={user.autoRenewEnabled}
+                      onCheckedChange={(checked) => handleSubscription(checked)}
+                    />
+                  </div>
                 </>
               )}
             </CardContent>
