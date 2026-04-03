@@ -338,6 +338,38 @@ const Pricing = () => {
           Paste. Bundle. Share.
         </div>
       </footer>
+
+      {/* Upgrade Confirmation Modal */}
+      <Dialog open={upgradeModalOpen} onOpenChange={(open) => {
+        if (!open) {
+          setUpgradeModalOpen(false);
+          setPendingUpgrade(null);
+        }
+      }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-display">Upgrade to Pro</DialogTitle>
+            <DialogDescription className="pt-2">
+              Are you sure you want to upgrade to the Pro plan?
+              {pendingUpgrade?.trial
+                ? " Your Plus subscription will be cancelled and a 7-day free Pro trial will begin. After the trial, Pro will renew for one year."
+                : " Your Plus subscription will be cancelled and your Pro subscription will start for one year."}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="mt-2">
+            <Button variant="outline" onClick={() => {
+              setUpgradeModalOpen(false);
+              setPendingUpgrade(null);
+            }}>
+              Cancel
+            </Button>
+            <Button variant="hero" onClick={confirmUpgrade} className="gap-2">
+              <Crown className="w-4 h-4" />
+              Yes, upgrade to Pro
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
