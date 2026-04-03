@@ -1,10 +1,7 @@
 import { motion } from "framer-motion";
 import { Check, X, Plus, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { useTheme } from "@/hooks/use-theme";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
 import { createCheckoutSession, upgradeToPro } from "@/services/billing";
 import { getUser } from "@/services/user";
@@ -21,7 +18,7 @@ const getDaysRemaining = (currentPeriodEnd: string | null): number | null => {
 };
 
 const getTierState = (userPlan: string | null, daysRemaining: number | null) => {
-  const canPurchase = daysRemaining !== null && daysRemaining <= 0;
+  const canPurchase = daysRemaining === null || daysRemaining <= 0;
   if (!userPlan) {
     return {
       free: { text: "Get Started", link: "/", disabled: false },
@@ -71,6 +68,7 @@ const getTierState = (userPlan: string | null, daysRemaining: number | null) => 
 
 const Pricing = () => {
   
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [user, setUser] = useState(() => {
@@ -83,7 +81,6 @@ const Pricing = () => {
   // Fetch fresh user data from API on mount
   useEffect(() => {
     const fetchUser = async () => {
-      const token = localStorage.getItem("token");
       if (!token) return;
       const freshUser = await getUser(token);
       if (!freshUser?.error) {
@@ -184,27 +181,21 @@ const Pricing = () => {
       return;
     }
 
-    if (user?.plan === "plus" && plan === "pro") {
-      const res = await upgradeToPro(user._id);
-
-      if (res?.error) {
-        toast.error(res?.error);
-        return;
-      }
-
-      const token = localStorage.getItem("token");
-      const freshUser = await getUser(token);
-
-      localStorage.setItem("user", JSON.stringify(freshUser));
-      setUser(freshUser);
-      toast.success("You have been upgraded to Pro");
+    if (!token) {
+      navigate(cta.link);
       return;
     }
-    const data = await createCheckoutSession(plan, user._id, user.email, trial);
-    if (data.error) {
-      return toast.error(data.error);
-    }
 
+    let data = null;
+    if (user?.plan === "plus" && plan === "pro") {
+      data = await upgradeToPro(token);
+    } else {
+      data = await createCheckoutSession(plan, token, trial);
+    }
+    if (data?.error) {
+      toast.error(data?.error);
+      return;
+    }
     window.location.href = data.url;
   }
 
@@ -276,7 +267,6 @@ const Pricing = () => {
                     </li>
                   ))}
                 </ul>
-
                 {user?.plan === tier.plan && daysRemaining !== null && (
                   <p className={`text-xs text-center mb-3 font-medium ${
                     daysRemaining <= 0 ? "text-destructive" : daysRemaining <= RENEWAL_WINDOW_DAYS ? "text-yellow-500" : "text-muted-foreground"
@@ -288,14 +278,14 @@ const Pricing = () => {
                 )}
 
                 {tier.plan === "pro" && user && !user.hasUsedProTrial && (
-                <Button
-                  variant={"link"}
-                  size="sm"
-                  className="w-fit mx-auto mb-2 flex flex-col gap-1.5"
-                  onClick={() => handleCheckout(tier.cta, tier.plan, true)}
-                >
-                  7-day free trial
-                </Button>
+                  <Button
+                    variant={"link"}
+                    size="sm"
+                    className="w-fit mx-auto mb-2 flex flex-col gap-1.5"
+                    onClick={() => handleCheckout(tier.cta, tier.plan, true)}
+                  >
+                    7-day free trial
+                  </Button>
                 )}
 
                 <Button

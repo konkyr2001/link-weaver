@@ -1,16 +1,15 @@
 const URL = import.meta.env.VITE_BACKEND_URL;
 
-const createCheckoutSession = async (plan, userId, email, trial = false) => {
+const createCheckoutSession = async (plan, token, trial = false) => {
   try {
     const response = await fetch(`${URL}/api/billing/create-checkout-session`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
       },
       body: JSON.stringify({
         plan,
-        userId,
-        email,
         trial,
       }),
     });
@@ -27,14 +26,13 @@ const createCheckoutSession = async (plan, userId, email, trial = false) => {
   }
 };
 
-const upgradeToPro = async (userId) => {
+const upgradeToPro = async (token) => {
   try {
     const response = await fetch(`${URL}/api/billing/upgrade-to-pro`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ userId }),
     });
     const data = await response.json();
     if (!response.ok) {
