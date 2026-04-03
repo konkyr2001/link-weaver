@@ -20,10 +20,20 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import Header from "@/components/Header";
-import { updateProfile, changePassword, getUser } from "@/services/user";
-import { continueAutoSubscription, cancelAutoSubscription } from "@/services/billing";
+import { 
+  updateProfile, 
+  changePassword, 
+  getUser,
+  deleteGoogleUser,
+  deleteLocalUser,
+} from "@/services/user";
+import { 
+  continueAutoSubscription, 
+  cancelAutoSubscription 
+} from "@/services/billing";
 
 const Account = () => {
+  const token = localStorage.getItem("token");
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : {};
@@ -32,7 +42,6 @@ const Account = () => {
   // Fetch fresh user data from API on mount
   useEffect(() => {
     const fetchUser = async () => {
-      const token = localStorage.getItem("token");
       if (!token) return;
       const freshUser = await getUser(token);
       if (!freshUser?.error) {
@@ -81,7 +90,7 @@ const Account = () => {
       return toast.error("First name and last name are required");
     }
     setSavingProfile(true);
-    const updatedUser = await updateProfile(user._id, firstName, lastName);
+    const updatedUser = await updateProfile(token, firstName, lastName);
     if (updatedUser.error) {
       toast.error(updatedUser.error);
       setSavingProfile(false);
@@ -112,8 +121,9 @@ const Account = () => {
       return toast.error("New passwords do not match");
     }
     setSavingPassword(true);
-    const updatedPassword = await changePassword(user._id, currentPassword, newPassword);
+    const updatedPassword = await changePassword(token, currentPassword, newPassword);
     if (updatedPassword.error) {
+      setSavingPassword(false);
       toast.error(updatedPassword.error);
       return;
     }
@@ -129,13 +139,20 @@ const Account = () => {
       if (deleteConfirmText !== "DELETE") {
         return toast.error("Please type DELETE to confirm");
       }
+      const deletedUser = await deleteGoogleUser(token);
+      if (deletedUser.error) {
+        return toast.error(deletedUser.error);
+      }
     } else {
       if (!deletePassword.trim()) {
         return toast.error("Please enter your password to confirm");
       }
+      const deletedUser = await deleteLocalUser(token, deletePassword);
+      if (deletedUser.error) {
+        return toast.error(deletedUser.error);
+      }
     }
     setDeleting(true);
-    // TODO: Call delete account API with password or confirmation
     toast.success("Account deleted");
     localStorage.removeItem("token");
     localStorage.removeItem("user");
