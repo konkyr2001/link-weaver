@@ -7,6 +7,14 @@ import { createCheckoutSession, upgradeToPro } from "@/services/billing";
 import { getUser } from "@/services/user";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const RENEWAL_WINDOW_DAYS = 10;
 
