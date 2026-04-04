@@ -52,7 +52,7 @@ const ResetPassword = () => {
   if (!token) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
-        <Header active="" />
+        <Header active="login" />
         <main className="flex-1 flex items-center justify-center px-6 py-16">
           <div className="text-center space-y-4">
             <h1 className="font-display text-2xl font-bold text-foreground">Invalid link</h1>
