@@ -223,7 +223,7 @@ export default function History() {
               {items.map((item, i) => {
                 // For free users: use bundle's expiresAt
                 // For paid users: use plan's currentPeriodEnd
-                const expirationDate = item.expiresAt
+                const expirationDate = userPlan === "free"
                   ? item.expiresAt
                   : user?.currentPeriodEnd || null;
                 const days = expirationDate ? daysRemaining(expirationDate) : null;
