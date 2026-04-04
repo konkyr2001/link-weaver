@@ -205,6 +205,40 @@ const deleteLocalUser = async (token, password) => {
   }
 };
 
+const forgotPassword = async (email) => {
+  try {
+    const response = await fetch(`${URL}/api/user/forgotPassword`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      return { error: data.error || "Something went wrong" };
+    }
+    return data;
+  } catch (error) {
+    return { error: error.message || "Something went wrong" };
+  }
+};
+
+const resetPassword = async (token, newPassword) => {
+  try {
+    const response = await fetch(`${URL}/api/user/resetPassword`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token, newPassword }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      return { error: data.error || "Something went wrong" };
+    }
+    return data;
+  } catch (error) {
+    return { error: error.message || "Something went wrong" };
+  }
+};
+
 export {
   login,
   signup,
@@ -215,4 +249,6 @@ export {
   changePassword,
   deleteGoogleUser,
   deleteLocalUser,
+  forgotPassword,
+  resetPassword,
 };

@@ -11,6 +11,8 @@ import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
 import History from "./pages/History";
 import Account from "./pages/Account";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import GuestRoute from "./components/GuestRoute";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -35,6 +37,9 @@ const App = () => (
             <GuestRoute> <Login /> </GuestRoute>} />
           <Route path="/signup" element={
             <GuestRoute> <SignUp /> </GuestRoute>} />
+          <Route path="/forgot-password" element={
+            <GuestRoute><ForgotPassword /></GuestRoute>} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
