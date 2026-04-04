@@ -6,7 +6,7 @@ const createCheckoutSession = async (plan, token, trial = false) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         plan,
@@ -26,13 +26,17 @@ const createCheckoutSession = async (plan, token, trial = false) => {
   }
 };
 
-const upgradeToPro = async (token) => {
+const upgradeToPro = async (token, trial) => {
   try {
     const response = await fetch(`${URL}/api/billing/upgrade-to-pro`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
+      body: JSON.stringify({
+        trial,
+      }),
     });
     const data = await response.json();
     if (!response.ok) {
@@ -46,13 +50,16 @@ const upgradeToPro = async (token) => {
 
 const continueAutoSubscription = async (userId) => {
   try {
-    const response = await fetch(`${URL}/api/billing/resume-auto-subscription`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `${URL}/api/billing/resume-auto-subscription`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId }),
       },
-      body: JSON.stringify({ userId }),
-    });
+    );
     const data = await response.json();
     if (!response.ok) {
       return { error: data.error || "Something went wrong" };
@@ -65,13 +72,16 @@ const continueAutoSubscription = async (userId) => {
 
 const cancelAutoSubscription = async (userId) => {
   try {
-    const response = await fetch(`${URL}/api/billing/cancel-auto-subscription`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `${URL}/api/billing/cancel-auto-subscription`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId }),
       },
-      body: JSON.stringify({ userId }),
-    });
+    );
     const data = await response.json();
     if (!response.ok) {
       return { error: data.error || "Something went wrong" };

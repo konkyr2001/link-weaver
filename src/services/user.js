@@ -205,44 +205,6 @@ const deleteLocalUser = async (token, password) => {
   }
 };
 
-const updateProject = async (token, slug, projectName, urls) => {
-  try {
-    const response = await fetch(`${URL}/api/project/${slug}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ projectName, urls }),
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      return { error: data.error || "Something went wrong" };
-    }
-    return data;
-  } catch (error) {
-    return { error: error.message || "Something went wrong" };
-  }
-};
-
-const deleteProject = async (token, slug) => {
-  try {
-    const response = await fetch(`${URL}/api/project/${slug}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      return { error: data.error || "Something went wrong" };
-    }
-    return data;
-  } catch (error) {
-    return { error: error.message || "Something went wrong" };
-  }
-};
-
 export {
   login,
   signup,
@@ -253,6 +215,4 @@ export {
   changePassword,
   deleteGoogleUser,
   deleteLocalUser,
-  updateProject,
-  deleteProject,
 };

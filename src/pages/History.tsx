@@ -15,8 +15,15 @@ import {
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getUserHistory, updateProject, deleteProject } from "@/services/user";
-import { normalizeUrl, generateId, extractDomain, getFaviconUrl } from "@/lib/bundle";
+import { getUserHistory } from "@/services/user";
+import { 
+  normalizeUrl,
+  generateId, 
+  extractDomain, 
+  getFaviconUrl, 
+  updateProject, 
+  deleteProject 
+} from "@/lib/bundle";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -269,6 +276,7 @@ export default function History() {
                         >
                           <Link
                             to={`/b/${item.slug}`}
+                            target="_blank"
                             className="flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-accent text-foreground transition-colors w-full"
                             onClick={() => setOpenPopover(null)}
                           >

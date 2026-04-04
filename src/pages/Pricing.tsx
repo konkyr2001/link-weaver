@@ -75,7 +75,6 @@ const getTierState = (userPlan: string | null, daysRemaining: number | null) => 
 };
 
 const Pricing = () => {
-  
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -83,6 +82,7 @@ const Pricing = () => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
   });
+  const isTrial = user.trialEnd && new Date(user.trialEnd) > new Date();
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
   const [pendingUpgrade, setPendingUpgrade] = useState<{ cta: any; plan: string; trial: boolean } | null>(null);
   const daysRemaining = getDaysRemaining(user?.currentPeriodEnd ?? null);
@@ -209,7 +209,7 @@ const Pricing = () => {
   const proceedCheckout = async (plan: string, trial: boolean) => {
     let data = null;
     if (user?.plan === "plus" && plan === "pro") {
-      data = await upgradeToPro(token!);
+      data = await upgradeToPro(token!, trial);
     } else {
       data = await createCheckoutSession(plan, token!, trial);
     }
@@ -301,11 +301,11 @@ const Pricing = () => {
                   }`}>
                     {daysRemaining <= 0
                       ? "Your plan has expired"
-                      : `${daysRemaining} day${daysRemaining !== 1 ? "s" : ""} remaining`}
+                      : `${daysRemaining} day${daysRemaining !== 1 ? "s" : ""} ${isTrial ? " free trial " : ""} remaining`}
                   </p>
                 )}
 
-                {tier.plan === "pro" && user && !user.hasUsedProTrial && (
+                {tier.plan === "pro" && user && !user.hasUsedProTrial && user.plan !== "pro" && (
                   <Button
                     variant={"link"}
                     size="sm"

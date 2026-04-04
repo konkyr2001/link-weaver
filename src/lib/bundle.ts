@@ -41,9 +41,9 @@ export async function createBundle(bundle: Bundle, userToken: string, captcha: s
   }
 }
 
-export async function fetchBundleBySlug(param: string): Promise<Bundle | null> {
+export async function fetchBundleBySlug(slug: string): Promise<Bundle | null> {
   try {
-    const res = await fetch (`${BACKEND_URL}/api/project/${param}`);
+    const res = await fetch (`${BACKEND_URL}/api/project/${slug}`);
     if (res.ok) {
       const result = await res.json();
       return {
@@ -56,6 +56,44 @@ export async function fetchBundleBySlug(param: string): Promise<Bundle | null> {
     return null;
   }
 }
+
+export async function updateProject(token, slug, projectName, urls) {
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/project/${slug}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ projectName, urls }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      return { error: data.error || "Something went wrong" };
+    }
+    return data;
+  } catch (error) {
+    return { error: error.message || "Something went wrong" };
+  }
+};
+
+export async function deleteProject(token, slug) {
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/project/${slug}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      return { error: data.error || "Something went wrong" };
+    }
+    return data;
+  } catch (error) {
+    return { error: error.message || "Something went wrong" };
+  }
+};
 
 export function extractDomain(url: string): string {
   try {

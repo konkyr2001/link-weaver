@@ -33,9 +33,9 @@ const Header = ({ active }: HeaderProps) => {
 
   const navLinks = (
     <>
-      <Link to="/" className={linkClass("home")} onClick={() => setOpen(false)}>
+      {/* <Link to="/" className={linkClass("home")} onClick={() => setOpen(false)}>
         Home
-      </Link>
+      </Link> */}
       <Link to="/pricing" className={linkClass("pricing")} onClick={() => setOpen(false)}>
         Pricing
       </Link>

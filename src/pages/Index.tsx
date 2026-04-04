@@ -49,7 +49,7 @@ const Index = () => {
           }
           localStorage.setItem("user", JSON.stringify(fetchUser));
           setUser(fetchUser);
-          toast.success("Payment successful! Your account has been updated.");
+          toast.success("Payment successful! Your account is being updated...");
           navigate("/", { replace: true });
         } catch (error) {
           toast.error("Failed to refresh user");
