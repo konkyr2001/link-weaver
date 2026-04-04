@@ -26,7 +26,8 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/b/:slug" element={<BundleView />} />
           <Route path="/pricing" element={<Pricing />} />
-          <Route path="/history" element={<History />} />
+          <Route path="/history" element={
+            <ProtectedRoute><History /></ProtectedRoute>} />
           <Route path="/account" element={
             <ProtectedRoute><Account /></ProtectedRoute>
           } />
