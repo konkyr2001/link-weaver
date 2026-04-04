@@ -68,7 +68,7 @@ const ResetPassword = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <Header active="" />
+      <Header active="login" />
 
       <main className="flex-1 flex items-center justify-center px-6 py-16">
         <motion.div
