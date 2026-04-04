@@ -221,7 +221,13 @@ export default function History() {
           ) : (
             <div className="space-y-4">
               {items.map((item, i) => {
-                const days = item.expiresAt ? daysRemaining(item.expiresAt) : null;
+                // For free users: use bundle's expiresAt
+                // For paid users: use plan's currentPeriodEnd
+                const expirationDate = item.expiresAt
+                  ? item.expiresAt
+                  : user?.currentPeriodEnd || null;
+                const days = expirationDate ? daysRemaining(expirationDate) : null;
+                const isBundleExpiry = !!item.expiresAt;
                 const bundleUrl = `${window.location.origin}/b/${item.slug}`;
                 const showMenu = userPlan === "pro" || userPlan === "plus";
 
@@ -251,8 +257,10 @@ export default function History() {
                             }`}
                           >
                             {days === 0
-                              ? `Expires in ${hoursRemaining(item.expiresAt)} hour${hoursRemaining(item.expiresAt) !== 1 ? "s" : ""}`
-                              : `${days} day${days !== 1 ? "s" : ""} remaining`}
+                              ? `Expires in ${hoursRemaining(expirationDate)} hour${hoursRemaining(expirationDate) !== 1 ? "s" : ""}`
+                              : isBundleExpiry
+                                ? `Bundle expires in ${days} day${days !== 1 ? "s" : ""}`
+                                : `Plan renews in ${days} day${days !== 1 ? "s" : ""}`}
                           </span>
                         </div>
                       )}
