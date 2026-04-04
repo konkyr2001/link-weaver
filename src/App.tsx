@@ -11,6 +11,8 @@ import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
 import History from "./pages/History";
 import Account from "./pages/Account";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import GuestRoute from "./components/GuestRoute";
 import ProtectedRoute from "./components/ProtectedRoute";
 
