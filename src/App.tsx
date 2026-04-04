@@ -37,6 +37,9 @@ const App = () => (
             <GuestRoute> <Login /> </GuestRoute>} />
           <Route path="/signup" element={
             <GuestRoute> <SignUp /> </GuestRoute>} />
+          <Route path="/forgot-password" element={
+            <GuestRoute><ForgotPassword /></GuestRoute>} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
