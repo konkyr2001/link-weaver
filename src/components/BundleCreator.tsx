@@ -101,13 +101,15 @@ export function BundleCreator() {
   return (
     <>
       {!token && (
-        <Captcha
-          key={theme}
-          theme={theme}
-          ref={captchaRef}
-          size="invisible"
-          sitekey={import.meta.env.VITE_RECAPTCHA_INVISIBLE_SECRET_KEY}
-        />
+        <div className="relative z-50">
+          <Captcha
+            key={theme}
+            theme={theme}
+            ref={captchaRef}
+            size="invisible"
+            sitekey={import.meta.env.VITE_RECAPTCHA_INVISIBLE_SECRET_KEY}
+          />
+        </div>
       )}
       <div className="w-full max-w-2xl mx-auto">
         <motion.div
