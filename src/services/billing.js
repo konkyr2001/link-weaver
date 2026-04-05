@@ -48,16 +48,15 @@ const upgradeToPro = async (token, trial) => {
   }
 };
 
-const continueAutoSubscription = async (userId) => {
+const continueAutoSubscription = async (token) => {
   try {
     const response = await fetch(
       `${URL}/api/billing/resume-auto-subscription`,
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ userId }),
       },
     );
     const data = await response.json();
@@ -70,16 +69,15 @@ const continueAutoSubscription = async (userId) => {
   }
 };
 
-const cancelAutoSubscription = async (userId) => {
+const cancelAutoSubscription = async (token) => {
   try {
     const response = await fetch(
       `${URL}/api/billing/cancel-auto-subscription`,
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ userId }),
       },
     );
     const data = await response.json();

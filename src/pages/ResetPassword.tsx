@@ -27,11 +27,15 @@ const ResetPassword = () => {
     if (!password.trim() || !confirmPassword.trim()) {
       return toast.error("Please fill in all fields");
     }
+    if (password.length < 8) {
+      return toast.error("Password must be at least 8 characters");
+    }
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return toast.error("Password must include a lowercase, an uppercase and a number");
+    }
     if (password !== confirmPassword) {
       return toast.error("Passwords do not match");
-    }
-    if (password.length < 6) {
-      return toast.error("Password must be at least 6 characters");
     }
     if (!token) {
       return toast.error("Invalid or missing reset token");

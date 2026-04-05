@@ -67,7 +67,7 @@ const authorizeGoogleUser = async (token) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        token
+        token,
       }),
     });
     const data = await response.json();
@@ -87,8 +87,8 @@ const getUserHistory = async (token) => {
   try {
     const response = await fetch(`${URL}/api/user/history`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
     const data = await response.json();
     if (!response.ok) {
@@ -125,12 +125,12 @@ const updateProfile = async (token, firstName, lastName) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         firstName,
         lastName,
-      })
+      }),
     });
     const data = await response.json();
     if (!response.ok) {
@@ -148,11 +148,11 @@ const changePassword = async (token, currentPassword, newPassword) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         currentPassword,
-        newPassword
+        newPassword,
       }),
     });
     const data = await response.json();
@@ -189,11 +189,11 @@ const deleteLocalUser = async (token, password) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        password
-      })
+        password,
+      }),
     });
     const data = await response.json();
     if (!response.ok) {
@@ -205,12 +205,12 @@ const deleteLocalUser = async (token, password) => {
   }
 };
 
-const forgotPassword = async (email) => {
+const forgotPassword = async (email, captcha) => {
   try {
     const response = await fetch(`${URL}/api/user/forgotPassword`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email, captcha }),
     });
     const data = await response.json();
     if (!response.ok) {
@@ -226,7 +226,9 @@ const resetPassword = async (token, newPassword) => {
   try {
     const response = await fetch(`${URL}/api/user/resetPassword`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json" 
+      },
       body: JSON.stringify({ token, newPassword }),
     });
     const data = await response.json();

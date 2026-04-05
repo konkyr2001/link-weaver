@@ -43,7 +43,8 @@ interface HistoryItem {
   _id: string;
   projectName: string;
   slug: string;
-  expiresAt: string;
+  expiresAt: string | null;
+  premiumExpiresAt: string | null;
   createdAt: string;
   urlCount: number;
   urls?: { id: string; url: string; title?: string }[];
@@ -111,13 +112,21 @@ export default function History() {
   }
 
   // Edit handlers
-  function openEdit(item: HistoryItem) {
-    setEditItem(item);
-    setEditTitle(item.projectName);
-    setEditLinks(item.urls ? item.urls.map((u) => ({ ...u })) : []);
-    setNewUrl("");
-    setOpenPopover(null);
-  }
+function openEdit(item: HistoryItem) {
+  setEditItem(item);
+  setEditTitle(item.projectName);
+  setEditLinks(
+    item.urls
+      ? item.urls.map((u) => ({
+          id: u.id || generateId(),
+          url: u.url,
+          title: u.title,
+        }))
+      : []
+  );
+  setNewUrl("");
+  setOpenPopover(null);
+}
 
   function addEditLink() {
     const trimmed = newUrl.trim();
@@ -223,13 +232,18 @@ export default function History() {
               {items.map((item, i) => {
                 // For free users: use bundle's expiresAt
                 // For paid users: use plan's currentPeriodEnd
-                const expirationDate = userPlan === "free"
-                  ? item.expiresAt
-                  : user?.currentPeriodEnd || null;
-                const days = expirationDate ? daysRemaining(expirationDate) : null;
                 const isBundleExpiry = !!item.expiresAt;
                 const bundleUrl = `${window.location.origin}/b/${item.slug}`;
-                const showMenu = userPlan === "pro" || userPlan === "plus";
+                const hasPaidPlan = userPlan === "pro" || userPlan === "plus";
+                const isPremiumBundle = item.expiresAt === null;
+                const isActivePremiumBundle =
+                  isPremiumBundle &&
+                  item.premiumExpiresAt &&
+                  new Date(item.premiumExpiresAt) > new Date();
+                const expirationDate = isPremiumBundle
+                  ? item.premiumExpiresAt
+                  : item.expiresAt;
+                const days = expirationDate ? daysRemaining(expirationDate) : null;
 
                 return (
                   <motion.div
@@ -241,7 +255,16 @@ export default function History() {
                   >
                     <div className="min-w-0 flex-1">
                       <h2 className="font-display font-semibold text-foreground truncate">
-                        {item.projectName}
+                        {hasPaidPlan || isActivePremiumBundle ? (
+                          <Link to={bundleUrl} target="_blank">
+                            {item.projectName}
+                          </Link>
+                        ) : (
+                          <span>
+                            {item.projectName}
+                          </span>
+                        )}
+
                       </h2>
                       <p className="text-sm text-muted-foreground font-mono truncate mt-1">
                         {bundleUrl}
@@ -265,8 +288,7 @@ export default function History() {
                         </div>
                       )}
                     </div>
-
-                    {showMenu ? (
+                    {hasPaidPlan ? (
                       <Popover
                         open={openPopover === item._id}
                         onOpenChange={(open) =>
@@ -309,8 +331,20 @@ export default function History() {
                           </button>
                         </PopoverContent>
                       </Popover>
+                    ) : isPremiumBundle ? (
+                      <Button
+                        variant="ghost"
+                        onClick={() => openDelete(item)}
+                        className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                      >
+                        <Trash2 className="w-4 h-4 mr-1" />
+                        Delete
+                      </Button>
                     ) : (
-                      <Link to={`/b/${item.slug}`}>
+                      <Link 
+                        to={`/b/${item.slug}`}
+                        target="_blank"
+                      >
                         <Button variant="glass" size="sm">
                           <ExternalLink className="w-4 h-4 mr-1" />
                           View

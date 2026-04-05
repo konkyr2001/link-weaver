@@ -17,25 +17,29 @@ export function generateId(): string {
   return Math.random().toString(36).substring(2, 9);
 }
 
-export async function createBundle(bundle: Bundle, userToken: string, captcha: string): Promise<string | null> {
+export async function createBundle(bundle: Bundle, token: string, captcha: string): Promise<{ data?: string; error?: string }>  {
   try {
+    const headers: any = {
+      "Content-Type": "application/json",
+    };
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+    console.log(headers)
     const res = await fetch (`${BACKEND_URL}/api/project`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers,
       body: JSON.stringify({
         projectName: bundle.title,
         urls: bundle.links,
-        userToken,
         captcha
       })
     });
+    const result = await res.json();
     if (res.ok) {
-      const result = await res.json();
-      return `${window.location.origin}/b/${result.slug}`;
+      return { data: `${window.location.origin}/b/${result.slug}` };
     }
-    return null;
+    return { error: result.error.toString() || "Something went wrong" };
   } catch {
     return null;
   }

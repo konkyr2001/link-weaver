@@ -16,7 +16,7 @@ export function BundleCreator() {
   const { theme, toggleTheme } = useTheme();
   const [title, setTitle] = useState("");
   const [links, setLinks] = useState<BundleLink[]>([]);
-  const [generatedUrl, setGeneratedUrl] = useState<string | null>(null);
+  const [generatedUrl, setGeneratedUrl] = useState(null);
   const [copied, setCopied] = useState(false);
   const captchaRef = useRef<Captcha>(null);
 
@@ -84,7 +84,10 @@ export function BundleCreator() {
     }
     const userToken = token || null;
     const url = await createBundle(bundle, userToken, captcha);
-    setGeneratedUrl(url);
+    if (url?.error) {
+      return toast.error(url.error);
+    }
+    setGeneratedUrl(url.data);
   };
 
   const copyToClipboard = async () => {
@@ -103,7 +106,7 @@ export function BundleCreator() {
           theme={theme}
           ref={captchaRef}
           size="invisible"
-          sitekey={import.meta.env.VITE_GENERATE_URL_RECAPTCHA_SITE_KEY}
+          sitekey={import.meta.env.VITE_RECAPTCHA_INVISIBLE_SECRET_KEY}
         />
       )}
       <div className="w-full max-w-2xl mx-auto">
