@@ -73,7 +73,6 @@ const Account = () => {
   const plan = user.plan || "free";
   const isTrial = user.trialEnd && new Date(user.trialEnd) > new Date();
   const currentPeriodEnd = isTrial ? user.trialEnd : user.currentPeriodEnd;
- 
   const getDaysRemaining = () => {
     if (!currentPeriodEnd) return null;
     const end = new Date(currentPeriodEnd);
@@ -162,9 +161,9 @@ const Account = () => {
   const handleSubscription = async (subscription) => {
     let autoSub;
     if (subscription) {
-      autoSub = await continueAutoSubscription(user._id);
+      autoSub = await continueAutoSubscription(token);
     } else {
-      autoSub = await cancelAutoSubscription(user._id);
+      autoSub = await cancelAutoSubscription(token);
     }
     if (autoSub.error) {
       toast.error(autoSub.error);
@@ -298,7 +297,7 @@ const Account = () => {
                       className="pl-10 opacity-60"
                     />
                   </div>
-                  <p className="text-xs text-muted-foreground">Email changes require verification (coming soon)</p>
+                  {/* <p className="text-xs text-muted-foreground">Email changes require verification (coming soon)</p> */}
                 </div>
 
                 <Button type="submit" disabled={savingProfile}>

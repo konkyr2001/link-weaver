@@ -25,7 +25,6 @@ export async function createBundle(bundle: Bundle, token: string, captcha: strin
     if (token) {
       headers.Authorization = `Bearer ${token}`;
     }
-    console.log(headers)
     const res = await fetch (`${BACKEND_URL}/api/project`, {
       method: "POST",
       headers,

@@ -232,8 +232,8 @@ function openEdit(item: HistoryItem) {
               {items.map((item, i) => {
                 // For free users: use bundle's expiresAt
                 // For paid users: use plan's currentPeriodEnd
-                const isBundleExpiry = !!item.expiresAt;
                 const bundleUrl = `${window.location.origin}/b/${item.slug}`;
+                const isBundleExpiry = item.expiresAt;
                 const hasPaidPlan = userPlan === "pro" || userPlan === "plus";
                 const isPremiumBundle = item.expiresAt === null;
                 const isActivePremiumBundle =
@@ -243,11 +243,20 @@ function openEdit(item: HistoryItem) {
                 const expirationDate = isPremiumBundle
                   ? item.premiumExpiresAt
                   : item.expiresAt;
-                const days = expirationDate ? daysRemaining(expirationDate) : null;
-
+                const isTrial = user.trialEnd && new Date(user.trialEnd) > new Date();
+                const currentPeriodEnd = isTrial 
+                  ? user.trialEnd 
+                  : isPremiumBundle 
+                    ? item.premiumExpiresAt 
+                    : item.expiresAt;
+                const days = currentPeriodEnd ? daysRemaining(currentPeriodEnd) : null;
+                console.log("item.expiresAt: ", item.expiresAt)
+                console.log("date now: ", new Date());
+                console.log("days remaining: ",daysRemaining(currentPeriodEnd))
+                console.log("hours remaining: ",hoursRemaining(currentPeriodEnd))
                 return (
                   <motion.div
-                    key={item._id || i}
+                    key={ item._id || i }
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
@@ -283,7 +292,7 @@ function openEdit(item: HistoryItem) {
                               ? `Expires in ${hoursRemaining(expirationDate)} hour${hoursRemaining(expirationDate) !== 1 ? "s" : ""}`
                               : isBundleExpiry
                                 ? `Bundle expires in ${days} day${days !== 1 ? "s" : ""}`
-                                : `Plan renews in ${days} day${days !== 1 ? "s" : ""}`}
+                                : `Bundle expires in ${days} day${days !== 1 ? "s" : ""} ${isTrial ? "(free trial)" : ""}`}
                           </span>
                         </div>
                       )}
