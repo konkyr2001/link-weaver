@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link2, Copy, Check, Share2 } from "lucide-react";
+import { Link2, Copy, Check, Share2, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LinkInput } from "@/components/LinkInput";
 import { LinkItem } from "@/components/LinkItem";
@@ -10,6 +10,15 @@ import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea
 import { createPortal } from "react-dom";
 import Captcha from "react-google-recaptcha";
 import { useTheme } from "@/hooks/use-theme";
+import { useNavigate } from "react-router-dom";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 export function BundleCreator() {
   const token = localStorage.getItem("token");
