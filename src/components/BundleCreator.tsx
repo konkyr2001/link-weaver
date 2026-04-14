@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link2, Copy, Check, Share2, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 
+const BUNDLE_DRAFT_KEY = "bundle_draft";
+
 export function BundleCreator() {
   const token = localStorage.getItem("token");
   const { theme, toggleTheme } = useTheme();
@@ -30,6 +32,41 @@ export function BundleCreator() {
   const [copied, setCopied] = useState(false);
   const [showSignupModal, setShowSignupModal] = useState(false);
   const captchaRef = useRef<Captcha>(null);
+
+  useEffect(() => {
+    const savedDraft = sessionStorage.getItem(BUNDLE_DRAFT_KEY);
+    console.log(savedDraft)
+    if (savedDraft) {
+      try {
+        const parsed = JSON.parse(savedDraft);
+        setTitle(parsed.title || "");
+        setLinks(Array.isArray(parsed.links) ? parsed.links : []);
+      } catch (error) {
+        console.error("Failed to restore bundle draft:", error);
+        sessionStorage.removeItem(BUNDLE_DRAFT_KEY);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    sessionStorage.setItem(
+      BUNDLE_DRAFT_KEY,
+      JSON.stringify({
+        title,
+        links,
+      })
+    );
+  }, [title, links, token]);
+
+  function saveDraft() {
+    sessionStorage.setItem(
+      BUNDLE_DRAFT_KEY,
+      JSON.stringify({
+        title,
+        links,
+      })
+    );
+  }
 
   const isValidUrl = (url: string): boolean => {
     const normalized = normalizeUrl(url);
@@ -76,8 +113,8 @@ export function BundleCreator() {
   };
 
   const proceedWithGenerate = async () => {
-    const bundle = { 
-      title: title.trim() || undefined, 
+    const bundle = {
+      title: title.trim() || undefined,
       links, createdAt: Date.now(),
     };
     let captcha = null;
@@ -90,6 +127,7 @@ export function BundleCreator() {
     if (url?.error) {
       return toast.error(url.error);
     }
+    sessionStorage.removeItem(BUNDLE_DRAFT_KEY);
     setGeneratedUrl(url.data);
   };
 
@@ -104,8 +142,9 @@ export function BundleCreator() {
     }
 
     // Show signup prompt once per session for guests
-    if (!token && !sessionStorage.getItem("signup_prompt_shown")) {
+    if (!sessionStorage.getItem("signup_prompt_shown")) {
       sessionStorage.setItem("signup_prompt_shown", "true");
+      console.log("mpike")
       setShowSignupModal(true);
       return;
     }
@@ -254,14 +293,14 @@ export function BundleCreator() {
 
       {/* Signup prompt modal */}
       <Dialog open={showSignupModal} onOpenChange={setShowSignupModal}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent>
           <DialogHeader>
             <div className="mx-auto mb-2 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
               <UserPlus className="w-6 h-6 text-primary" />
             </div>
             <DialogTitle className="text-center">Extend your bundle's life!</DialogTitle>
             <DialogDescription className="text-center">
-              Create a free account to keep your links active for up to 30 days instead of just 3.
+              Create a free account to extend your bundles from {import.meta.env.VITE_FREE_NO_ACCOUNT_EXPIRATION_DAY} days to {import.meta.env.VITE_FREE_ACCOUNT_EXPIRATION_DAY} days.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-2">
@@ -279,6 +318,7 @@ export function BundleCreator() {
               variant="hero"
               className="flex-1"
               onClick={() => {
+                saveDraft()
                 setShowSignupModal(false);
                 navigate("/signup");
               }}

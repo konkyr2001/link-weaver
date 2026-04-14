@@ -88,7 +88,7 @@ const Pricing = () => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
   });
-  const isTrial = user.trialEnd && new Date(user.trialEnd) > new Date();
+  const isTrial = user?.trialEnd && new Date(user.trialEnd) > new Date();
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
   const [pendingUpgrade, setPendingUpgrade] = useState<{ cta: any; plan: string; trial: boolean } | null>(null);
   const daysRemaining = getDaysRemaining(user?.currentPeriodEnd ?? null);

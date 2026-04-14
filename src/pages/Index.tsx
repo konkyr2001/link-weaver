@@ -79,7 +79,7 @@ const Index = () => {
               <span className="text-gradient">not chaos</span>
             </h1>
             <p className="text-muted-foreground text-lg max-w-md mx-auto">
-              Bundle multiple URLs into one clean, shareable link. Like WeTransfer, but for links.
+              Bundle multiple URLs into one clean, shareable link.
             </p>
           </motion.div>
 

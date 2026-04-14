@@ -245,7 +245,7 @@ function openEdit(item: HistoryItem) {
               {items.map((item, i) => {
                 // For free users: use bundle's expiresAt
                 // For paid users: use plan's currentPeriodEnd
-                const bundleUrl = `${window.location.origin}/b/${item.slug}`;
+                const bundleUrl = `${window.location.origin}/${item.slug}`;
                 const isBundleExpiry = item.expiresAt;
                 const hasPaidPlan = userPlan === "pro" || userPlan === "plus";
                 const isPremiumBundle = item.expiresAt === null;
@@ -327,7 +327,7 @@ function openEdit(item: HistoryItem) {
                           className="w-40 p-1.5"
                         >
                           <Link
-                            to={`/b/${item.slug}`}
+                            to={`/${item.slug}`}
                             target="_blank"
                             className="flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-accent text-foreground transition-colors w-full"
                             onClick={() => setOpenPopover(null)}
@@ -364,7 +364,7 @@ function openEdit(item: HistoryItem) {
                       </Button>
                     ) : (
                       <Link 
-                        to={`/b/${item.slug}`}
+                        to={`/${item.slug}`}
                         target="_blank"
                       >
                         <Button variant="glass" size="sm">

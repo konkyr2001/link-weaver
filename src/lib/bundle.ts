@@ -36,7 +36,7 @@ export async function createBundle(bundle: Bundle, token: string, captcha: strin
     });
     const result = await res.json();
     if (res.ok) {
-      return { data: `${window.location.origin}/b/${result.slug}` };
+      return { data: `${window.location.origin}/${result.slug}` };
     }
     return { error: result.error.toString() || "Something went wrong" };
   } catch {
