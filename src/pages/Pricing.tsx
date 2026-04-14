@@ -337,6 +337,24 @@ const Pricing = () => {
 
           {/* FAQ Section */}
           <FAQ />
+          
+          {/* View Full FAQ Link */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            className="mt-8 text-center"
+          >
+            <p className="text-muted-foreground">
+              Still have questions?{" "}
+              <a
+                href="/faq"
+                className="text-primary hover:underline font-medium"
+              >
+                View full FAQ
+              </a>
+            </p>
+          </motion.div>
         </div>
       </main>
 
