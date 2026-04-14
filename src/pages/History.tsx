@@ -273,7 +273,7 @@ function openEdit(item: HistoryItem) {
                   >
                     <div className="min-w-0 flex-1">
                       <h2 className="font-display font-semibold text-foreground truncate">
-                        {hasPaidPlan || isActivePremiumBundle ? (
+                        {hasPaidPlan || isActivePremiumBundle || (user.plan === "free" && isBundleExpiry) ? (
                           <Link to={bundleUrl} target="_blank">
                             {item.projectName}
                           </Link>

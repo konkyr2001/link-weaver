@@ -114,7 +114,7 @@ const Pricing = () => {
       features: [
         "Unlimited bundles",
         "Unlimited links per bundle",
-        "Bundles expire after 5 days",
+        `Bundles expire after ${import.meta.env.VITE_FREE_NO_ACCOUNT_EXPIRATION_DAY} days`,
       ],
       negatives: [
         "Expired links are stored in history",
