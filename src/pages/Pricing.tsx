@@ -8,6 +8,12 @@ import { getUser } from "@/services/user";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
