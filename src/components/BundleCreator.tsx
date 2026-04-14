@@ -23,10 +23,12 @@ import {
 export function BundleCreator() {
   const token = localStorage.getItem("token");
   const { theme, toggleTheme } = useTheme();
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [links, setLinks] = useState<BundleLink[]>([]);
   const [generatedUrl, setGeneratedUrl] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [showSignupModal, setShowSignupModal] = useState(false);
   const captchaRef = useRef<Captcha>(null);
 
   const isValidUrl = (url: string): boolean => {
