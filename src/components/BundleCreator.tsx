@@ -75,15 +75,7 @@ export function BundleCreator() {
     setGeneratedUrl(null);
   };
 
-  const generateLink = async () => {
-    if (!title.trim()) {
-      toast.error("Give your bundle a title first");
-      return;
-    }
-    if (links.length === 0) {
-      toast.error("Add at least one link first");
-      return;
-    }
+  const proceedWithGenerate = async () => {
     const bundle = { 
       title: title.trim() || undefined, 
       links, createdAt: Date.now(),
@@ -98,6 +90,27 @@ export function BundleCreator() {
     if (url?.error) {
       return toast.error(url.error);
     }
+    setGeneratedUrl(url.data);
+  };
+
+  const generateLink = async () => {
+    if (!title.trim()) {
+      toast.error("Give your bundle a title first");
+      return;
+    }
+    if (links.length === 0) {
+      toast.error("Add at least one link first");
+      return;
+    }
+
+    // Show signup prompt once per session for guests
+    if (!token && !sessionStorage.getItem("signup_prompt_shown")) {
+      sessionStorage.setItem("signup_prompt_shown", "true");
+      setShowSignupModal(true);
+      return;
+    }
+
+    await proceedWithGenerate();
     setGeneratedUrl(url.data);
   };
 
