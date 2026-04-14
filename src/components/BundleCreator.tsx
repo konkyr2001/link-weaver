@@ -251,6 +251,43 @@ export function BundleCreator() {
           )}
         </motion.div>
       </div>
+
+      {/* Signup prompt modal */}
+      <Dialog open={showSignupModal} onOpenChange={setShowSignupModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <div className="mx-auto mb-2 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+              <UserPlus className="w-6 h-6 text-primary" />
+            </div>
+            <DialogTitle className="text-center">Extend your bundle's life!</DialogTitle>
+            <DialogDescription className="text-center">
+              Create a free account to keep your links active for up to 30 days instead of just 3.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-2">
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={() => {
+                setShowSignupModal(false);
+                proceedWithGenerate();
+              }}
+            >
+              Continue without account
+            </Button>
+            <Button
+              variant="hero"
+              className="flex-1"
+              onClick={() => {
+                setShowSignupModal(false);
+                navigate("/signup");
+              }}
+            >
+              Create account
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
