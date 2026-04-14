@@ -287,28 +287,28 @@ function openEdit(item: HistoryItem) {
                       <p className="text-sm text-muted-foreground font-mono truncate mt-1">
                         {bundleUrl}
                       </p>
-                    {time && (
-                      <div className="flex items-center gap-1.5 mt-2">
-                        <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-                        <span
-                          className={`text-xs font-medium ${
-                            time.days < 3 ? "text-destructive" : "text-muted-foreground"
-                          }`}
-                        >
-                          {time.days > 0
-                            ? `${isBundleExpiry ? "Bundle expires" : "Expires"} in ${time.days} day${time.days !== 1 ? "s" : ""}${
-                              time.days < 7 && time.hours > 0
-                                ? ` and ${time.hours} hour${time.hours !== 1 ? "s" : ""}`
-                                : ""
-                              }${isTrial ? " (free trial)" : ""}`
-                            : time.hours > 0
-                              ? `${isBundleExpiry ? "Bundle expires" : "Expires"} in ${time.hours} hour${time.hours !== 1 ? "s" : ""}${isTrial ? " (free trial)" : ""}`
-                              : time.minutes > 0
-                                ? `${isBundleExpiry ? "Bundle expires" : "Expires"} in ${time.minutes} minute${time.minutes !== 1 ? "s" : ""}${isTrial ? " (free trial)" : ""}`
-                                : `${isBundleExpiry ? "Bundle expires" : "Expires"} in less than a minute${time.minutes !== 1 ? "s" : ""}${isTrial ? " (free trial)" : ""}`}
-                        </span>
-                      </div>
-                    )}
+                      {time && (
+                        <div className="flex items-center gap-1.5 mt-2">
+                          <Clock className="w-3.5 h-3.5 text-muted-foreground" />
+                          <span
+                            className={`text-xs font-medium ${
+                              time.days < 3 ? "text-destructive" : "text-muted-foreground"
+                            }`}
+                          >
+                            {time.days > 0
+                              ? `${isBundleExpiry ? "Bundle expires" : "Expires"} in ${time.days} day${time.days !== 1 ? "s" : ""}${
+                                time.days < 7 && time.hours > 0
+                                  ? ` and ${time.hours} hour${time.hours !== 1 ? "s" : ""}`
+                                  : ""
+                                }${isTrial ? " (free trial)" : ""}`
+                              : time.hours > 0
+                                ? `${isBundleExpiry ? "Bundle expires" : "Expires"} in ${time.hours} hour${time.hours !== 1 ? "s" : ""}${isTrial ? " (free trial)" : ""}`
+                                : time.minutes > 0
+                                  ? `${isBundleExpiry ? "Bundle expires" : "Expires"} in ${time.minutes} minute${time.minutes !== 1 ? "s" : ""}${isTrial ? " (free trial)" : ""}`
+                                  : `${isBundleExpiry ? "Bundle expires" : "Expires"} in less than a minute${time.minutes !== 1 ? "s" : ""}${isTrial ? " (free trial)" : ""}`}
+                          </span>
+                        </div>
+                      )}
                     </div>
                     {hasPaidPlan ? (
                       <Popover

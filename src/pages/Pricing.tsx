@@ -8,12 +8,6 @@ import { getUser } from "@/services/user";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -21,17 +15,21 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import FAQ from "@/components/FAQ";
 
 const RENEWAL_WINDOW_DAYS = 10;
 
-const getDaysRemaining = (currentPeriodEnd: string | null): number | null => {
-  if (!currentPeriodEnd) return null;
-  const end = new Date(currentPeriodEnd);
-  const now = new Date();
-  return Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-};
+function getTimeRemaining(expiresAt: string) {
+  const delta = Math.max(0, new Date(expiresAt).getTime() - Date.now()) / 1000;
 
-const getTierState = (userPlan: string | null, daysRemaining: number | null) => {
+  const days = Math.floor(delta / 86400);
+  const hours = Math.floor((delta % 86400) / 3600);
+  const minutes = Math.floor((delta % 3600) / 60);
+
+  return { days, hours, minutes };
+}
+
+const getTierState = (userPlan: string | null, daysRemaining: number | null, autoRenewEnabled: boolean) => {
   const canPurchase = daysRemaining === null || daysRemaining <= 0;
   if (!userPlan) {
     return {
@@ -91,8 +89,8 @@ const Pricing = () => {
   const isTrial = user?.trialEnd && new Date(user.trialEnd) > new Date();
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
   const [pendingUpgrade, setPendingUpgrade] = useState<{ cta: any; plan: string; trial: boolean } | null>(null);
-  const daysRemaining = getDaysRemaining(user?.currentPeriodEnd ?? null);
-  const tierState = getTierState(user?.plan, daysRemaining);
+  const time = user?.currentPeriodEnd ? getTimeRemaining(user.currentPeriodEnd) : null;
+  const tierState = getTierState(user?.plan, time.days, user?.autoRenewEnabled);
 
   // Fetch fresh user data from API on mount
   useEffect(() => {
@@ -131,7 +129,7 @@ const Pricing = () => {
     },
     {
       name: "Plus",
-      price: "39€",
+      price: `${import.meta.env.VITE_PLUS_PACKAGE_COST}`,
       period: "/year",
       description: "Unlimited bundles",
       features: [
@@ -154,7 +152,7 @@ const Pricing = () => {
     },
     {
       name: "Pro",
-      price: "59€",
+      price: `${import.meta.env.VITE_PRO_PACKAGE_COST}`,
       period: "/year",
       description: "Full control with no limits",
       features: [
@@ -164,7 +162,7 @@ const Pricing = () => {
         "Expired links are stored in history",
         "Delete bundles",
         "Edit bundles",
-        "7-day free trial",
+        "7-day free trial available",
       ],
       cta: {
         text: tierState.pro.text,
@@ -201,7 +199,6 @@ const Pricing = () => {
       navigate(cta.link);
       return;
     }
-
     // Intercept Plus → Pro: show confirmation modal
     if (user?.plan === "plus" && plan === "pro") {
       setPendingUpgrade({ cta, plan, trial });
@@ -279,9 +276,20 @@ const Pricing = () => {
                 <p className="text-muted-foreground text-sm mt-1">{tier.description}</p>
 
                 <div className="mt-6 mb-8">
-                  <span className="font-display text-4xl font-bold text-foreground">
-                    {tier.price}
-                  </span>
+                  {parseInt(tier.price) > 0 ? (
+                    <>
+                      <span className="font-display text-4xl font-bold text-foreground">
+                        {tier.price.split(".")[0]}
+                      </span>
+                      <span className="font-display text-xl font-bold text-foreground">
+                        .{tier.price.split(".")[1]}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="font-display text-4xl font-bold text-foreground">
+                      {tier.price}
+                    </span>
+                  )}
                   {tier.period && (
                     <span className="text-muted-foreground text-sm">{tier.period}</span>
                   )}
@@ -301,16 +309,6 @@ const Pricing = () => {
                     </li>
                   ))}
                 </ul>
-                {user?.plan === tier.plan && daysRemaining !== null && (
-                  <p className={`text-xs text-center mb-3 font-medium ${
-                    daysRemaining <= 0 ? "text-destructive" : daysRemaining <= RENEWAL_WINDOW_DAYS ? "text-yellow-500" : "text-muted-foreground"
-                  }`}>
-                    {daysRemaining <= 0
-                      ? "Your plan has expired"
-                      : `${daysRemaining} day${daysRemaining !== 1 ? "s" : ""} ${isTrial ? " free trial " : ""} remaining`}
-                  </p>
-                )}
-
                 {tier.plan === "pro" && user && !user.hasUsedProTrial && user.plan !== "pro" && (
                   <Button
                     variant={"link"}
@@ -338,72 +336,7 @@ const Pricing = () => {
           </div>
 
           {/* FAQ Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="mt-20 max-w-2xl mx-auto"
-          >
-            <h2 className="font-display text-3xl font-bold text-foreground text-center mb-8">
-              Frequently Asked <span className="text-gradient">Questions</span>
-            </h2>
-            <Accordion type="single" collapsible className="space-y-4">
-              <AccordionItem value="item-1" className="glass-card rounded-lg px-6 border-0">
-                <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline py-4">
-                  What happens when my bundles expire?
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground pb-4">
-                  Free bundles automatically expire after 5 days. Don't worry—your expired bundles 
-                  are still saved in your History page (if you're logged in), so you can view, share, 
-                  or reference them anytime. Plus and Pro plans extend your active bundle time to 1 full year.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-2" className="glass-card rounded-lg px-6 border-0">
-                <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline py-4">
-                  Do I need an account to create bundles?
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground pb-4">
-                  Nope! You can create and share bundles instantly without signing up. However, 
-                  creating an account unlocks your History page, permanent storage for expired bundles, 
-                  and access to Plus/Pro features.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-3" className="glass-card rounded-lg px-6 border-0">
-                <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline py-4">
-                  Can I edit a bundle after I create it?
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground pb-4">
-                  Editing is available exclusively on the Pro plan. Free and Plus users can view 
-                  and delete their bundles from History, but only Pro users can modify links in an 
-                  existing bundle after creation.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-4" className="glass-card rounded-lg px-6 border-0">
-                <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline py-4">
-                  What's the difference between Plus and Pro?
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground pb-4">
-                  Both Plus and Pro give you 1-year active bundle expiration and History access. 
-                  The key difference is editing—Pro allows you to modify existing bundles anytime. 
-                  Pro also includes a 7-day free trial.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-5" className="glass-card rounded-lg px-6 border-0">
-                <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline py-4">
-                  How does the 7-day free trial work?
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground pb-4">
-                  When you select the Pro plan, you can start with a 7-day free trial. You get full 
-                  Pro access immediately, and if you cancel before the trial ends, you won't be charged. 
-                  After the trial, your Pro subscription begins automatically.
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </motion.div>
+          <FAQ />
         </div>
       </main>
 

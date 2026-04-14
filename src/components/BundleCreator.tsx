@@ -178,7 +178,7 @@ export function BundleCreator() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="glass-card rounded-2xl p-8 space-y-6"
+          className="glass-card rounded-2xl p-3 sm:p-8 space-y-6"
         >
           {/* Header */}
           <div className="flex items-center gap-3">
@@ -192,7 +192,7 @@ export function BundleCreator() {
                 placeholder="Bundle title here..."
                 className="font-display text-lg font-semibold text-foreground bg-transparent border-none outline-none placeholder:text-muted-foreground w-full"
               />
-              <p className="text-muted-foreground text-sm">Add your links and share them in one URL</p>
+              {/* <p className="text-muted-foreground text-sm">Add your links and share them in one URL</p> */}
             </div>
           </div>
 
@@ -256,16 +256,15 @@ export function BundleCreator() {
                   }}
                   variant="outline"
                   size="lg"
-                  className="h-12"
+                  className="flex-2 h-12 px-2 sm:px-8"
                 >
-                  <RotateCcw className="w-4 h-4 mr-2" />
-                  Reset
+                  <RotateCcw className="h-4" />
                 </Button>
                 <Button
                   onClick={generateLink}
                   variant="hero"
                   size="lg"
-                  className="flex-1 h-12 text-base"
+                  className="flex-1 h-12 text-sm sm:text-base px-2"
                 >
                   <Share2 className="w-5 h-5 mr-2" />
                   Generate Share Link

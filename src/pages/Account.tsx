@@ -32,6 +32,16 @@ import {
   cancelAutoSubscription 
 } from "@/services/billing";
 
+function getTimeRemaining(expiresAt: string) {
+  const delta = Math.max(0, new Date(expiresAt).getTime() - Date.now()) / 1000;
+
+  const days = Math.floor(delta / 86400);
+  const hours = Math.floor((delta % 86400) / 3600);
+  const minutes = Math.floor((delta % 3600) / 60);
+
+  return { days, hours, minutes };
+}
+
 const Account = () => {
   const token = localStorage.getItem("token");
   const [user, setUser] = useState(() => {
@@ -73,15 +83,8 @@ const Account = () => {
   const plan = user.plan || "free";
   const isTrial = user.trialEnd && new Date(user.trialEnd) > new Date();
   const currentPeriodEnd = isTrial ? user.trialEnd : user.currentPeriodEnd;
-  const getDaysRemaining = () => {
-    if (!currentPeriodEnd) return null;
-    const end = new Date(currentPeriodEnd);
-    const now = new Date();
-    const diff = Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-    return diff;
-  };
 
-  const daysRemaining = getDaysRemaining();
+  const timeRemaining = currentPeriodEnd ? getTimeRemaining(currentPeriodEnd) : null;
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -216,21 +219,35 @@ const Account = () => {
                   </Badge>
                 )}
               </div>
-              {currentPeriodEnd && daysRemaining !== null && (
+              {currentPeriodEnd && timeRemaining && (
                 <>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Calendar className="w-4 h-4" />
-                    {isTrial ? (
-                      <span>
-                        Trial {daysRemaining > 0 ? `expires in ${daysRemaining} day${daysRemaining !== 1 ? "s" : ""}` : "has expired"}
-                      </span>
-                    ) : (
-                      <span>
-                        {daysRemaining > 0
-                          ? `${user.autoRenewEnabled ? "Renews" : "Expires" } in ${daysRemaining} day${daysRemaining !== 1 ? "s" : ""}`
-                          : "Subscription expired"}
-                      </span>
-                    )}
+                    <span>
+                      {isTrial
+                        ? timeRemaining.days > 0
+                          ? `Trial expires in ${timeRemaining.days} day${timeRemaining.days !== 1 ? "s" : ""}${
+                              timeRemaining.days < 7 && timeRemaining.hours > 0
+                                ? ` and ${timeRemaining.hours} hour${timeRemaining.hours !== 1 ? "s" : ""}`
+                                : ""
+                            }`
+                          : timeRemaining.hours > 0
+                            ? `Trial expires in ${timeRemaining.hours} hour${timeRemaining.hours !== 1 ? "s" : ""}`
+                            : timeRemaining.minutes > 0
+                              ? `Trial expires in ${timeRemaining.minutes} minute${timeRemaining.minutes !== 1 ? "s" : ""}`
+                              : "Trial expires in less than a minute"
+                        : timeRemaining.days > 0
+                          ? `${user.autoRenewEnabled ? "Renews" : "Expires"} in ${timeRemaining.days} day${timeRemaining.days !== 1 ? "s" : ""}${
+                              timeRemaining.days < 7 && timeRemaining.hours > 0
+                                ? ` and ${timeRemaining.hours} hour${timeRemaining.hours !== 1 ? "s" : ""}`
+                                : ""
+                            }`
+                          : timeRemaining.hours > 0
+                            ? `${user.autoRenewEnabled ? "Renews" : "Expires"} in ${timeRemaining.hours} hour${timeRemaining.hours !== 1 ? "s" : ""}`
+                            : timeRemaining.minutes > 0
+                              ? `${user.autoRenewEnabled ? "Renews" : "Expires"} in ${timeRemaining.minutes} minute${timeRemaining.minutes !== 1 ? "s" : ""}`
+                              : "Expires in less than a minute"}
+                    </span>
                     <span className="text-muted-foreground/60">
                       ({new Date(currentPeriodEnd).toLocaleDateString()})
                     </span>

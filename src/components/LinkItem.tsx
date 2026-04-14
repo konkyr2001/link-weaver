@@ -18,20 +18,20 @@ export function LinkItem({ link, index, onRemove, dragHandleProps }: LinkItemPro
   const [imgError, setImgError] = useState(false);
 
   return (
-    <div className="glass-card rounded-lg p-4 flex items-center gap-4 group">
+    <div className="glass-card rounded-lg p-2 sm:p-4 flex items-center gap-2 sm:gap-4 group">
       {/* Drag handle */}
       <div
         {...dragHandleProps}
-        className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground transition-colors p-1"
+        className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground transition-colors p-0 sm:p-1"
         aria-label="Drag to reorder"
       >
-        <GripVertical className="w-5 h-5" />
+        <GripVertical className="w-4 h-4 sm:w-5 sm:h-5" />
       </div>
 
-      <span className="text-muted-foreground font-display text-sm w-6 text-center">{index + 1}</span>
+      <span className="text-muted-foreground font-display text-sm w-4 sm:w-6 text-center">{index + 1}</span>
 
       {/* Website screenshot thumbnail */}
-      <div className="w-16 h-10 rounded-md overflow-hidden bg-secondary/30 flex-shrink-0">
+      <div className="w-8 h-7 sm:w-16 sm:h-10 rounded-md overflow-hidden bg-secondary/30 flex-shrink-0">
         {!imgError ? (
           <img
             src={screenshotUrl}
@@ -61,7 +61,7 @@ export function LinkItem({ link, index, onRemove, dragHandleProps }: LinkItemPro
         href={normalizedUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-muted-foreground hover:text-primary transition-colors opacity-0 group-hover:opacity-100"
+        className="text-muted-foreground hover:text-primary transition-colors opacity-s0 group-hover:sopacity-100"
       >
         <ExternalLink className="w-4 h-4" />
       </a>
@@ -70,7 +70,7 @@ export function LinkItem({ link, index, onRemove, dragHandleProps }: LinkItemPro
         variant="ghost"
         size="icon"
         onClick={() => onRemove(link.id)}
-        className="text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-all h-8 w-8"
+        className="text-muted-foreground hover:text-primary-foreground opacisty-0 group-hovers:opacity-100 transition-all h-8 w-8"
       >
         <X className="w-4 h-4" />
       </Button>
