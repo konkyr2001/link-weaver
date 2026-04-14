@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useTheme } from "@/hooks/use-theme";
+import NotFound from "./NotFound";
 
 export default function BundleView() {
   const { theme, toggleTheme } = useTheme();
@@ -34,15 +35,16 @@ export default function BundleView() {
 
   if (!bundle) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center space-y-4">
-          <h1 className="font-display text-2xl font-bold text-foreground">Invalid Bundle</h1>
-          <p className="text-muted-foreground">This link appears to be broken or expired.</p>
-          <Link to="/">
-            <Button variant="hero">Go Home</Button>
-          </Link>
-        </div>
-      </div>
+      <NotFound />
+      // <div className="min-h-screen flex items-center justify-center bg-background">
+      //   <div className="text-center space-y-4">
+      //     <h1 className="font-display text-2xl font-bold text-foreground">Invalid Bundle</h1>
+      //     <p className="text-muted-foreground">This link appears to be broken or expired.</p>
+      //     <Link to="/">
+      //       <Button variant="hero">Go Home</Button>
+      //     </Link>
+      //   </div>
+      // </div>
     );
   }
 
