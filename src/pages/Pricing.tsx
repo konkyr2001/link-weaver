@@ -336,6 +336,74 @@ const Pricing = () => {
               </motion.div>
             ))}
           </div>
+
+          {/* FAQ Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="mt-20 max-w-2xl mx-auto"
+          >
+            <h2 className="font-display text-3xl font-bold text-foreground text-center mb-8">
+              Frequently Asked <span className="text-gradient">Questions</span>
+            </h2>
+            <Accordion type="single" collapsible className="space-y-4">
+              <AccordionItem value="item-1" className="glass-card rounded-lg px-6 border-0">
+                <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline py-4">
+                  What happens when my bundles expire?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground pb-4">
+                  Free bundles automatically expire after 5 days. Don't worry—your expired bundles 
+                  are still saved in your History page (if you're logged in), so you can view, share, 
+                  or reference them anytime. Plus and Pro plans extend your active bundle time to 1 full year.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-2" className="glass-card rounded-lg px-6 border-0">
+                <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline py-4">
+                  Do I need an account to create bundles?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground pb-4">
+                  Nope! You can create and share bundles instantly without signing up. However, 
+                  creating an account unlocks your History page, permanent storage for expired bundles, 
+                  and access to Plus/Pro features.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-3" className="glass-card rounded-lg px-6 border-0">
+                <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline py-4">
+                  Can I edit a bundle after I create it?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground pb-4">
+                  Editing is available exclusively on the Pro plan. Free and Plus users can view 
+                  and delete their bundles from History, but only Pro users can modify links in an 
+                  existing bundle after creation.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-4" className="glass-card rounded-lg px-6 border-0">
+                <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline py-4">
+                  What's the difference between Plus and Pro?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground pb-4">
+                  Both Plus and Pro give you 1-year active bundle expiration and History access. 
+                  The key difference is editing—Pro allows you to modify existing bundles anytime. 
+                  Pro also includes a 7-day free trial.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-5" className="glass-card rounded-lg px-6 border-0">
+                <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline py-4">
+                  How does the 7-day free trial work?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground pb-4">
+                  When you select the Pro plan, you can start with a 7-day free trial. You get full 
+                  Pro access immediately, and if you cancel before the trial ends, you won't be charged. 
+                  After the trial, your Pro subscription begins automatically.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </motion.div>
         </div>
       </main>
 
