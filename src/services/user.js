@@ -21,7 +21,6 @@ const login = async (email, password) => {
     localStorage.setItem("user", JSON.stringify(data.userObj));
     return data;
   } catch (error) {
-    console.log(error.message);
     return { error: error.message };
   }
 };
@@ -54,7 +53,6 @@ const signup = async (firstName, lastName, email, password, recaptcha) => {
     localStorage.setItem("user", JSON.stringify(data.userObj));
     return data;
   } catch (error) {
-    console.log(error.message);
     return { error: error.message || "Something went wrong" };
   }
 };
@@ -78,7 +76,6 @@ const authorizeGoogleUser = async (token) => {
     localStorage.setItem("user", JSON.stringify(data.userObj));
     return data;
   } catch (error) {
-    console.log(error.message);
     return { error: error.message || "Something went wrong" };
   }
 };
@@ -96,7 +93,6 @@ const getUserHistory = async (token) => {
     }
     return data;
   } catch (error) {
-    console.log(error.message);
     return { error: error.message || "Something went wrong" };
   }
 };

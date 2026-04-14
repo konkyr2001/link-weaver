@@ -23,7 +23,6 @@ const ForgotPassword = () => {
     e.preventDefault();
     const captcha = await captchaRef.current?.executeAsync();
     captchaRef.current?.reset();
-    console.log(captcha)
     if (!captcha) {
       return toast.error("Captcha verification failed");
     }
@@ -83,7 +82,7 @@ const ForgotPassword = () => {
                     If an account exists for <span className="font-medium text-foreground">{email}</span>, you'll receive a password reset link shortly.
                   </p>
                   <p className="text-muted-foreground text-xs">
-                    Don't forget to check your spam folder.
+                    Don't forget to check your <b>spam folder</b>.
                   </p>
                   <Button
                     variant="outline"

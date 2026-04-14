@@ -15,7 +15,7 @@ import {
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getUserHistory } from "@/services/user";
+import { getUser, getUserHistory } from "@/services/user";
 import { 
   normalizeUrl,
   generateId, 
@@ -50,14 +50,14 @@ interface HistoryItem {
   urls?: { id: string; url: string; title?: string }[];
 }
 
-function daysRemaining(expiresAt: string): number {
-  const diff = new Date(expiresAt).getTime() - Date.now();
-  return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
-}
+function getTimeRemaining(expiresAt: string) {
+  const delta = Math.max(0, new Date(expiresAt).getTime() - Date.now()) / 1000;
 
-function hoursRemaining(expiresAt: string): number {
-  const diff = new Date(expiresAt).getTime() - Date.now();
-  return Math.max(0, Math.ceil(diff / (1000 * 60 * 60)));
+  const days = Math.floor(delta / 86400);
+  const hours = Math.floor((delta % 86400) / 3600);
+  const minutes = Math.floor((delta % 3600) / 60);
+
+  return { days, hours, minutes };
 }
 
 function isValidUrl(url: string): boolean {
@@ -71,9 +71,13 @@ function isValidUrl(url: string): boolean {
 }
 
 export default function History() {
+  const token = localStorage.getItem("token");
   const [items, setItems] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
   const userPlan = user?.plan;
 
   // Edit state
@@ -92,6 +96,15 @@ export default function History() {
   const [openPopover, setOpenPopover] = useState<string | null>(null);
 
   useEffect(() => {
+    const fetchUser = async () => {
+      if (!token) return;
+      const freshUser = await getUser(token);
+      if (!freshUser?.error) {
+        localStorage.setItem("user", JSON.stringify(freshUser));
+        setUser(freshUser);
+      }
+    };
+    fetchUser();
     fetchHistory();
   }, []);
 
@@ -249,11 +262,7 @@ function openEdit(item: HistoryItem) {
                   : isPremiumBundle 
                     ? item.premiumExpiresAt 
                     : item.expiresAt;
-                const days = currentPeriodEnd ? daysRemaining(currentPeriodEnd) : null;
-                console.log("item.expiresAt: ", item.expiresAt)
-                console.log("date now: ", new Date());
-                console.log("days remaining: ",daysRemaining(currentPeriodEnd))
-                console.log("hours remaining: ",hoursRemaining(currentPeriodEnd))
+                const time = currentPeriodEnd ? getTimeRemaining(currentPeriodEnd) : null;
                 return (
                   <motion.div
                     key={ item._id || i }
@@ -278,24 +287,28 @@ function openEdit(item: HistoryItem) {
                       <p className="text-sm text-muted-foreground font-mono truncate mt-1">
                         {bundleUrl}
                       </p>
-                      {days !== null && (
-                        <div className="flex items-center gap-1.5 mt-2">
-                          <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-                          <span
-                            className={`text-xs font-medium ${
-                              days < 3
-                                ? "text-destructive"
-                                : "text-muted-foreground"
-                            }`}
-                          >
-                            {days === 0
-                              ? `Expires in ${hoursRemaining(expirationDate)} hour${hoursRemaining(expirationDate) !== 1 ? "s" : ""}`
-                              : isBundleExpiry
-                                ? `Bundle expires in ${days} day${days !== 1 ? "s" : ""}`
-                                : `Bundle expires in ${days} day${days !== 1 ? "s" : ""} ${isTrial ? "(free trial)" : ""}`}
-                          </span>
-                        </div>
-                      )}
+                    {time && (
+                      <div className="flex items-center gap-1.5 mt-2">
+                        <Clock className="w-3.5 h-3.5 text-muted-foreground" />
+                        <span
+                          className={`text-xs font-medium ${
+                            time.days < 3 ? "text-destructive" : "text-muted-foreground"
+                          }`}
+                        >
+                          {time.days > 0
+                            ? `${isBundleExpiry ? "Bundle expires" : "Expires"} in ${time.days} day${time.days !== 1 ? "s" : ""}${
+                              time.days < 7 && time.hours > 0
+                                ? ` and ${time.hours} hour${time.hours !== 1 ? "s" : ""}`
+                                : ""
+                              }${isTrial ? " (free trial)" : ""}`
+                            : time.hours > 0
+                              ? `${isBundleExpiry ? "Bundle expires" : "Expires"} in ${time.hours} hour${time.hours !== 1 ? "s" : ""}${isTrial ? " (free trial)" : ""}`
+                              : time.minutes > 0
+                                ? `${isBundleExpiry ? "Bundle expires" : "Expires"} in ${time.minutes} minute${time.minutes !== 1 ? "s" : ""}${isTrial ? " (free trial)" : ""}`
+                                : `${isBundleExpiry ? "Bundle expires" : "Expires"} in less than a minute${time.minutes !== 1 ? "s" : ""}${isTrial ? " (free trial)" : ""}`}
+                        </span>
+                      </div>
+                    )}
                     </div>
                     {hasPaidPlan ? (
                       <Popover
@@ -378,7 +391,7 @@ function openEdit(item: HistoryItem) {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex-1 overflow-y-auto space-y-4 py-2">
+          <div className="flex-1 overflow-y-auto space-y-4 py-2 px-2">
             {/* Title */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">Title</label>
