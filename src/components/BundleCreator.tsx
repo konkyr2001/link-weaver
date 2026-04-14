@@ -111,7 +111,6 @@ export function BundleCreator() {
     }
 
     await proceedWithGenerate();
-    setGeneratedUrl(url.data);
   };
 
   const copyToClipboard = async () => {
