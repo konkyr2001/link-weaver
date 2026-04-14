@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link2, Copy, Check, Share2, UserPlus } from "lucide-react";
+import { Link2, Copy, Check, Share2, UserPlus, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LinkInput } from "@/components/LinkInput";
 import { LinkItem } from "@/components/LinkItem";
