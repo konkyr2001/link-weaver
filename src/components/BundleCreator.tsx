@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link2, Copy, Check, Share2 } from "lucide-react";
+import { Link2, Copy, Check, Share2, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LinkInput } from "@/components/LinkInput";
 import { LinkItem } from "@/components/LinkItem";
@@ -10,14 +10,25 @@ import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea
 import { createPortal } from "react-dom";
 import Captcha from "react-google-recaptcha";
 import { useTheme } from "@/hooks/use-theme";
+import { useNavigate } from "react-router-dom";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 export function BundleCreator() {
   const token = localStorage.getItem("token");
   const { theme, toggleTheme } = useTheme();
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [links, setLinks] = useState<BundleLink[]>([]);
   const [generatedUrl, setGeneratedUrl] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [showSignupModal, setShowSignupModal] = useState(false);
   const captchaRef = useRef<Captcha>(null);
 
   const isValidUrl = (url: string): boolean => {
@@ -64,15 +75,7 @@ export function BundleCreator() {
     setGeneratedUrl(null);
   };
 
-  const generateLink = async () => {
-    if (!title.trim()) {
-      toast.error("Give your bundle a title first");
-      return;
-    }
-    if (links.length === 0) {
-      toast.error("Add at least one link first");
-      return;
-    }
+  const proceedWithGenerate = async () => {
     const bundle = { 
       title: title.trim() || undefined, 
       links, createdAt: Date.now(),
@@ -88,6 +91,26 @@ export function BundleCreator() {
       return toast.error(url.error);
     }
     setGeneratedUrl(url.data);
+  };
+
+  const generateLink = async () => {
+    if (!title.trim()) {
+      toast.error("Give your bundle a title first");
+      return;
+    }
+    if (links.length === 0) {
+      toast.error("Add at least one link first");
+      return;
+    }
+
+    // Show signup prompt once per session for guests
+    if (!token && !sessionStorage.getItem("signup_prompt_shown")) {
+      sessionStorage.setItem("signup_prompt_shown", "true");
+      setShowSignupModal(true);
+      return;
+    }
+
+    await proceedWithGenerate();
   };
 
   const copyToClipboard = async () => {
@@ -228,6 +251,43 @@ export function BundleCreator() {
           )}
         </motion.div>
       </div>
+
+      {/* Signup prompt modal */}
+      <Dialog open={showSignupModal} onOpenChange={setShowSignupModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <div className="mx-auto mb-2 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+              <UserPlus className="w-6 h-6 text-primary" />
+            </div>
+            <DialogTitle className="text-center">Extend your bundle's life!</DialogTitle>
+            <DialogDescription className="text-center">
+              Create a free account to keep your links active for up to 30 days instead of just 3.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-2">
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={() => {
+                setShowSignupModal(false);
+                proceedWithGenerate();
+              }}
+            >
+              Continue without account
+            </Button>
+            <Button
+              variant="hero"
+              className="flex-1"
+              onClick={() => {
+                setShowSignupModal(false);
+                navigate("/signup");
+              }}
+            >
+              Create account
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
