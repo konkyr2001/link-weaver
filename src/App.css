@@ -40,3 +40,9 @@
 .read-the-docs {
   color: #888;
 }
+
+.grecaptcha-badge {
+  bottom: 80px !important;
+  right: 20px !important;
+  line-height:50px !important;
+}

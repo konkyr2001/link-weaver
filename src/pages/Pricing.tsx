@@ -91,7 +91,7 @@ const Pricing = () => {
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
   const [pendingUpgrade, setPendingUpgrade] = useState<{ cta: any; plan: string; trial: boolean } | null>(null);
   const time = user?.currentPeriodEnd ? getTimeRemaining(user.currentPeriodEnd) : null;
-  const tierState = getTierState(user?.plan, time.days, user?.autoRenewEnabled);
+  const tierState = getTierState(user?.plan, time?.days, user?.autoRenewEnabled);
 
   // Fetch fresh user data from API on mount
   useEffect(() => {
@@ -277,7 +277,7 @@ const Pricing = () => {
                 <p className="text-muted-foreground text-sm mt-1">{tier.description}</p>
 
                 <div className="mt-6 mb-8">
-                  {parseInt(tier.price) > 0 ? (
+                  {parseInt(tier.price) > 0 && tier.price.includes(".") ? (
                     <>
                       <span className="font-display text-4xl font-bold text-foreground">
                         {tier.price.split(".")[0]}

@@ -35,7 +35,6 @@ export function BundleCreator() {
 
   useEffect(() => {
     const savedDraft = sessionStorage.getItem(BUNDLE_DRAFT_KEY);
-    console.log(savedDraft)
     if (savedDraft) {
       try {
         const parsed = JSON.parse(savedDraft);
@@ -144,7 +143,6 @@ export function BundleCreator() {
     // Show signup prompt once per session for guests
     if (!sessionStorage.getItem("signup_prompt_shown")) {
       sessionStorage.setItem("signup_prompt_shown", "true");
-      console.log("mpike")
       setShowSignupModal(true);
       return;
     }

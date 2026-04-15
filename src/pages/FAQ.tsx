@@ -7,14 +7,24 @@ import {
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { Link } from "react-router-dom";
 
 const FREE_NO_ACCOUNT = import.meta.env.VITE_FREE_NO_ACCOUNT_EXPIRATION_DAY;
 const FREE_ACCOUNT = import.meta.env.VITE_FREE_ACCOUNT_EXPIRATION_DAY;
 const faq = [
   {
+    question: "What is [app-name] doing?",
+    answer: `
+      [app-name] is a place where you can store all your links and never worry about losing them.
+      It helps you organize and share multiple links in one clean, professional, and user-friendly page.
+      All your links are saved on your History page, so even if the original message gets lost in a chat,
+      you can always find them again.
+    `
+  },
+  {
     question: "What is a bundle?",
     answer:
-      "A bundle is a single shareable link that contains multiple URLs. It helps you organize and share multiple links in one clean, professional, and user-friendly page.",
+      "A bundle is a single shareable link that contains multiple URLs.",
   },
   {
     question: "Can I use [app-name] for free?",
@@ -57,9 +67,8 @@ const faq = [
       "Yes. Your bundles are only accessible through the unique link you share. They are not publicly listed or indexed.",
   },
   {
-    question: "How can I contact support if I have a question?",
-    answer:
-      "You can contact us anytime by email at [your-email]. We aim to respond as quickly as possible.",
+    question: "How can I contact support?",
+    answer: <span>You can contact us anytime <Link to="/contact" className="text-primary underline hover:opacity-80">here</Link>.</span>,
   }
 ];
 

@@ -1,13 +1,17 @@
 const URL = import.meta.env.VITE_BACKEND_URL;
 
-const sendContactMessage = async ({ firstName, lastName, email, title, message, captcha }) => {
+const sendContactMessage = async ({ firstName, lastName, email, category, title, message, captcha, token }) => {
   try {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
     const response = await fetch(`${URL}/api/contact`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ firstName, lastName, email, title, message, captcha }),
+      headers,
+      body: JSON.stringify({ firstName, lastName, email, category, title, message, captcha }),
     });
     const data = await response.json();
     if (!response.ok) {
@@ -15,6 +19,7 @@ const sendContactMessage = async ({ firstName, lastName, email, title, message, 
     }
     return data;
   } catch (error) {
+    console.log(error.message)
     return { error: error.message || "Something went wrong" };
   }
 };

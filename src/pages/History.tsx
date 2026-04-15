@@ -38,6 +38,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import Footer from "@/components/Footer";
 
 interface HistoryItem {
   _id: string;

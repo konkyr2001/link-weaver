@@ -10,6 +10,13 @@ import { toast } from "sonner";
 import { sendContactMessage } from "@/services/contact";
 import Captcha from "react-google-recaptcha";
 import { useTheme } from "@/hooks/use-theme";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const Contact = () => {
   const { theme } = useTheme();
@@ -20,11 +27,13 @@ const Contact = () => {
   const [firstName, setFirstName] = useState(user?.firstName || "");
   const [lastName, setLastName] = useState(user?.lastName || "");
   const [email, setEmail] = useState(user?.email || "");
+  const [category, setCategory] = useState<string | undefined>(undefined);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const [errorEmail, setErrorEmail] = useState(false);
+  const [errorCategory, setErrorCategory] = useState(false);
   const [errorTitle, setErrorTitle] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
 
@@ -32,9 +41,10 @@ const Contact = () => {
     e.preventDefault();
 
     const hasErrors =
-      !email.trim() || !title.trim() || !message.trim();
+      !email.trim() || !title.trim() || !message.trim() || !category.trim();
 
     setErrorEmail(!email.trim());
+    setErrorCategory(!category.trim());
     setErrorTitle(!title.trim());
     setErrorMessage(!message.trim());
 
@@ -60,19 +70,23 @@ const Contact = () => {
         }
       }
 
+      const token = localStorage.getItem("token");
       const result = await sendContactMessage({
         firstName: firstName.trim() || undefined,
         lastName: lastName.trim() || undefined,
         email: email.trim(),
+        category: category,
         title: title.trim(),
         message: message.trim(),
         captcha: captchaToken,
+        token
       });
 
       if (result.error) {
         toast.error(result.error);
       } else {
         toast.success("Message sent successfully!");
+        setCategory(undefined);
         setTitle("");
         setMessage("");
         if (!user) {
@@ -160,8 +174,33 @@ const Contact = () => {
             </div>
 
             <div className="space-y-2">
+              <Label>
+                Category <span className="text-destructive">*</span>
+              </Label>
+
+              <Select value={category} onValueChange={(value) => {
+                setCategory(value);
+                setErrorCategory(false);
+              }}>
+                <SelectTrigger className={`h-10 ${errorCategory ? "border-destructive focus:ring-destructive" : ""}`}>
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectItem value="Bug">Bug Report</SelectItem>
+                  <SelectItem value="Feature">Feature Request</SelectItem>
+                  <SelectItem value="Billing">Billing / Payment</SelectItem>
+                  <SelectItem value="Account">Account Issue</SelectItem>
+                  <SelectItem value="Question">General Question</SelectItem>
+                  <SelectItem value="Feedback">Feedback</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="title">
-                Subject <span className="text-destructive">*</span>
+                Title <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="title"
