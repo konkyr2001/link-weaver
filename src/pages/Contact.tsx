@@ -46,13 +46,18 @@ const Contact = () => {
     setLoading(true);
 
     try {
-      const captchaToken = await captchaRef.current?.executeAsync();
-      captchaRef.current?.reset();
+      let captchaToken = null;
 
-      if (!captchaToken) {
-        toast.error("Captcha verification failed. Please try again.");
-        setLoading(false);
-        return;
+      // Only require captcha for non-logged-in users
+      if (!user) {
+        captchaToken = await captchaRef.current?.executeAsync();
+        captchaRef.current?.reset();
+
+        if (!captchaToken) {
+          toast.error("Captcha verification failed. Please try again.");
+          setLoading(false);
+          return;
+        }
       }
 
       const result = await sendContactMessage({
@@ -85,14 +90,17 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <div className="fixed z-50">
-        <Captcha
-          ref={captchaRef}
-          size="invisible"
-          theme={theme}
-          sitekey={import.meta.env.VITE_RECAPTCHA_INVISIBLE_SECRET_KEY}
-        />
-      </div>
+      {/* Only render captcha for non-logged-in users */}
+      {!user && (
+        <div className="fixed z-50">
+          <Captcha
+            ref={captchaRef}
+            size="invisible"
+            theme={theme}
+            sitekey={import.meta.env.VITE_RECAPTCHA_INVISIBLE_SECRET_KEY}
+          />
+        </div>
+      )}
 
       <Header />
 
