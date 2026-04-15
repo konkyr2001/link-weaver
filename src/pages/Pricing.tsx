@@ -16,6 +16,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import FaqSection from "@/components/FaqSection";
+import Footer from "@/components/Footer";
 
 const RENEWAL_WINDOW_DAYS = 10;
 
@@ -358,11 +359,7 @@ const Pricing = () => {
         </div>
       </main>
 
-      <footer className="border-t border-border py-6">
-        <div className="max-w-6xl mx-auto px-6 text-center text-muted-foreground text-sm">
-          Paste. Bundle. Share.
-        </div>
-      </footer>
+      <Footer />
 
       {/* Upgrade Confirmation Modal */}
       <Dialog open={upgradeModalOpen} onOpenChange={(open) => {

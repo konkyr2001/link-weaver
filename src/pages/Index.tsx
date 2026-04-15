@@ -5,6 +5,7 @@ import { Link2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { useEffect, useState } from "react";
 import { getUser } from "@/services/user";
 import { toast } from "sonner";
@@ -87,12 +88,7 @@ const Index = () => {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-6">
-        <div className="max-w-6xl mx-auto px-6 text-center text-muted-foreground text-sm">
-          Paste. Bundle. Share.
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
