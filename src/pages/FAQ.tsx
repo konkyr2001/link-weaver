@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/accordion";
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const FREE_NO_ACCOUNT = import.meta.env.VITE_FREE_NO_ACCOUNT_EXPIRATION_DAY;
 const FREE_ACCOUNT = import.meta.env.VITE_FREE_ACCOUNT_EXPIRATION_DAY;
@@ -104,11 +105,7 @@ const FAQPage = () => {
         </div>
       </main>
 
-      <footer className="border-t border-border py-6">
-        <div className="max-w-6xl mx-auto px-6 text-center text-muted-foreground text-sm">
-          Paste. Bundle. Share.
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
