@@ -15,7 +15,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import FAQ from "@/components/FAQ";
+import FaqSection from "@/components/FaqSection";
 
 const RENEWAL_WINDOW_DAYS = 10;
 
@@ -115,7 +115,7 @@ const Pricing = () => {
         `Bundles expire after ${import.meta.env.VITE_FREE_NO_ACCOUNT_EXPIRATION_DAY} days`,
       ],
       negatives: [
-        "Expired links are stored in history",
+        "Expired links are stored in history (account needed)",
         "Delete bundles",
         "Edit bundles",
       ],
@@ -336,7 +336,7 @@ const Pricing = () => {
           </div>
 
           {/* FAQ Section */}
-          <FAQ />
+          <FaqSection />
           
           {/* View Full FAQ Link */}
           <motion.div

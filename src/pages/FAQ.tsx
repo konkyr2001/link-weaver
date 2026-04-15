@@ -9,20 +9,31 @@ import Header from "@/components/Header";
 
 const FREE_NO_ACCOUNT = import.meta.env.VITE_FREE_NO_ACCOUNT_EXPIRATION_DAY;
 const FREE_ACCOUNT = import.meta.env.VITE_FREE_ACCOUNT_EXPIRATION_DAY;
-
 const faq = [
   {
     question: "What is a bundle?",
-    answer: `A bundle is a single shareable link that contains multiple URLs.
-      It helps you organize and share multiple links in one clean, professional, and user-friendly page.`
+    answer:
+      "A bundle is a single shareable link that contains multiple URLs. It helps you organize and share multiple links in one clean, professional, and user-friendly page.",
+  },
+  {
+    question: "Can I use [app-name] for free?",
+    answer:
+      "Yes. You can create and share bundles for free. Paid plans unlock longer expiration times, history access, and additional features.",
+  },
+  {
+    question: "Do I need an account to create bundles?",
+    answer:
+      "No. You can create and share bundles without an account. Creating a free account gives you longer expiration times and access to your History page.",
   },
   {
     question: "How many links can I add to a bundle?",
-    answer: "You can add unlimited links to each bundle. There are no restrictions.",
+    answer:
+      "You can add unlimited links to each bundle. There are no restrictions.",
   },
   {
     question: "How many bundles can I create?",
-    answer: "You can create unlimited bundles on all plans.",
+    answer:
+      "You can create unlimited bundles on all plans.",
   },
   {
     question: "When do my bundles expire?",
@@ -36,40 +47,26 @@ const faq = [
   },
   {
     question: "What happens when my bundles expire?",
-    answer: `Expired bundles are automatically removed for free users. 
-      Premium users keep their bundles in History, where they remain saved but inactive.`,
-  },
-  {
-    question: "Are expired bundles permanently deleted?",
-    answer: "Yes for free users. For Plus and Pro users, bundles are saved in your History and can become active again if you renew your subscription.",
-  },
-  {
-    question: "How does the 7-day free trial work?",
-    answer: "When you choose the Pro plan, you get full access for 7 days at no cost. If you don't cancel before the trial ends, your subscription will automatically start and you will be charged.",
-  },
-  {
-    question: "Can I cancel my subscription?",
-    answer: "Yes. You can disable auto-renewal at any time from your account settings. Your plan will remain active until the end of the billing period.",
-  },
-  {
-    question: "Can I get a refund?",
-    answer: "Refunds are currently not supported. If you experience any issues, please contact support at [your email].",
-  },
-  {
-    question: "What happens if I upgrade from Plus to Pro?",
-    answer: "You can upgrade at any time. Your Plus subscription will be cancelled, and your Pro plan will start immediately with the new billing cycle.",
-  },
+    answer:
+      "For free users, expired bundles are permanently deleted. Plus and Pro users keep their bundles in History, where they remain saved but inactive. If you renew your subscription, they become active again.",
+  }
   {
     question: "Are my bundles private?",
-    answer: "Yes. Your bundles are only accessible via the unique link you share. They are not publicly listed or indexed.",
+    answer:
+      "Yes. Your bundles are only accessible through the unique link you share. They are not publicly listed or indexed.",
   },
+  {
+    question: "How can I contact support if I have a question?",
+    answer:
+      "You can contact us anytime by email at [your-email]. We aim to respond as quickly as possible.",
+  }
 ];
 
 const FAQPage = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      
+
       <main className="flex-1 px-6 py-16">
         <div className="max-w-3xl mx-auto">
           <motion.div
