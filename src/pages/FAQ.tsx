@@ -49,7 +49,7 @@ const faq = [
     question: "What happens when my bundles expire?",
     answer:
       "For free users, expired bundles are permanently deleted. Plus and Pro users keep their bundles in History, where they remain saved but inactive. If you renew your subscription, they become active again.",
-  }
+  },
   {
     question: "Are my bundles private?",
     answer:
