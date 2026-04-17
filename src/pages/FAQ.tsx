@@ -13,12 +13,12 @@ const FREE_NO_ACCOUNT = import.meta.env.VITE_FREE_NO_ACCOUNT_EXPIRATION_DAY;
 const FREE_ACCOUNT = import.meta.env.VITE_FREE_ACCOUNT_EXPIRATION_DAY;
 const faq = [
   {
-    question: "What is [app-name] doing?",
+    question: "What is WeLinkly used for?",
     answer: `
-      [app-name] is a place where you can store all your links and never worry about losing them.
+      WeLinkly is a place where you can store all your links and never worry about losing them.
       It helps you organize and share multiple links in one clean, professional, and user-friendly page.
-      All your links are saved on your History page, so even if the original message gets lost in a chat,
-      you can always find them again.
+      All your links are saved on your History page, so even if the original message gets lost in the chat,
+      you can always find them here 😊.
     `
   },
   {
@@ -27,7 +27,7 @@ const faq = [
       "A bundle is a single shareable link that contains multiple URLs.",
   },
   {
-    question: "Can I use [app-name] for free?",
+    question: "Can I use WeLinkly for free?",
     answer:
       "Yes. You can create and share bundles for free. Paid plans unlock longer expiration times, history access, and additional features.",
   },

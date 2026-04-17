@@ -141,7 +141,7 @@ export function BundleCreator() {
     }
 
     // Show signup prompt once per session for guests
-    if (!sessionStorage.getItem("signup_prompt_shown")) {
+    if (!token && !sessionStorage.getItem("signup_prompt_shown")) {
       sessionStorage.setItem("signup_prompt_shown", "true");
       setShowSignupModal(true);
       return;
