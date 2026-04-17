@@ -190,7 +190,7 @@ export function BundleCreator() {
                 placeholder="Bundle title here..."
                 className="font-display text-lg font-semibold text-foreground bg-transparent border-none outline-none placeholder:text-muted-foreground w-full"
               />
-              {/* <p className="text-muted-foreground text-sm">Add your links and share them in one URL</p> */}
+              <p className="text-muted-foreground text-sm">Add your links and share them in one URL</p>
             </div>
           </div>
 
