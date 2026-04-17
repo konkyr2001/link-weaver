@@ -32,9 +32,8 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   const checkErrors = () => {
-    if (!firstName.trim() || !lastName.trim() || !email.trim() || !password.trim() || !recaptcha) {
+    if (!firstName.trim() || !email.trim() || !password.trim() || !recaptcha) {
       setErrorFirstName(!firstName.trim());
-      setErrorLastName(!lastName.trim());
       setErrorEmail(!email.trim());
       setErrorPassword(!password.trim());
       setErrorRecaptcha(!recaptcha);
