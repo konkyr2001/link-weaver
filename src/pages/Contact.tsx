@@ -17,9 +17,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useNavigate } from "react-router-dom";
 
 const Contact = () => {
   const { theme } = useTheme();
+  const navigate = useNavigate();
   const captchaRef = useRef<any>(null);
 
   const user = JSON.parse(localStorage.getItem("user") || "null");
@@ -41,7 +43,7 @@ const Contact = () => {
     e.preventDefault();
 
     const hasErrors =
-      !email.trim() || !title.trim() || !message.trim() || !category.trim();
+      !email.trim() || !title.trim() || !message.trim() || !category;
 
     setErrorEmail(!email.trim());
     setErrorCategory(!category.trim());
@@ -86,14 +88,8 @@ const Contact = () => {
         toast.error(result.error);
       } else {
         toast.success("Message sent successfully!");
-        setCategory(undefined);
-        setTitle("");
-        setMessage("");
-        if (!user) {
-          setFirstName("");
-          setLastName("");
-          setEmail("");
-        }
+        navigate("/");
+        return;
       }
     } catch {
       toast.error("Something went wrong. Please try again.");
