@@ -27,6 +27,7 @@ export function BundleCreator() {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
+  const [errorTitle, setErrorTitle] = useState(false);
   const [links, setLinks] = useState<BundleLink[]>([]);
   const [generatedUrl, setGeneratedUrl] = useState(null);
   const [copied, setCopied] = useState(false);
@@ -133,8 +134,10 @@ export function BundleCreator() {
   const generateLink = async () => {
     if (!title.trim()) {
       toast.error("Give your bundle a title first");
+      setErrorTitle(true);
       return;
     }
+    setErrorTitle(false);
     if (links.length === 0) {
       toast.error("Add at least one link first");
       return;
@@ -186,9 +189,14 @@ export function BundleCreator() {
             <div className="flex-1">
               <input
                 value={title}
-                onChange={(e) => { setTitle(e.target.value); setGeneratedUrl(null); }}
+                onChange={(e) => { setTitle(e.target.value); setGeneratedUrl(null); if (e.target.value.trim()) setErrorTitle(false); }}
                 placeholder="Bundle title here..."
-                className="font-display text-lg font-semibold text-foreground bg-transparent border-none outline-none placeholder:text-muted-foreground w-full"
+                className={`font-display text-lg font-semibold border-none bg-transparent outline-none w-full rounded-md px-1 py-1 transition-all
+                  ${
+                    errorTitle
+                      ? "text-destructive placeholder:text-destructive/70"
+                      : "text-foreground placeholder:text-muted-foreground"
+                  }`}
               />
               <p className="text-muted-foreground text-sm">Add your links and share them in one URL</p>
             </div>
