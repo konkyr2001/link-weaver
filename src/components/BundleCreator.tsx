@@ -287,8 +287,10 @@ export function BundleCreator() {
                     className="overflow-hidden"
                   >
                     <div className="bg-secondary/50 rounded-lg p-4 flex items-center gap-3">
-                      <p className="text-sm text-foreground truncate flex-1 font-mono">
-                        {generatedUrl}
+                      <p className="text-sm text-foreground truncate flex-1 font-mono flex">
+                        <a href={generatedUrl} target="_blank">
+                          {generatedUrl}
+                        </a>
                       </p>
                       <Button
                         onClick={copyToClipboard}
