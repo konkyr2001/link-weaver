@@ -4,6 +4,7 @@ const login = async (email, password) => {
   try {
     const response = await fetch(`${URL}/api/user/login`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },

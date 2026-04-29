@@ -18,6 +18,7 @@ const Index = () => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
   });
+  console.log(localStorage);
   // Fetch fresh user data on mount
   useEffect(() => {
     const fetchFreshUser = async () => {
