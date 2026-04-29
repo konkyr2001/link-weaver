@@ -18,7 +18,9 @@ import {
 import FaqSection from "@/components/FaqSection";
 import Footer from "@/components/Footer";
 
-const RENEWAL_WINDOW_DAYS = 10;
+function monthly(cost) {
+  return Math.round((cost / 12) * 100) / 100;
+}
 
 function getTimeRemaining(expiresAt: string) {
   const delta = Math.max(0, new Date(expiresAt).getTime() - Date.now()) / 1000;
@@ -87,7 +89,6 @@ const Pricing = () => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
   });
-  const isTrial = user?.trialEnd && new Date(user.trialEnd) > new Date();
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
   const [pendingUpgrade, setPendingUpgrade] = useState<{ cta: any; plan: string; trial: boolean } | null>(null);
   const time = user?.currentPeriodEnd ? getTimeRemaining(user.currentPeriodEnd) : null;
@@ -132,6 +133,7 @@ const Pricing = () => {
       name: "Plus",
       price: `${import.meta.env.VITE_PLUS_PACKAGE_COST}`,
       period: "/year",
+      monthly: monthly(import.meta.env.VITE_PLUS_PACKAGE_COST),
       description: "Unlimited bundles",
       features: [
         "Unlimited bundles",
@@ -155,6 +157,7 @@ const Pricing = () => {
       name: "Pro",
       price: `${import.meta.env.VITE_PRO_PACKAGE_COST}`,
       period: "/year",
+      monthly: monthly(import.meta.env.VITE_PRO_PACKAGE_COST),
       description: "Full control with no limits",
       features: [
         "Unlimited bundles",
@@ -275,7 +278,6 @@ const Pricing = () => {
                   {tier.name}
                 </h2>
                 <p className="text-muted-foreground text-sm mt-1">{tier.description}</p>
-
                 <div className="mt-6 mb-8">
                   {parseInt(tier.price) > 0 && tier.price.includes(".") ? (
                     <>
@@ -283,19 +285,28 @@ const Pricing = () => {
                         {tier.price.split(".")[0]}
                       </span>
                       <span className="font-display text-xl font-bold text-foreground">
-                        .{tier.price.split(".")[1]}
+                        .{tier.price.split(".")[1]}€
                       </span>
                     </>
                   ) : (
                     <span className="font-display text-4xl font-bold text-foreground">
                       {tier.price}
+                      {tier.monthly && "€"}
                     </span>
                   )}
+
                   {tier.period && (
-                    <span className="text-muted-foreground text-sm">{tier.period}</span>
+                    <span className="ml-1 text-muted-foreground text-sm">
+                      {tier.period}
+                    </span>
+                  )}
+
+                  {tier.monthly && (
+                    <div className="mt-3 w-fit flex rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                      Only {tier.monthly}€/month
+                    </div>
                   )}
                 </div>
-
                 <ul className="space-y-3 mb-8 flex-1">
                   {tier.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-2 text-sm text-foreground">
