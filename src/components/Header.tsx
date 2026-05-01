@@ -71,7 +71,7 @@ const Header = ({ active }: HeaderProps) => {
           <Crown className="w-4 h-4 text-primary" />
         </div>
       </TooltipTrigger>
-      <TooltipContent>Pro user</TooltipContent>
+      <TooltipContent>Pro</TooltipContent>
     </Tooltip>
   ) : user?.plan === "plus" ? (
     <Tooltip>
@@ -80,7 +80,7 @@ const Header = ({ active }: HeaderProps) => {
           <Plus className="w-4 h-4 text-primary" />
         </div>
       </TooltipTrigger>
-      <TooltipContent>Plus user</TooltipContent>
+      <TooltipContent>Plus</TooltipContent>
     </Tooltip>
   ) : null;
 
