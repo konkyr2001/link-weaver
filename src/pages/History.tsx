@@ -521,6 +521,7 @@ function openEdit(item: HistoryItem) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <Footer />
     </div>
   );
 }

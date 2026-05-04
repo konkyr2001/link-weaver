@@ -31,6 +31,7 @@ import {
   continueAutoSubscription, 
   cancelAutoSubscription 
 } from "@/services/billing";
+import Footer from "@/components/Footer";
 
 function getTimeRemaining(expiresAt: string) {
   const delta = Math.max(0, new Date(expiresAt).getTime() - Date.now()) / 1000;
@@ -486,6 +487,7 @@ const Account = () => {
           </Card>
         </motion.div>
       </main>
+      <Footer />
     </div>
   );
 };

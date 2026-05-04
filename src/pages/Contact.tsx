@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
+import Footer from "@/components/Footer";
 
 const Contact = () => {
   const { theme } = useTheme();
@@ -81,7 +82,7 @@ const Contact = () => {
         title: title.trim(),
         message: message.trim(),
         captcha: captchaToken,
-        token
+        token,
       });
 
       if (result.error) {
@@ -114,7 +115,7 @@ const Contact = () => {
 
       <Header />
 
-      <main className="flex-1 flex items-center justify-center px-6 py-16">
+      <main className="flex-1 flex items-center justify-center px-6 py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -130,7 +131,10 @@ const Contact = () => {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="glass-card p-6 rounded-xl space-y-5">
+          <form
+            onSubmit={handleSubmit}
+            className="glass-card p-6 rounded-xl space-y-5"
+          >
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="firstName">First Name</Label>
@@ -174,11 +178,16 @@ const Contact = () => {
                 Category <span className="text-destructive">*</span>
               </Label>
 
-              <Select value={category} onValueChange={(value) => {
-                setCategory(value);
-                setErrorCategory(false);
-              }}>
-                <SelectTrigger className={`h-10 ${errorCategory ? "border-destructive focus:ring-destructive" : ""}`}>
+              <Select
+                value={category}
+                onValueChange={(value) => {
+                  setCategory(value);
+                  setErrorCategory(false);
+                }}
+              >
+                <SelectTrigger
+                  className={`h-10 ${errorCategory ? "border-destructive focus:ring-destructive" : ""}`}
+                >
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
 
@@ -192,7 +201,6 @@ const Contact = () => {
                   <SelectItem value="Other">Other</SelectItem>
                 </SelectContent>
               </Select>
-
             </div>
             <div className="space-y-2">
               <Label htmlFor="title">
@@ -233,7 +241,9 @@ const Contact = () => {
               className="w-full"
               disabled={loading}
             >
-              {loading ? "Sending..." : (
+              {loading ? (
+                "Sending..."
+              ) : (
                 <>
                   <Send className="w-4 h-4 mr-2" />
                   Send Message
@@ -243,6 +253,7 @@ const Contact = () => {
           </form>
         </motion.div>
       </main>
+      <Footer />
     </div>
   );
 };
