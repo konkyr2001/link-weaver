@@ -8,11 +8,11 @@ const Footer = () => {
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
 
           {/* Left — logo + copyright */}
-          <Link to="/" className="flex items-center gap-2.5 hover:opacity-80 transition">
+          <div className="flex items-center gap-1">
             <div
               className="flex h-6 w-6 items-center justify-center rounded-md"
             >
-              <Link2 className="h-4 w-4 text-primary" />
+              <Link2 className="h-5 w-5 text-primary" />
             </div>
             <span className="font-display text-sm font-semibold text-foreground">
               We<span className="text-primary">Linkly</span>
@@ -21,7 +21,7 @@ const Footer = () => {
             <span className="text-xs text-muted-foreground">
               © {new Date().getFullYear()} All rights reserved
             </span>
-          </Link>
+          </div>
 
           {/* Right — nav links */}
           <div className="flex items-center gap-1">
@@ -34,7 +34,7 @@ const Footer = () => {
               <span key={link.to} className="flex items-center gap-1">
                 <Link
                   to={link.to}
-                  className="rounded-md px-2.5 py-1 text-sm text-muted-foreground transition-all duration-150 hover:bg-muted hover:text-foreground"
+                  className="rounded-md px-2.5 py-1 text-sm text-muted-foreground transition-all duration-150 hover:bg-mutsed hover:text-foreground"
                 >
                   {link.label}
                 </Link>
@@ -48,7 +48,7 @@ const Footer = () => {
         </div>
 
         {/* reCAPTCHA disclosure — required by Google when hiding the badge */}
-        <p className="mt-4 border-t border-border pt-3 text-center text-[11px] text-muted-foreground/40">
+        <p className="mt-4 border-t border-border pt-3 text-center text-[11px] text-muted-foreground/50">
           This site is protected by reCAPTCHA —{" "}
           <a
             href="https://policies.google.com/privacy"
