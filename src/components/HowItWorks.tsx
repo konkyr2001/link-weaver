@@ -9,7 +9,7 @@ const steps = [
     description:
       "Add as many URLs as you want — articles, docs, videos, anything. Paste them one by one or in bulk. Drag to reorder before sharing.",
     preview: (
-      <div className="mt-4 flex flex-col gap-1.5">
+      <div className="mt-4 flex flex-col gap-1.5 cursor-default">
         <div className="flex items-center gap-2 rounded-lg border border-border bg-muted px-3 py-2">
           <div className="h-2 w-2 flex-shrink-0 rounded-full bg-primary/50" />
           <span className="truncate font-mono text-xs text-muted-foreground">
@@ -38,7 +38,7 @@ const steps = [
     description:
       "Give your bundle a meaningful name so you and your recipients know what it's about at a glance. Keep it short and descriptive.",
     preview: (
-      <div className="mt-4">
+      <div className="mt-4 cursor-default">
         <div className="flex items-center gap-2 rounded-lg border border-border bg-muted px-3 py-2.5">
           <Type className="h-3.5 w-3.5 flex-shrink-0 text-muted-foreground" />
           <span className="text-xs text-foreground">Q3 Design Resources</span>
@@ -58,7 +58,7 @@ const steps = [
       "Hit generate and your links are instantly bundled into one clean, unique URL. No waiting, no sign-up required.",
     badge: "Free",
     preview: (
-      <div className="mt-4">
+      <div className="mt-4 cursor-default">
         <div
           className="flex items-center gap-2 rounded-lg border px-3 py-2 font-mono text-xs"
           style={{
@@ -67,10 +67,10 @@ const steps = [
           }}
         >
           <Link2 className="h-3 w-3 flex-shrink-0 text-primary" />
-          <span className="text-muted-foreground">
+          <a href="https://welinkly.com/q3-design" target="_blank" className="text-muted-foreground">
             welinkly.com/
             <span className="font-semibold text-primary">q3-design</span>
-          </span>
+          </a>
         </div>
         <p className="mt-2 text-[11px] text-muted-foreground/60">
           Your bundle URL is ready to copy and share immediately.
@@ -85,7 +85,7 @@ const steps = [
     description:
       "Copy your bundle link and send it via chat, email, or social. Anyone who opens it sees all your links in one place — no account needed to view.",
     preview: (
-      <div className="mt-4 flex flex-wrap gap-1.5">
+      <div className="mt-4 flex flex-wrap gap-1.5 cursor-default">
         {["Slack", "Email", "WhatsApp", "Twitter / X", "LinkedIn"].map(
           (platform) => (
             <span
@@ -106,7 +106,7 @@ const steps = [
     description:
       "Every bundle you create while logged in is automatically saved. Revisit, copy, or reshare any past bundle from your history page anytime.",
     preview: (
-      <div className="mt-4 flex flex-col gap-1.5">
+      <div className="mt-4 flex flex-col gap-1.5 cursor-default">
         {[
           {
             title: "Q3 Design Resources",
@@ -145,13 +145,13 @@ const steps = [
       "Free bundles expire after 30 days. Upgrade to Pro to keep your bundles active for up to a full year — perfect for long-running projects or resources you share repeatedly.",
     badge: "Premium",
     preview: (
-      <div className="mt-4 flex flex-col gap-2">
+      <div className="mt-4 flex flex-col gap-2 cursor-default">
         <div className="flex items-center justify-between rounded-lg border border-border bg-muted px-3 py-2.5">
           <span className="text-xs text-muted-foreground">
             No Account free plan
           </span>
-          <div className="flex items-center gap-2">
-            <div className="h-1.5 w-20 overflow-hidden rounded-full bg-border">
+          <div className="w-[150px] flex items-center gap-2">
+            <div className="h-1.5 w-24 overflow-hidden rounded-full bg-border">
               <div className="h-full w-[2%] rounded-full bg-primary/40" />
             </div>
             <span className="text-[11px] text-muted-foreground">3 days</span>
@@ -161,8 +161,8 @@ const steps = [
           <span className="text-xs text-muted-foreground">
             Account Free plan
           </span>
-          <div className="flex items-center gap-2">
-            <div className="h-1.5 w-20 overflow-hidden rounded-full bg-border">
+          <div className="w-[150px] flex items-center gap-2">
+            <div className="h-1.5 w-24 overflow-hidden rounded-full bg-border">
               <div className="h-full w-1/4 rounded-full bg-primary/40" />
             </div>
             <span className="text-[11px] text-muted-foreground">30 days</span>
@@ -179,8 +179,8 @@ const steps = [
             <Crown className="h-3 w-3" />
             Premium plan
           </span>
-          <div className="flex items-center gap-2">
-            <div className="h-1.5 w-20 overflow-hidden rounded-full bg-border">
+          <div className="w-[150px] flex items-center gap-2">
+            <div className="h-1.5 w-24 overflow-hidden rounded-full bg-border">
               <div className="h-full w-full rounded-full bg-primary" />
             </div>
             <span className="text-[11px] font-medium text-primary">1 year</span>

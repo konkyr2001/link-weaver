@@ -106,16 +106,7 @@ function Hero() {
             href="#"
             className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-6 py-3 font-display text-sm font-semibold text-foreground transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-sm"
           >
-            <span className="relative flex h-4 w-4 flex-shrink-0 items-center justify-center">
-              <span
-                className="absolute inset-0 rounded-full"
-                style={{
-                  background:
-                    "conic-gradient(#EA4335 0deg 90deg, #FBBC05 90deg 180deg, #34A853 180deg 270deg, #4285F4 270deg 360deg)",
-                }}
-              />
-              <span className="relative z-10 h-1.5 w-1.5 rounded-full bg-white" />
-            </span>
+            <img className="w-5" src="https://fonts.gstatic.com/s/i/productlogos/chrome_store/v7/192px.svg" alt="Chrome Extension" />
             Get Chrome Extension
           </a>
         </motion.div>

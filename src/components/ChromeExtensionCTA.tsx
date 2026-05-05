@@ -9,7 +9,7 @@ const features = [
 
 function ExtensionMockup() {
   return (
-    <div className="w-[260px] overflow-hidden rounded-2xl border border-border bg-card shadow-[0_4px_24px_rgba(0,0,0,0.08)]">
+    <div className="w-[260px] overflow-hidden rounded-2xl border border-border bg-card shadow-[0_4px_24px_rgba(0,0,0,0.08)] cursor-default">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div className="flex items-center gap-0.5">
@@ -59,8 +59,8 @@ function ExtensionMockup() {
         </div>
 
         {/* Generate button */}
-        <button className="w-full rounded-lg bg-primary py-2 font-display text-xs font-semibold text-white">
-          Generate bundle link
+        <button className="w-full rounded-lg bg-primary py-2 cursor-default font-display text-xs font-semibold text-white">
+          Generate Share Link
         </button>
       </div>
     </div>
@@ -106,17 +106,7 @@ export function ChromeExtensionCTA() {
               href="#"
               className="mt-7 inline-flex items-center gap-2.5 rounded-xl bg-primary px-5 py-3 font-display text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
-              {/* Chrome logo */}
-              <span className="relative flex h-5 w-5 flex-shrink-0 items-center justify-center">
-                <span
-                  className="absolute inset-0 rounded-full"
-                  style={{
-                    background:
-                      "conic-gradient(#EA4335 0deg 90deg, #FBBC05 90deg 180deg, #34A853 180deg 270deg, #4285F4 270deg 360deg)",
-                  }}
-                />
-                <span className="relative z-10 h-2 w-2 rounded-full bg-white" />
-              </span>
+              <img className="w-5" src="https://fonts.gstatic.com/s/i/productlogos/chrome_store/v7/192px.svg" alt="Chrome Extension" />
               Add to Chrome — it's free
             </a>
 
@@ -159,7 +149,7 @@ export function ChromeExtensionCTA() {
               <ExtensionMockup />
             </motion.div>
             <p className="text-center text-xs text-muted-foreground">
-              Works on Chrome, Brave, and Edge
+              Works on Chrome <span className="opacity-20">for now :)</span>
             </p>
           </div>
         </div>
