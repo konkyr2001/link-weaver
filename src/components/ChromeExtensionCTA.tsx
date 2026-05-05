@@ -5,6 +5,7 @@ const features = [
   "Add the current page with one click",
   "Auto-syncs with your WeLinkly account",
   "Generate your bundle URL without opening the site",
+  "Save bundles in your account's history",
 ];
 
 function ExtensionMockup() {
@@ -96,9 +97,9 @@ export function ChromeExtensionCTA() {
             </h2>
 
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Install the WeLinkly extension and add the page you're on to a
+              Install the WeLinkly google extension and add the page you're on to a
               bundle in one click. Log in once and your projects sync
-              automatically — no refresh needed.
+              automatically, no need to open the site every time.
             </p>
 
             {/* CTA button */}

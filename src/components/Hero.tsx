@@ -17,9 +17,9 @@ const itemVariants: Variants = {
 };
 
 const benefits = [
-  { icon: Zap, label: "Instant bundle generation" },
-  { icon: Users, label: "No account needed to view" },
+  { icon: Users, label: "No account needed" },
   { icon: Link2, label: "One link, everything inside" },
+  { icon: Zap, label: "Generate in one click" },
 ];
 
 function Hero() {
@@ -130,7 +130,7 @@ function Hero() {
         {/* Social proof */}
         <motion.div
           variants={itemVariants}
-          className="mt-8 flex items-center gap-2 text-xs text-muted-foreground/60"
+          className="mt-8 flex items-center gap-2 text-xs text-muted-foreground/90"
         >
           <div className="flex -space-x-1.5">
             {["bg-orange-400", "bg-blue-400", "bg-green-400", "bg-purple-400"].map(

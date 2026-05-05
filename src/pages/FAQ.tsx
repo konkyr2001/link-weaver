@@ -14,12 +14,18 @@ const FREE_ACCOUNT = import.meta.env.VITE_FREE_ACCOUNT_EXPIRATION_DAY;
 const faq = [
   {
     question: "What is WeLinkly used for?",
-    answer: `
+    answer: <>
       WeLinkly is a place where you can store all your links and never worry about losing them.
-      It helps you organize and share multiple links in one clean, professional, and user-friendly page.
+      It helps you organize and share multiple links in one clean, professional, and user-friendly <a
+        className="text-primary underline transition-all hover:opacity-80" href="https://www.welinkly.com/q3-design" 
+        target="_blank" 
+        rel="noopener noreferrer"
+      >
+          page
+      </a>.
       All your links are saved on your History page, so even if the original message gets lost in the chat,
-      you can always find them here 😊.
-    `
+      you can always find them here 😊
+    </>
   },
   {
     question: "What is a bundle?",
@@ -69,6 +75,15 @@ const faq = [
   {
     question: "How can I contact support?",
     answer: <span>You can contact us anytime <Link to="/contact" className="text-primary underline hover:opacity-80">here</Link>.</span>,
+  },
+  {
+    question: "How does the Google extension work?",
+    answer: <>
+      Install the WeLinkly extension and add the page you're on to a bundle in one click. 
+      Log in once and your projects sync automatically. After your sync your extension, you can generate share
+      links without opening the site and all your bundles will be saved in the <a href="/history" className="text-primary underline hover:opacity-80">
+      History</a> page of your account.
+    </>
   }
 ];
 

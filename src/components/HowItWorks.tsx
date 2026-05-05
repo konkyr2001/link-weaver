@@ -140,9 +140,9 @@ const steps = [
   {
     number: 6,
     icon: Crown,
-    title: "Keep bundles alive up to 1 year",
+    title: "Bundles expiration",
     description:
-      "Free bundles expire after 30 days. Upgrade to Pro to keep your bundles active for up to a full year — perfect for long-running projects or resources you share repeatedly.",
+      "Free bundles expire up to 30 days. Upgrade to Pro to keep your bundles active for up to a full year — perfect for long-running projects or resources you share repeatedly.",
     badge: "Premium",
     preview: (
       <div className="mt-4 flex flex-col gap-2 cursor-default">

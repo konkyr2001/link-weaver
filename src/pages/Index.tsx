@@ -88,10 +88,10 @@ const Index = () => {
               Try it now
             </span>
             <h2 className="font-display text-3xl font-bold text-foreground">
-              Create your first bundle
+              Create your bundle here
             </h2>
             <p className="mt-2 text-muted-foreground">
-              No account needed. Paste your links and generate a shareable URL instantly.
+              Paste your links, add a title and generate a shareable URL instantly.
             </p>
           </div>
           <BundleCreator />
