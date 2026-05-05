@@ -132,11 +132,6 @@ export function BundleCreator() {
   };
 
   const generateLink = async () => {
-    if (!title.trim()) {
-      toast.error("Give your bundle a title first");
-      setErrorTitle(true);
-      return;
-    }
     setErrorTitle(false);
     if (links.length === 0) {
       toast.error("Add at least one link first");

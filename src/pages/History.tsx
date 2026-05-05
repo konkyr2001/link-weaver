@@ -160,10 +160,6 @@ function openEdit(item: HistoryItem) {
 
   async function handleSaveEdit() {
     if (!editItem) return;
-    if (!editTitle.trim()) {
-      toast.error("Title cannot be empty");
-      return;
-    }
     if (editLinks.length === 0) {
       toast.error("Add at least one link");
       return;
