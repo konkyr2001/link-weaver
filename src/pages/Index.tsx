@@ -88,7 +88,7 @@ const Index = () => {
               Try it now
             </span>
             <h2 className="font-display text-3xl font-bold text-foreground">
-              Create your bundle here
+              Create your bundles here
             </h2>
             <p className="mt-2 text-muted-foreground">
               Paste your links, add a title and generate a shareable URL instantly.

@@ -42,7 +42,7 @@ const sections = [
         </p>
         <div className="space-y-2">
           {[
-            "Bundle multiple URLs into a single shareable link",
+            "Bundle multiple links into a single shareable URL",
             "Share bundles via a unique generated URL",
             "Save and manage bundles through an account",
             "Add links to bundles directly from the browser via the Chrome extension",

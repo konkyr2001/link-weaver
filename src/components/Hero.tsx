@@ -86,10 +86,9 @@ function Hero() {
           variants={itemVariants}
           className="mt-5 max-w-lg text-lg leading-relaxed text-muted-foreground"
         >
-          Bundle multiple URLs into one clean, shareable link. No sign-up needed
-          — paste, generate, and share in seconds.
+          Bundle multiple links into one clean, shareable URL.
+          <p>Paste, generate, and share in seconds.</p>
         </motion.p>
-
         {/* CTA buttons */}
         <motion.div
           variants={itemVariants}
