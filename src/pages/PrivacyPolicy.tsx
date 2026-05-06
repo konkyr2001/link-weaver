@@ -235,7 +235,6 @@ const PrivacyPolicy = () => {
       <Helmet>
         <title>Privacy Policy – WeLinkly</title>
         <meta
-          key="description"
           name="description"
           content="WeLinkly respects your privacy and is committed to protecting your personal data. Learn about the information we collect, how we use it, and your rights in our Privacy Policy."
         />

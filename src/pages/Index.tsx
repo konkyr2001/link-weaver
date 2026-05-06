@@ -67,7 +67,6 @@ const Index = () => {
       <Helmet>
         <title>WeLinkly – Bundle Multiple Links into One URL</title>
         <meta
-          key="description"
           name="description"
           content="Bundle multiple links into one URL. WeLinkly helps you organize, share and manage links easily."
         />

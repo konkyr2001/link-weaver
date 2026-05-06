@@ -105,7 +105,6 @@ const Contact = () => {
       <Helmet>
         <title>Contact Us – WeLinkly</title>
         <meta
-          key="description"
           name="description"
           content="Have a question, found a bug, or have an idea? Contact us at WeLinkly."
         />

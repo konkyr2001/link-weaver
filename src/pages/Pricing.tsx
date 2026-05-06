@@ -240,7 +240,6 @@ const Pricing = () => {
       <Helmet>
         <title>Pricing – WeLinkly Plans for Link Bundling</title>
         <meta
-          key="description"
           name="description"
           content="Explore WeLinkly pricing plans. Simple and transparent options for bundling and sharing links with Plus and Pro subscriptions."
         />

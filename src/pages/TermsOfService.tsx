@@ -275,7 +275,6 @@ const TermsOfService = () => {
       <Helmet>
         <title>Terms of Service – WeLinkly</title>
         <meta
-          key="description"
           name="description"
           content="Read the WeLinkly terms of service and understand the rules for using our link bundling platform."
         />

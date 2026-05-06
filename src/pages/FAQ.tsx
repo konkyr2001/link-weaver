@@ -94,7 +94,6 @@ const FAQPage = () => {
       <Helmet>
         <title>FAQ – How to Bundle and Share Multiple Links | WeLinkly</title>
         <meta
-          key="description"
           name="description"
           content="Find answers about WeLinkly features, pricing, and how to bundle multiple links into one shareable URL."
         />
