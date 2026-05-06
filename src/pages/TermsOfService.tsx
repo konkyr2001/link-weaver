@@ -24,7 +24,7 @@ const sections = [
     content: (
       <p className="text-sm leading-relaxed text-muted-foreground">
         By accessing or using WeLinkly — including our website at{" "}
-        <a href="https://www.welinkly.com" className="text-primary hover:underline">
+        <a href="https://welinkly.com" className="text-primary hover:underline">
           welinkly.com
         </a>{" "}
         and our Chrome extension — you agree to be bound by these Terms of Service. If you do not
@@ -313,7 +313,7 @@ const TermsOfService = () => {
               <span className="h-1 w-1 rounded-full bg-border" />
               <span>
                 Applies to{" "}
-                <a href="https://www.welinkly.com" className="text-primary hover:underline">
+                <a href="https://welinkly.com" className="text-primary hover:underline">
                   welinkly.com
                 </a>{" "}
                 and Chrome Extension

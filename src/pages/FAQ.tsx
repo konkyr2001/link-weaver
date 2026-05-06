@@ -18,7 +18,7 @@ const faq = [
     answer: <>
       WeLinkly is a place where you can store all your links and never worry about losing them.
       It helps you organize and share multiple links in one clean, professional, and user-friendly <a
-        className="text-primary underline transition-all hover:opacity-80" href="https://www.welinkly.com/q3-design" 
+        className="text-primary underline transition-all hover:opacity-80" href="https://welinkly.com/q3-design" 
         target="_blank" 
         rel="noopener noreferrer"
       >

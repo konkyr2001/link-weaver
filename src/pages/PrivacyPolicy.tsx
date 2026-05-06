@@ -274,7 +274,7 @@ const PrivacyPolicy = () => {
               <span className="h-1 w-1 rounded-full bg-border" />
               <span>
                 Applies to{" "}
-                <a href="https://www.welinkly.com" className="text-primary hover:underline">
+                <a href="https://welinkly.com" className="text-primary hover:underline">
                   welinkly.com
                 </a>{" "}
                 and Chrome Extension
