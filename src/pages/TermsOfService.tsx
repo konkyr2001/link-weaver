@@ -14,6 +14,7 @@ import {
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { Helmet } from "react-helmet-async";
 
 const sections = [
   {
@@ -271,6 +272,14 @@ const itemVariants: Variants = {
 const TermsOfService = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Helmet>
+        <title>Terms of Service – WeLinkly</title>
+        <meta
+          key="description"
+          name="description"
+          content="Read the WeLinkly terms of service and understand the rules for using our link bundling platform."
+        />
+      </Helmet>
       <Header />
 
       <main className="flex-1 px-6 py-16">

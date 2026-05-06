@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import Footer from "@/components/Footer";
+import { Helmet } from "react-helmet-async";
 
 const Contact = () => {
   const { theme } = useTheme();
@@ -101,6 +102,14 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Helmet>
+        <title>Contact Us – WeLinkly</title>
+        <meta
+          key="description"
+          name="description"
+          content="Have a question, found a bug, or have an idea? Contact us at WeLinkly."
+        />
+      </Helmet>
       {/* Only render captcha for non-logged-in users */}
       {!user && (
         <div className="fixed z-50">

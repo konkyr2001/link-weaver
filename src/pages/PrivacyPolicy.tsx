@@ -2,6 +2,7 @@ import { motion, Variants } from "framer-motion";
 import { Shield, Link2, Database, Share2, Lock, Clock, UserCheck, RefreshCw, Mail } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { Helmet } from "react-helmet-async";
 
 const sections = [
   {
@@ -231,6 +232,14 @@ const itemVariants: Variants = {
 const PrivacyPolicy = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Helmet>
+        <title>Privacy Policy – WeLinkly</title>
+        <meta
+          key="description"
+          name="description"
+          content="WeLinkly respects your privacy and is committed to protecting your personal data. Learn about the information we collect, how we use it, and your rights in our Privacy Policy."
+        />
+      </Helmet>
       <Header />
 
       <main className="flex-1 px-6 py-16">

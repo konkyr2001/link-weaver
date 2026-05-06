@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 const FREE_NO_ACCOUNT = import.meta.env.VITE_FREE_NO_ACCOUNT_EXPIRATION_DAY;
 const FREE_ACCOUNT = import.meta.env.VITE_FREE_ACCOUNT_EXPIRATION_DAY;
@@ -90,6 +91,14 @@ const faq = [
 const FAQPage = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Helmet>
+        <title>FAQ – How to Bundle and Share Multiple Links | WeLinkly</title>
+        <meta
+          key="description"
+          name="description"
+          content="Find answers about WeLinkly features, pricing, and how to bundle multiple links into one shareable URL."
+        />
+      </Helmet>
       <Header />
 
       <main className="flex-1 px-6 py-16">

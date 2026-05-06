@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import FaqSection from "@/components/FaqSection";
 import Footer from "@/components/Footer";
+import { Helmet } from "react-helmet-async";
 
 function monthly(cost) {
   return Math.round((cost / 12) * 100) / 100;
@@ -236,6 +237,14 @@ const Pricing = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Helmet>
+        <title>Pricing – WeLinkly Plans for Link Bundling</title>
+        <meta
+          key="description"
+          name="description"
+          content="Explore WeLinkly pricing plans. Simple and transparent options for bundling and sharing links with Plus and Pro subscriptions."
+        />
+      </Helmet>
       {/* Nav */}
       <Header active="pricing" />
 

@@ -10,6 +10,7 @@ import Hero from "@/components/Hero";
 import { HowItWorks } from "@/components/HowItWorks";
 import { ChromeExtensionCTA } from "@/components/ChromeExtensionCTA";
 import { getUser } from "@/services/user";
+import { Helmet } from "react-helmet-async";
 
 const Index = () => {
   const [searchParams] = useSearchParams();
@@ -63,6 +64,14 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Helmet>
+        <title>WeLinkly – Bundle Multiple Links into One URL</title>
+        <meta
+          key="description"
+          name="description"
+          content="Bundle multiple links into one URL. WeLinkly helps you organize, share and manage links easily."
+        />
+      </Helmet>
       <Header active="home" />
 
       {/* 1. Hero — hook */}
