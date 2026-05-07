@@ -12,80 +12,149 @@ import { Helmet } from "react-helmet-async";
 
 const FREE_NO_ACCOUNT = import.meta.env.VITE_FREE_NO_ACCOUNT_EXPIRATION_DAY;
 const FREE_ACCOUNT = import.meta.env.VITE_FREE_ACCOUNT_EXPIRATION_DAY;
-const faq = [
+const faqSections = [
   {
-    question: "What is WeLinkly used for?",
-    answer: <>
-      WeLinkly is a place where you can store all your links and never worry about losing them.
-      It helps you organize and share multiple links in one clean, professional, and user-friendly <a
-        className="text-primary underline transition-all hover:opacity-80" href="https://welinkly.com/q3-design" 
-        target="_blank" 
-        rel="noopener noreferrer"
-      >
-          page
-      </a>.
-      All your links are saved on your History page, so even if the original message gets lost in the chat,
-      you can always find them here 😊
-    </>
+    title: "General",
+    items: [
+      {
+        question: "What is WeLinkly used for?",
+        answer: (
+          <>
+            WeLinkly is a place where you can store all your links and never
+            worry about losing them.
+            It helps you organize and share multiple links in one clean,
+            professional, and user-friendly{" "}
+            <a
+              className="text-primary underline transition-all hover:opacity-80"
+              href="https://welinkly.com/q3-design"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              page
+            </a>
+            .
+            All your links are saved on your History page, so even if the
+            original message gets lost in the chat, you can always find them
+            here 😊
+          </>
+        ),
+      },
+      {
+        question: "Can I use WeLinkly for free?",
+        answer:
+          "Yes. You can create and share bundles for free. Paid plans unlock longer expiration times, history access, and additional features.",
+      },
+    ],
   },
+
   {
-    question: "What is a bundle?",
-    answer:
-      "A bundle is a single shareable link that contains multiple URLs.",
+    title: "Bundles & Links",
+    items: [
+      {
+        question: "How many links can I add to a bundle?",
+        answer:
+          "You can add unlimited links to each bundle. There are no restrictions.",
+      },
+      {
+        question: "How many bundles can I create?",
+        answer: "You can create unlimited bundles on all plans.",
+      },
+    ],
   },
+
   {
-    question: "Can I use WeLinkly for free?",
-    answer:
-      "Yes. You can create and share bundles for free. Paid plans unlock longer expiration times, history access, and additional features.",
+    title: "Accounts & Expiration",
+    items: [
+      {
+        question: "Do I need an account to create bundles?",
+        answer:
+          "No. You can create and share bundles without an account. Creating a free account gives you longer expiration times and access to your History page.",
+      },
+      {
+        question: "When do my bundles expire?",
+        answer: (
+          <span>
+            Without an account: bundles expire after {FREE_NO_ACCOUNT} days{" "}
+            <br />
+            With a free account: bundles expire after {FREE_ACCOUNT} days{" "}
+            <br />
+            With a Plus or Pro subscription: bundles remain active as long as
+            your subscription is active
+          </span>
+        ),
+      },
+      {
+        question: "What happens when my bundles expire?",
+        answer:
+          "For free users, expired bundles are permanently deleted. Plus and Pro users keep their bundles in History, where they remain saved but inactive. If you renew your subscription, they become active again.",
+      },
+    ],
   },
+
   {
-    question: "Do I need an account to create bundles?",
-    answer:
-      "No. You can create and share bundles without an account. Creating a free account gives you longer expiration times and access to your History page.",
+    title: "Privacy & Security",
+    items: [
+      {
+        question: "Are my bundles private?",
+        answer:
+          "Yes. Your bundles are only accessible through the unique link you share. They are not publicly listed or indexed.",
+      },
+    ],
   },
+
   {
-    question: "How many links can I add to a bundle?",
-    answer:
-      "You can add unlimited links to each bundle. There are no restrictions.",
+    title: "Extension",
+    items: [
+      {
+        question: "How does the Google extension work?",
+        answer: (
+          <>
+            Simple, just download the WeLinkly extension and add the 
+            current page you're on to a bundle with just one click. 
+          </>
+        ),
+      },
+      {
+        question: "Can I connect the extension to my account?",
+        answer: (
+          <>
+            Yes! Just click "Login to sync", log in once and your projects sync
+            automatically. After syncing your extension, you can generate share
+            links without opening the site and all your bundles will be saved in
+            the{" "}
+            <a
+              href="/history"
+              className="text-primary underline hover:opacity-80"
+            >
+              History
+            </a>{" "}
+            page of your account.
+          </>
+        )
+      },
+    ],
   },
+
   {
-    question: "How many bundles can I create?",
-    answer:
-      "You can create unlimited bundles on all plans.",
+    title: "Support",
+    items: [
+      {
+        question: "How can I contact support?",
+        answer: (
+          <span>
+            You can contact us anytime{" "}
+            <Link
+              to="/contact"
+              className="text-primary underline hover:opacity-80"
+            >
+              here
+            </Link>
+            .
+          </span>
+        ),
+      },
+    ],
   },
-  {
-    question: "When do my bundles expire?",
-    answer: (
-      <span>
-        Without an account: bundles expire after {FREE_NO_ACCOUNT} days <br />
-        With a free account: bundles expire after {FREE_ACCOUNT} days <br />
-        With a Plus or Pro subscription: bundles remain active as long as your subscription is active
-      </span>
-    ),
-  },
-  {
-    question: "What happens when my bundles expire?",
-    answer:
-      "For free users, expired bundles are permanently deleted. Plus and Pro users keep their bundles in History, where they remain saved but inactive. If you renew your subscription, they become active again.",
-  },
-  {
-    question: "Are my bundles private?",
-    answer:
-      "Yes. Your bundles are only accessible through the unique link you share. They are not publicly listed or indexed.",
-  },
-  {
-    question: "How can I contact support?",
-    answer: <span>You can contact us anytime <Link to="/contact" className="text-primary underline hover:opacity-80">here</Link>.</span>,
-  },
-  {
-    question: "How does the Google extension work?",
-    answer: <>
-      Install the WeLinkly extension and add the page you're on to a bundle in one click. 
-      Log in once and your projects sync automatically. After your sync your extension, you can generate share
-      links without opening the site and all your bundles will be saved in the <a href="/history" className="text-primary underline hover:opacity-80">
-      History</a> page of your account.
-    </>
-  }
 ];
 
 const FAQPage = () => {
@@ -121,18 +190,37 @@ const FAQPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <Accordion type="single" collapsible className="space-y-4">
-              {faq.map((object, index) => (
-                <AccordionItem key={index} value={`item-${index}`} className="glass-card rounded-lg px-6 border-0">
-                  <AccordionTrigger className="sm:text-lg text-left font-semibold text-foreground hover:no-underline py-4">
-                    {object.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="sm:text-base text-muted-foreground pb-4">
-                    {object.answer}
-                  </AccordionContent>
-                </AccordionItem>
+            <div className="space-y-10">
+              {faqSections.map((section, sectionIndex) => (
+                <div key={sectionIndex}>
+                  <h2 className="text-2xl font-bold mb-4 text-foreground">
+                    {section.title}
+                  </h2>
+
+                  <Accordion
+                    type="single"
+                    collapsible
+                    className="space-y-4"
+                  >
+                    {section.items.map((object, index) => (
+                      <AccordionItem
+                        key={index}
+                        value={`section-${sectionIndex}-item-${index}`}
+                        className="glass-card rounded-lg px-6 border-0"
+                      >
+                        <AccordionTrigger className="sm:text-lg text-left font-semibold text-foreground hover:no-underline py-4">
+                          {object.question}
+                        </AccordionTrigger>
+
+                        <AccordionContent className="sm:text-base text-muted-foreground pb-4">
+                          {object.answer}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                </div>
               ))}
-            </Accordion>
+            </div>
           </motion.div>
         </div>
       </main>
