@@ -27,7 +27,7 @@ const sections = [
         <a href="https://welinkly.com" className="text-primary hover:underline">
           welinkly.com
         </a>{" "}
-        and our Chrome extension — you agree to be bound by these Terms of Service. If you do not
+        and our Chrome Extension — you agree to be bound by these Terms of Service. If you do not
         agree to these terms, please do not use our service.
       </p>
     ),
@@ -46,7 +46,7 @@ const sections = [
             "Bundle multiple links into a single shareable URL",
             "Share bundles via a unique generated URL",
             "Save and manage bundles through an account",
-            "Add links to bundles directly from the browser via the Chrome extension",
+            "Add links to bundles directly from the browser via the Chrome Extension",
           ].map((item) => (
             <div key={item} className="flex items-start gap-3 text-sm text-muted-foreground">
               <div className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />

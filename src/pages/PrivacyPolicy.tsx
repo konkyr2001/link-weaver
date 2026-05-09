@@ -18,7 +18,7 @@ const sections = [
           {[
             { label: "Account Information", desc: "If you create an account, we may collect your email address and basic profile information." },
             { label: "Link Data", desc: "We collect URLs that you explicitly choose to save or bundle using our service." },
-            { label: "Local Storage Data", desc: "The extension may store data locally in your browser (such as saved links or temporary session data)." },
+            { label: "Local Storage Data", desc: "The Chrome Extension may store data locally in your browser (such as saved links or temporary session data)." },
           ].map((item) => (
             <div key={item.label} className="flex gap-3 rounded-xl border border-border bg-muted/40 p-4">
               <div className="mt-0.5 h-2 w-2 flex-shrink-0 rounded-full bg-primary" />
@@ -83,7 +83,7 @@ const sections = [
         <p className="text-sm leading-relaxed text-muted-foreground">The WeLinkly Chrome Extension:</p>
         <div className="space-y-2">
           {[
-            { positive: true, text: 'Accesses the active tab URL only when you interact with the extension (e.g. clicking "Add link")' },
+            { positive: true, text: 'Accesses the active tab URL only when you interact with the Chrome Extension (e.g. clicking "Add link")' },
             { positive: false, text: "Does NOT track browsing history" },
             { positive: false, text: "Does NOT monitor user activity" },
             { positive: false, text: "Does NOT collect data without user action" },

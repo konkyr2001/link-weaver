@@ -102,7 +102,8 @@ function Hero() {
             <ArrowRight className="h-4 w-4" />
           </button>
           <a
-            href="#"
+            href="https://chromewebstore.google.com/detail/welinkly/bdankdkgeeombeaoaoiliodmcikpgolk?authuser=0&hl=el"
+            target="_blank"
             className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-6 py-3 font-display text-sm font-semibold text-foreground transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-sm"
           >
             <img className="w-5" src="https://fonts.gstatic.com/s/i/productlogos/chrome_store/v7/192px.svg" alt="Chrome Extension" />

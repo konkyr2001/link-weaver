@@ -97,14 +97,15 @@ export function ChromeExtensionCTA() {
             </h2>
 
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Install the WeLinkly google extension and add the page you're on to a
+              Install the WeLinkly Chrome Extension and add the page you're on to a
               bundle in one click. Log in once and your projects sync
               automatically, no need to open the site every time.
             </p>
 
             {/* CTA button */}
             <a
-              href="#"
+              href="https://chromewebstore.google.com/detail/welinkly/bdankdkgeeombeaoaoiliodmcikpgolk?authuser=0&hl=el"
+              target="_blank"
               className="mt-7 inline-flex items-center gap-2.5 rounded-xl bg-primary px-5 py-3 font-display text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
               <img className="w-5" src="https://fonts.gstatic.com/s/i/productlogos/chrome_store/v7/192px.svg" alt="Chrome Extension" />

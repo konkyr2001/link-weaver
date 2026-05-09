@@ -106,20 +106,25 @@ const faqSections = [
     title: "Extension",
     items: [
       {
-        question: "How does the Google extension work?",
+        question: "How does the Chrome Extension work?",
         answer: (
           <>
-            Simple, just download the WeLinkly extension and add the 
+            Simple, just download the WeLinkly <a 
+              href="https://chrome.google.com/webstore/detail/welinkly/fhjcgkldkjhkldjfhkldjfhkldjfhkldjf" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-primary underline hover:opacity-80 transition-all">
+              Chrome Extension</a> and add the 
             current page you're on to a bundle with just one click. 
           </>
         ),
       },
       {
-        question: "Can I connect the extension to my account?",
+        question: "Can I connect the Chrome Extension to my account?",
         answer: (
           <>
             Yes! Just click "Login to sync", log in once and your projects sync
-            automatically. After syncing your extension, you can generate share
+            automatically. After syncing your Chrome Extension, you can generate share
             links without opening the site and all your bundles will be saved in
             the{" "}
             <a
