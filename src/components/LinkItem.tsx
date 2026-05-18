@@ -1,4 +1,4 @@
-import { GripVertical, X, ExternalLink } from "lucide-react";
+import { GripVertical, X, ExternalLink, Monitor, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BundleLink, extractDomain, getFaviconUrl, normalizeUrl } from "@/lib/bundle";
 import { useState } from "react";
@@ -8,9 +8,10 @@ interface LinkItemProps {
   index: number;
   onRemove: (id: string) => void;
   dragHandleProps?: Record<string, any>;
+  displayMode: "screenshot" | "favicon";
 }
 
-export function LinkItem({ link, index, onRemove, dragHandleProps }: LinkItemProps) {
+export function LinkItem({ link, index, onRemove, dragHandleProps, displayMode }: LinkItemProps) {
   const domain = extractDomain(link.url);
   const favicon = getFaviconUrl(link.url);
   const normalizedUrl = normalizeUrl(link.url);
@@ -28,29 +29,46 @@ export function LinkItem({ link, index, onRemove, dragHandleProps }: LinkItemPro
         <GripVertical className="w-4 h-4 sm:w-5 sm:h-5" />
       </div>
 
-      <span className="text-muted-foreground font-display text-sm w-4 sm:w-6 text-center">{index + 1}</span>
+      <span className="text-muted-foreground font-display text-sm w-4 sm:w-6 text-center">
+        {index + 1}
+      </span>
 
-      {/* Website screenshot thumbnail */}
-      <div className="w-8 h-7 sm:w-16 sm:h-10 rounded-md overflow-hidden bg-secondary/30 flex-shrink-0">
-        {!imgError ? (
-          <img
-            src={screenshotUrl}
-            alt={`Preview of ${domain}`}
-            className="w-full h-full object-cover object-top"
-            onError={() => setImgError(true)}
-            loading="lazy"
-          />
+      {/* Thumbnail — screenshot or favicon based on displayMode */}
+      {/* <div className="w-8 h-7 sm:w-16 sm:h-10 rounded-md overflow-hidden bg-secondary/30 flex-shrink-0 flex items-center justify-center"> */}
+        {displayMode === "screenshot" ? (
+          <div className="w-8 h-7 sm:w-16 sm:h-10 rounded-md overflow-hidden bg-secondary/30 flex-shrink-0 flex items-center justify-center">
+            {!imgError ? (
+              <img
+                src={screenshotUrl}
+                alt={`Preview of ${domain}`}
+                className="w-full h-full object-cover object-top"
+                onError={() => setImgError(true)}
+                loading="lazy"
+              />
+            ) : (
+              <img
+                src={favicon}
+                alt=""
+                className="w-5 h-5"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = "none";
+                }}
+              />
+            )}
+          </div>
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
+          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-md overflow-hidden bg-secondary/30 flex-shrink-0 flex items-center justify-center">
             <img
               src={favicon}
-              alt=""
-              className="w-5 h-5"
-              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              alt={`Logo of ${domain}`}
+              className="w-6 h-6 sm:w-7 sm:h-7 object-contain"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = "none";
+              }}
             />
           </div>
         )}
-      </div>
+      {/* </div> */}
 
       <div className="flex-1 min-w-0">
         <p className="text-foreground text-sm font-medium truncate">{link.title || domain}</p>
@@ -61,7 +79,7 @@ export function LinkItem({ link, index, onRemove, dragHandleProps }: LinkItemPro
         href={normalizedUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-muted-foreground hover:text-primary transition-colors opacity-s0 group-hover:sopacity-100"
+        className="text-muted-foreground hover:text-primary transition-colors opacity-0 group-hover:opacity-100"
       >
         <ExternalLink className="w-4 h-4" />
       </a>
@@ -70,7 +88,7 @@ export function LinkItem({ link, index, onRemove, dragHandleProps }: LinkItemPro
         variant="ghost"
         size="icon"
         onClick={() => onRemove(link.id)}
-        className="text-muted-foreground hover:text-primary-foreground opacisty-0 group-hovers:opacity-100 transition-all h-8 w-8"
+        className="text-muted-foreground hover:text-destructive transition-all h-8 w-8"
       >
         <X className="w-4 h-4" />
       </Button>

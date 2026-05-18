@@ -11,6 +11,8 @@ export interface BundleLink {
 export interface Bundle {
   title: string;
   links: BundleLink[];
+  icons?: "favicon" | "screenshot";
+  userId?: string;
 }
 
 export function generateId(): string {
@@ -31,6 +33,7 @@ export async function createBundle(bundle: Bundle, token: string, captcha: strin
       body: JSON.stringify({
         projectName: bundle.title,
         urls: bundle.links,
+        icons: bundle.icons,
         captcha
       })
     });
@@ -51,7 +54,9 @@ export async function fetchBundleBySlug(slug: string): Promise<Bundle | null> {
       const result = await res.json();
       return {
         title: result.projectName,
-        links: result.urls
+        links: result.urls,
+        icons: result.icons,
+        userId: result.userId,
       };
     }
     return null;
@@ -60,7 +65,7 @@ export async function fetchBundleBySlug(slug: string): Promise<Bundle | null> {
   }
 }
 
-export async function updateProject(token, slug, projectName, urls) {
+export async function updateProject(token, slug, projectName, urls, icons) {
   try {
     const response = await fetch(`${BACKEND_URL}/api/project/${slug}`, {
       method: "PUT",
@@ -68,7 +73,7 @@ export async function updateProject(token, slug, projectName, urls) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ projectName, urls }),
+      body: JSON.stringify({ projectName, urls, icons }),
     });
     const data = await response.json();
     if (!response.ok) {
